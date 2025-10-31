@@ -1,13 +1,23 @@
-import { Partner } from '../../../../partners/domain/models/partner';
-import { DataSource } from 'typeorm';
+import { DataSource, DataSourceOptions } from "typeorm";
 
-export default new DataSource({
+export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'postgres',
-  password: 'root',
-  database: 'ETechValet',
-  entities: [Partner],
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '5432'),
+  username: process.env.DB_USER || 'postgres',
+  password: process.env.DB_PASSWORD || 'root',
+  database: process.env.DB_NAME || 'ETechValet',
+  entities: [
+    'src/**/*.model.ts',
+    '!src/**/base.model.ts', 
+  ],
   migrations: ['src/shared/infrastructure/data/migrations/*.ts'],
-});
+  migrationsTableName: 'migrations',
+  migrationsRun: false,
+  synchronize: false,
+  logging: process.env.NODE_ENV === 'development',
+};
+
+const dataSource = new DataSource(dataSourceOptions);
+
+export default dataSource;

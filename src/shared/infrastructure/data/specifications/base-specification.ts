@@ -1,4 +1,6 @@
-export class BaseSpecification {
+import { ObjectLiteral, SelectQueryBuilder } from "typeorm";
+
+export class BaseSpecification<TEntity extends ObjectLiteral> {
   criteria?: string;
   includes: string[] = [];
   orderBy?: string;

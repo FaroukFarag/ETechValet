@@ -24,7 +24,7 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
     return this.repository.save(entities);
   }
 
-  async getAsync(id: TPrimaryKey, spec?: BaseSpecification): Promise<TEntity> {
+  async getAsync(id: TPrimaryKey, spec?: BaseSpecification<TEntity>): Promise<TEntity> {
     let query = this.applySpecification(spec);
 
     const entity = await query
@@ -37,14 +37,14 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
     return entity;
   }
 
-  async getAllAsync(spec?: BaseSpecification): Promise<TEntity[]> {
+  async getAllAsync(spec?: BaseSpecification<TEntity>): Promise<TEntity[]> {
     const query = this.applySpecification(spec);
     return await query.getMany();
   }
 
   async getAllPaginatedAsync(
     paginatedModel: PaginatedModel,
-    spec?: BaseSpecification,
+    spec?: BaseSpecification<TEntity>,
   ): Promise<TEntity[]> {
     const page = paginatedModel.pageNumber <= 0 ? 1 : paginatedModel.pageNumber;
     const query = this.applySpecification(spec);
@@ -57,7 +57,7 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
 
   async getAllFilteredAsync<TFilterDto>(
     filterDto: TFilterDto,
-    spec?: BaseSpecification,
+    spec?: BaseSpecification<TEntity>,
   ): Promise<TEntity[]> {
     if (!filterDto) throw new Error('filterDto cannot be null.');
 
@@ -92,14 +92,14 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
     await this.repository.remove(entities);
   }
 
-  async getCountAsync(spec?: BaseSpecification): Promise<number> {
+  async getCountAsync(spec?: BaseSpecification<TEntity>): Promise<number> {
     const query = this.applySpecification(spec);
     return await query.getCount();
   }
 
   async getSumAsync(
     column: keyof TEntity,
-    spec?: BaseSpecification,
+    spec?: BaseSpecification<TEntity>,
   ): Promise<number> {
     const query = this.applySpecification(spec);
     const result = await query.select(`SUM(${query.alias}.${String(column)})`, 'sum').getRawOne();
@@ -108,7 +108,7 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
 
   async getAverageAsync(
     column: keyof TEntity,
-    spec?: BaseSpecification,
+    spec?: BaseSpecification<TEntity>,
   ): Promise<number> {
     const query = this.applySpecification(spec);
     const result = await query.select(`AVG(${query.alias}.${String(column)})`, 'avg').getRawOne();
@@ -117,7 +117,7 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
 
   async getMaxAsync(
     column: keyof TEntity,
-    spec?: BaseSpecification,
+    spec?: BaseSpecification<TEntity>,
   ): Promise<any> {
     const query = this.applySpecification(spec);
     const result = await query.select(`MAX(${query.alias}.${String(column)})`, 'max').getRawOne();
@@ -126,14 +126,14 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
 
   async getMinAsync(
     column: keyof TEntity,
-    spec?: BaseSpecification,
+    spec?: BaseSpecification<TEntity>,
   ): Promise<any> {
     const query = this.applySpecification(spec);
     const result = await query.select(`MIN(${query.alias}.${String(column)})`, 'min').getRawOne();
     return result.min;
   }
 
-  private applySpecification(spec?: BaseSpecification): SelectQueryBuilder<TEntity> {
+  private applySpecification(spec?: BaseSpecification<TEntity>): SelectQueryBuilder<TEntity> {
     let query = this.repository.createQueryBuilder(this.repository.metadata.tableName);
 
     if (!spec) return query;

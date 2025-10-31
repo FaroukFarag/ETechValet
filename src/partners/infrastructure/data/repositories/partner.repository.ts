@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { BaseRepository } from 'src/shared/infrastructure/data/repositories/base.repository';
-import { Partner } from 'src/partners/domain/models/partner';
+import { Partner } from 'src/partners/domain/models/partner.model';
 
 @Injectable()
 export class PartnerRepository extends BaseRepository<Partner, number> {
