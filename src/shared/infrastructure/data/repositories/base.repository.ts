@@ -1,5 +1,5 @@
 import { Repository, DataSource, SelectQueryBuilder } from 'typeorm';
-import type { EntityTarget, ObjectLiteral } from 'typeorm'; 
+import type { EntityTarget, ObjectLiteral } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { QueryableFilterUtil } from '../filters/queryable-filter.util';
 import { PaginatedModel } from 'src/shared/domain/models/paginated.model';
@@ -24,7 +24,7 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
     return this.repository.save(entities);
   }
 
-  async getAsync(id: TPrimaryKey, spec?: BaseSpecification<TEntity>): Promise<TEntity> {
+  async getAsync(id: TPrimaryKey, spec?: BaseSpecification): Promise<TEntity> {
     let query = this.applySpecification(spec);
 
     const entity = await query
@@ -37,14 +37,14 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
     return entity;
   }
 
-  async getAllAsync(spec?: BaseSpecification<TEntity>): Promise<TEntity[]> {
+  async getAllAsync(spec?: BaseSpecification): Promise<TEntity[]> {
     const query = this.applySpecification(spec);
     return await query.getMany();
   }
 
   async getAllPaginatedAsync(
     paginatedModel: PaginatedModel,
-    spec?: BaseSpecification<TEntity>,
+    spec?: BaseSpecification,
   ): Promise<TEntity[]> {
     const page = paginatedModel.pageNumber <= 0 ? 1 : paginatedModel.pageNumber;
     const query = this.applySpecification(spec);
@@ -57,15 +57,13 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
 
   async getAllFilteredAsync<TFilterDto>(
     filterDto: TFilterDto,
-    spec?: BaseSpecification<TEntity>,
+    spec?: BaseSpecification,
   ): Promise<TEntity[]> {
     if (!filterDto) throw new Error('filterDto cannot be null.');
 
-    // Build predicate dynamically (replacing EF Expression)
     const query = this.applySpecification(spec);
     const alias = this.repository.metadata.tableName;
 
-    // Use helper to apply filters (mimics ToPredicate)
     QueryableFilterUtil.applyFilters(query, alias, filterDto);
 
     return await query.getMany();
@@ -85,6 +83,7 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
       throw new Error(`Entity with id ${id} not found.`);
 
     await this.repository.remove(entity);
+
     return entity;
   }
 
@@ -92,14 +91,14 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
     await this.repository.remove(entities);
   }
 
-  async getCountAsync(spec?: BaseSpecification<TEntity>): Promise<number> {
+  async getCountAsync(spec?: BaseSpecification): Promise<number> {
     const query = this.applySpecification(spec);
     return await query.getCount();
   }
 
   async getSumAsync(
     column: keyof TEntity,
-    spec?: BaseSpecification<TEntity>,
+    spec?: BaseSpecification,
   ): Promise<number> {
     const query = this.applySpecification(spec);
     const result = await query.select(`SUM(${query.alias}.${String(column)})`, 'sum').getRawOne();
@@ -108,7 +107,7 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
 
   async getAverageAsync(
     column: keyof TEntity,
-    spec?: BaseSpecification<TEntity>,
+    spec?: BaseSpecification,
   ): Promise<number> {
     const query = this.applySpecification(spec);
     const result = await query.select(`AVG(${query.alias}.${String(column)})`, 'avg').getRawOne();
@@ -117,7 +116,7 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
 
   async getMaxAsync(
     column: keyof TEntity,
-    spec?: BaseSpecification<TEntity>,
+    spec?: BaseSpecification,
   ): Promise<any> {
     const query = this.applySpecification(spec);
     const result = await query.select(`MAX(${query.alias}.${String(column)})`, 'max').getRawOne();
@@ -126,14 +125,14 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
 
   async getMinAsync(
     column: keyof TEntity,
-    spec?: BaseSpecification<TEntity>,
+    spec?: BaseSpecification,
   ): Promise<any> {
     const query = this.applySpecification(spec);
     const result = await query.select(`MIN(${query.alias}.${String(column)})`, 'min').getRawOne();
     return result.min;
   }
 
-  private applySpecification(spec?: BaseSpecification<TEntity>): SelectQueryBuilder<TEntity> {
+  private applySpecification(spec?: BaseSpecification): SelectQueryBuilder<TEntity> {
     let query = this.repository.createQueryBuilder(this.repository.metadata.tableName);
 
     if (!spec) return query;
@@ -142,8 +141,33 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
       query = query.andWhere(spec.criteria);
 
     if (spec.includes && spec.includes.length > 0) {
+      // Track which aliases have already been joined to avoid duplicates
+      const joinedAliases = new Set<string>();
+
       for (const include of spec.includes) {
-        query = query.leftJoinAndSelect(`${query.alias}.${include}`, include);
+        const parts = include.split('.');
+
+        // Process each part of the path
+        for (let i = 0; i < parts.length; i++) {
+          const currentPart = parts[i];
+          const currentPath = parts.slice(0, i + 1).join('.');
+
+          // Skip if this alias has already been joined
+          if (joinedAliases.has(currentPath)) {
+            continue;
+          }
+
+          if (i === 0) {
+            // First level: join from main entity
+            query = query.leftJoinAndSelect(`${query.alias}.${currentPart}`, currentPart);
+          } else {
+            // Nested level: join from previous relation
+            const previousAlias = parts[i - 1];
+            query = query.leftJoinAndSelect(`${previousAlias}.${currentPart}`, currentPart);
+          }
+
+          joinedAliases.add(currentPath);
+        }
       }
     }
 

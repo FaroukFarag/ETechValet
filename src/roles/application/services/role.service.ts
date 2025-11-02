@@ -22,7 +22,7 @@ export class RoleService extends BaseService<
         return this.executeServiceCall(
             'Create Role',
             async () => {
-                const spec = new BaseSpecification<Role>();
+                const spec = new BaseSpecification();
 
                 spec.addCriteria(`name = '${roleDto.name}'`);
 
@@ -41,7 +41,7 @@ export class RoleService extends BaseService<
     }
 
     async roleExists(name: string): Promise<boolean> {
-        const spec = new BaseSpecification<Role>();
+        const spec = new BaseSpecification();
 
         spec.addCriteria(`name = '${name}'`);
 
@@ -54,7 +54,7 @@ export class RoleService extends BaseService<
         return this.executeServiceCall(
             'Get Role by Name',
             async () => {
-                const spec = new BaseSpecification<Role>();
+                const spec = new BaseSpecification();
 
                 spec.addCriteria(`name = '${name}'`);
 
@@ -73,7 +73,7 @@ export class RoleService extends BaseService<
         return this.executeServiceCall(
             'Delete Role by Name',
             async () => {
-                const spec = new BaseSpecification<Role>();
+                const spec = new BaseSpecification();
 
                 spec.addCriteria(`name = '${name}'`);
 

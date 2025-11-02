@@ -40,11 +40,11 @@ export class UserService extends BaseService<
         return this.executeServiceCall(
             `Create User`,
             async () => {
-                const emailSpec = new BaseSpecification<User>();
+                const emailSpec = new BaseSpecification();
                 emailSpec.addCriteria(`email = '${userDto.email}'`);
                 const usersByEmail = await this.userRepository.getAllAsync(emailSpec);
 
-                const usernameSpec = new BaseSpecification<User>();
+                const usernameSpec = new BaseSpecification();
 
                 usernameSpec.addCriteria(`userName = '${userDto.userName}'`);
 
@@ -92,7 +92,7 @@ export class UserService extends BaseService<
         return this.executeServiceCall(
             'Find User by Username',
             async () => {
-                const spec = new BaseSpecification<User>();
+                const spec = new BaseSpecification();
 
                 spec.addCriteria(`username = '${username}'`);
                 spec.addInclude('userRoles');
@@ -113,7 +113,7 @@ export class UserService extends BaseService<
         return this.executeServiceCall(
             'Find User by Email',
             async () => {
-                const spec = new BaseSpecification<User>();
+                const spec = new BaseSpecification();
 
                 spec.addCriteria(`email = '${email}'`);
 
@@ -162,7 +162,7 @@ export class UserService extends BaseService<
         return this.executeServiceCall(
             'Add User To Role',
             async () => {
-                const roleSpec = new BaseSpecification<Role>();
+                const roleSpec = new BaseSpecification();
 
                 roleSpec.addCriteria(`name = '${roleName}'`);
 
@@ -174,7 +174,7 @@ export class UserService extends BaseService<
 
                 const role = roles[0];
 
-                const userRoleSpec = new BaseSpecification<UserRole>();
+                const userRoleSpec = new BaseSpecification();
 
                 userRoleSpec.addCriteria(`userId = ${userId} AND roleId = ${role.id}`);
 
@@ -198,7 +198,7 @@ export class UserService extends BaseService<
         return this.executeServiceCall(
             'Remove User From Role',
             async () => {
-                const roleSpec = new BaseSpecification<Role>();
+                const roleSpec = new BaseSpecification();
 
                 roleSpec.addCriteria(`name = '${roleName}'`);
 
@@ -210,7 +210,7 @@ export class UserService extends BaseService<
 
                 const role = roles[0];
 
-                const userRoleSpec = new BaseSpecification<UserRole>();
+                const userRoleSpec = new BaseSpecification();
 
                 userRoleSpec.addCriteria(`userId = ${userId} AND roleId = ${role.id}`);
 
@@ -227,7 +227,7 @@ export class UserService extends BaseService<
         return this.executeServiceCall(
             'Get User Roles',
             async () => {
-                const spec = new BaseSpecification<User>();
+                const spec = new BaseSpecification();
 
                 spec.addCriteria(`id = ${userId}`);
                 spec.addInclude('userRoles');
@@ -327,11 +327,11 @@ export class UserService extends BaseService<
         return this.executeServiceCall(
             'Login',
             async () => {
-                const spec = new BaseSpecification<User>();
+                const spec = new BaseSpecification();
 
                 spec.addCriteria(`user.userName = '${loginDto.userName}'`);
                 spec.addInclude('userRoles');
-                //spec.addInclude('userRoles.role');
+                spec.addInclude('userRoles.role');
 
                 const users = await this.userRepository.getAllAsync(spec);
 
@@ -397,7 +397,7 @@ export class UserService extends BaseService<
         return this.executeServiceCall(
             'Validate Refresh Token',
             async () => {
-                const spec = new BaseSpecification<RefreshToken>();
+                const spec = new BaseSpecification();
 
                 spec.addCriteria(`token = '${token}'`);
 
@@ -466,7 +466,7 @@ export class UserService extends BaseService<
         return this.executeServiceCall(
             'Revoke Refresh Token',
             async () => {
-                const spec = new BaseSpecification<RefreshToken>();
+                const spec = new BaseSpecification();
                 spec.addCriteria(`token = '${token}'`);
 
                 const tokens = await this.refreshTokenRepository.getAllAsync(spec);

@@ -11,7 +11,7 @@ export class RefreshTokenRepository extends BaseRepository<RefreshToken, number>
     }
 
     async findByToken(token: string): Promise<RefreshToken | null> {
-        const spec = new BaseSpecification<RefreshToken>();
+        const spec = new BaseSpecification();
 
         spec.addCriteria(`token = '${token}' AND isRevoked = false`);
 
@@ -21,7 +21,7 @@ export class RefreshTokenRepository extends BaseRepository<RefreshToken, number>
     }
 
     async findActiveTokensByUserId(userId: number): Promise<RefreshToken[]> {
-        const spec = new BaseSpecification<RefreshToken>();
+        const spec = new BaseSpecification();
 
         spec.addCriteria(`userId = ${userId} AND isRevoked = false`);
         spec.addOrderByDescending('createdAt');
@@ -30,7 +30,7 @@ export class RefreshTokenRepository extends BaseRepository<RefreshToken, number>
     }
 
     async revokeAllUserTokens(userId: number): Promise<void> {
-        const spec = new BaseSpecification<RefreshToken>();
+        const spec = new BaseSpecification();
 
         spec.addCriteria(`userId = ${userId} AND isRevoked = false`);
 
@@ -47,7 +47,7 @@ export class RefreshTokenRepository extends BaseRepository<RefreshToken, number>
 
     async deleteExpiredTokens(): Promise<number> {
         const now = new Date();
-        const spec = new BaseSpecification<RefreshToken>();
+        const spec = new BaseSpecification();
 
         spec.addCriteria(`expiresAt < '${now.toISOString()}'`);
 
@@ -64,7 +64,7 @@ export class RefreshTokenRepository extends BaseRepository<RefreshToken, number>
         const cutoffDate = new Date();
         cutoffDate.setDate(cutoffDate.getDate() - days);
 
-        const spec = new BaseSpecification<RefreshToken>();
+        const spec = new BaseSpecification();
 
         spec.addCriteria(`isRevoked = true AND createdAt < '${cutoffDate.toISOString()}'`);
 
@@ -78,7 +78,7 @@ export class RefreshTokenRepository extends BaseRepository<RefreshToken, number>
     }
 
     async countActiveTokensByUserId(userId: number): Promise<number> {
-        const spec = new BaseSpecification<RefreshToken>();
+        const spec = new BaseSpecification();
 
         spec.addCriteria(`userId = ${userId} AND isRevoked = false`);
 
@@ -88,7 +88,7 @@ export class RefreshTokenRepository extends BaseRepository<RefreshToken, number>
     }
 
     async findByTokenWithUser(token: string): Promise<RefreshToken | null> {
-        const spec = new BaseSpecification<RefreshToken>();
+        const spec = new BaseSpecification();
 
         spec.addCriteria(`token = '${token}'`);
         spec.addInclude('user');
