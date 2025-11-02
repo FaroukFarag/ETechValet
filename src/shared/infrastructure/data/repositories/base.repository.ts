@@ -141,27 +141,22 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
       query = query.andWhere(spec.criteria);
 
     if (spec.includes && spec.includes.length > 0) {
-      // Track which aliases have already been joined to avoid duplicates
       const joinedAliases = new Set<string>();
 
       for (const include of spec.includes) {
         const parts = include.split('.');
 
-        // Process each part of the path
         for (let i = 0; i < parts.length; i++) {
           const currentPart = parts[i];
           const currentPath = parts.slice(0, i + 1).join('.');
 
-          // Skip if this alias has already been joined
           if (joinedAliases.has(currentPath)) {
             continue;
           }
 
           if (i === 0) {
-            // First level: join from main entity
             query = query.leftJoinAndSelect(`${query.alias}.${currentPart}`, currentPart);
           } else {
-            // Nested level: join from previous relation
             const previousAlias = parts[i - 1];
             query = query.leftJoinAndSelect(`${previousAlias}.${currentPart}`, currentPart);
           }

@@ -46,7 +46,7 @@ export class UserService extends BaseService<
 
                 const usernameSpec = new BaseSpecification();
 
-                usernameSpec.addCriteria(`userName = '${userDto.userName}'`);
+                usernameSpec.addCriteria(`user.userName = '${userDto.userName}'`);
 
                 const usersByUsername = await this.userRepository.getAllAsync(usernameSpec);
 
@@ -94,7 +94,7 @@ export class UserService extends BaseService<
             async () => {
                 const spec = new BaseSpecification();
 
-                spec.addCriteria(`username = '${username}'`);
+                spec.addCriteria(`userName = '${username}'`);
                 spec.addInclude('userRoles');
                 spec.addInclude('userRoles.role');
 
@@ -330,6 +330,7 @@ export class UserService extends BaseService<
                 const spec = new BaseSpecification();
 
                 spec.addCriteria(`user.userName = '${loginDto.userName}'`);
+
                 spec.addInclude('userRoles');
                 spec.addInclude('userRoles.role');
 
