@@ -15,7 +15,7 @@ export class PartnerService extends BaseService<
     Partner,
     number
 > {
-    constructor(protected readonly partnerRepository: PartnerRepository) {
+    constructor(private readonly partnerRepository: PartnerRepository) {
         super(partnerRepository);
     }
 }

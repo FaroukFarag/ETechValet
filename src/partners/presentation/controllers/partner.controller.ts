@@ -14,7 +14,7 @@ export class PartnerController extends BaseController<
     Partner,
     number
 > {
-    constructor(protected readonly partnerService: PartnerService) {
+    constructor(private readonly partnerService: PartnerService) {
         super(partnerService);
     }
 }

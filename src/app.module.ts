@@ -9,6 +9,8 @@ import { UsersRolesModule } from './users-roles/users-roles.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
+import { SitesModule } from './sites/sites.module';
+import { GateModule } from './gates/gate.module';
 
 @Module({
   imports: [
@@ -31,7 +33,9 @@ import { ConfigModule } from '@nestjs/config';
     PartnersModule,
     UsersModule,
     RolesModule,
-    UsersRolesModule
+    UsersRolesModule,
+    SitesModule,
+    GateModule
   ],
   controllers: [AppController],
   providers: [AppService],

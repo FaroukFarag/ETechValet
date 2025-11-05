@@ -1,5 +1,6 @@
+import { Site } from "../../../sites/domain/models/site.model";
 import { BaseModel } from "../../../shared/domain/models/base-model";
-import { Column, Entity } from "typeorm";
+import { Column, Entity, OneToMany } from "typeorm";
 
 @Entity()
 export class Partner extends BaseModel<number> {
@@ -10,7 +11,7 @@ export class Partner extends BaseModel<number> {
     partnerId: string;
 
     @Column()
-    sitesNumber: boolean;
+    sitesNumber: number;
 
     @Column()
     model: string;
@@ -32,4 +33,7 @@ export class Partner extends BaseModel<number> {
 
     @Column()
     contract: string;
+
+    @OneToMany(() => Site, site => site.partner)
+    sites: Site[];
 }

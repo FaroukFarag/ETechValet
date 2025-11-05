@@ -19,10 +19,9 @@ export class UsersController extends BaseController<
     UserDto,
     User,
     number> {
-    constructor(protected readonly userService: UserService) {
+    constructor(private readonly userService: UserService) {
         super(userService);
     }
-
 
     @Public()
     @Post('login')

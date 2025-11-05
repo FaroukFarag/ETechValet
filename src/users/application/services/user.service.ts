@@ -27,7 +27,7 @@ export class UserService extends BaseService<
     User,
     number> {
     constructor(
-        protected readonly userRepository: UserRepository,
+        private readonly userRepository: UserRepository,
         private readonly roleRepository: RoleRepository,
         private readonly userRoleRepository: UserRoleRepository,
         private readonly refreshTokenRepository: RefreshTokenRepository,

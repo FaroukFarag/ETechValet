@@ -13,7 +13,7 @@ export class RolesController extends BaseController<
     RoleDto,
     Role,
     number> {
-    constructor(protected roleService: RoleService) {
+    constructor(private readonly roleService: RoleService) {
         super(roleService);
     }
 }

@@ -14,7 +14,7 @@ export class RoleService extends BaseService<
     RoleDto,
     Role,
     number> {
-    constructor(protected readonly roleRepository: RoleRepository) {
+    constructor(private readonly roleRepository: RoleRepository) {
         super(roleRepository);
     }
 
