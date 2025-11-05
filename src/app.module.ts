@@ -2,15 +2,14 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PartnersModule } from './partners/partners.module';
-import { UsersModule } from './users/users.module';
-import { RolesModule } from './roles/roles.module';
-import { UsersRolesModule } from './users-roles/users-roles.module';
+import { NotificationsTemplatesModule } from './settings/notifications-templates/notifications-templates.module';
+import { UsersModule } from './settings/users/users.module';
+import { RolesModule } from './settings/roles/roles.module';
+import { UsersRolesModule } from './settings/users-roles/users-roles.module';
 import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
-import { SitesModule } from './sites/sites.module';
-import { GateModule } from './gates/gate.module';
+import { SitesModule } from './settings/sites/sites.module';
+import { GatesModule } from './settings/gates/gates.module';
 
 @Module({
   imports: [
@@ -30,12 +29,12 @@ import { GateModule } from './gates/gate.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    PartnersModule,
+    NotificationsTemplatesModule,
     UsersModule,
     RolesModule,
     UsersRolesModule,
     SitesModule,
-    GateModule
+    GatesModule
   ],
   controllers: [AppController],
   providers: [AppService],
