@@ -10,6 +10,7 @@ import { PassportModule } from '@nestjs/passport';
 import { ConfigModule } from '@nestjs/config';
 import { SitesModule } from './settings/sites/sites.module';
 import { GatesModule } from './settings/gates/gates.module';
+import { CompaniesModule } from './settings/companies/companies.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { GatesModule } from './settings/gates/gates.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
+    CompaniesModule,
     NotificationsTemplatesModule,
     UsersModule,
     RolesModule,

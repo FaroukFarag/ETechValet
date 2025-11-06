@@ -18,5 +18,6 @@ export class CreateUserDto {
 
     @IsString()
     confirmPassword: string;
+    
     roles: RoleDto[];
 }

@@ -60,8 +60,8 @@ export class UserService extends BaseService<
 
                 const createdUser = await this.userRepository.createAsync(user);
 
-                for (let role in userDto.roles)
-                    await this.addToRole(user.id, role);
+                for (const role of userDto.roles)
+                    await this.addToRole(user.id, role.name);
 
                 return this.map(createdUser, CreateUserDto);
             },
@@ -175,7 +175,7 @@ export class UserService extends BaseService<
 
                 const userRoleSpec = new BaseSpecification();
 
-                userRoleSpec.addCriteria(`userId = ${userId} AND roleId = ${role.id}`);
+                userRoleSpec.addCriteria(`user_role.userId = ${userId} AND user_role.roleId = ${role.id}`);
 
                 const existingUserRoles = await this.userRoleRepository.getAllAsync(userRoleSpec);
 
