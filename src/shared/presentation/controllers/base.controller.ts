@@ -11,6 +11,7 @@ import { ResultDto } from '../../application/dtos/result.dto';
 import { PaginatedModelDto } from '../../application/dtos/paginated.model.dto';
 import { BaseService } from '../../application/services/base.service';
 import { ObjectLiteral } from 'typeorm';
+import { BaseModelDto } from 'src/shared/application/dtos/base-model.dto';
 
 @Controller()
 export abstract class BaseController<
@@ -25,7 +26,7 @@ export abstract class BaseController<
     TCreateEntityDto,
     TGetAllEntitiesDto,
     TGetEntityDto,
-    TUpdateEntityDto,
+    TUpdateEntityDto extends BaseModelDto<TPrimaryKey>,
     TEntity extends ObjectLiteral,
     TPrimaryKey
 > {
@@ -55,7 +56,7 @@ export abstract class BaseController<
     async getAllPaginated(
         @Body() paginatedModelDto: PaginatedModelDto,
     ): Promise<ResultDto<TGetAllEntitiesDto[]>> {
-        return this.service.getAllPaginated(paginatedModelDto, Object as any, Object as any);
+        return this.service.getAllPaginated(paginatedModelDto, Object as any);
     }
 
     @Put('update')

@@ -7,5 +7,5 @@ export class SiteDto extends BaseModelDto<number> {
         fixedValue: number;
         percentage: string;
         address: string;
-        status: string;
+        status: number;
 }

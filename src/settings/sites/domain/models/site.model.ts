@@ -4,6 +4,9 @@ import { BaseModel } from "../../../../shared/domain/models/base-model";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { User } from "../../../../settings/users/domain/models/user.model";
 import { NotificationsTemplate } from "../../../../settings/notifications-templates/domain/models/notifications-template.model";
+import { Request } from "../../../../requests/domain/models/request.model";
+import { Card } from "../../../../settings/cards/domain/models/card.model";
+import { Service } from "src/settings/services/domain/models/service.model";
 
 @Entity()
 export class Site extends BaseModel<number> {
@@ -26,7 +29,7 @@ export class Site extends BaseModel<number> {
     address: string;
 
     @Column()
-    status: string;
+    status: number;
 
     @ManyToOne(() => Company, company => company.sites)
     company: Company;
@@ -39,4 +42,10 @@ export class Site extends BaseModel<number> {
 
     @OneToMany(() => Gate, gate => gate.site)
     gates: Gate[];
+
+    @OneToMany(() => Card, card => card.site)
+    cards: Card[];
+
+    @OneToMany(() => Request, request => request.site)
+    requests: Request[];
 }

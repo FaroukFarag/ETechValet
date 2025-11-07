@@ -5,19 +5,21 @@ import { ObjectLiteral } from 'typeorm';
 import { ResultDto } from '../dtos/result.dto';
 import { PaginatedModelDto } from '../dtos/paginated.model.dto';
 import { PaginatedModel } from 'src/shared/domain/models/paginated.model';
+import { PaginatedResultDto } from '../dtos/paginated-result.dto';
+import { BaseModelDto } from '../dtos/base-model.dto';
 
 @Injectable()
 export abstract class BaseService<
   TCreateEntityDto,
   TGetAllEntitiesDto,
   TGetEntityDto,
-  TUpdateEntityDto,
+  TUpdateEntityDto extends BaseModelDto<TPrimaryKey>,
   TEntity extends ObjectLiteral,
   TPrimaryKey,
 > {
   constructor(
     protected readonly repository: BaseRepository<TEntity, TPrimaryKey>
-  ) {}
+  ) { }
 
   protected map<T, U>(source: T, targetClass: new () => U): U {
     return plainToInstance(targetClass, source, {
@@ -94,19 +96,17 @@ export abstract class BaseService<
 
   async getAllPaginated(
     paginatedModelDto: PaginatedModelDto,
-    entityClass: new () => TEntity,
     getAllDtoClass: new () => TGetAllEntitiesDto,
-  ): Promise<ResultDto<TGetAllEntitiesDto[]>> {
-    return this.executeServiceCall(
-      `Get paginated ${entityClass.name}`,
-      async () => {
-        const paginatedModel = this.map(paginatedModelDto, PaginatedModel);
-        const entities = await this.repository.getAllPaginatedAsync(paginatedModel);
+  ): Promise<PaginatedResultDto<TGetAllEntitiesDto>> {
+    const paginatedModel = this.map(paginatedModelDto, PaginatedModel);
+    const { data, totalCount } = await this.repository.getAllPaginatedAsync(paginatedModel);
 
-        return this.mapArray(entities, getAllDtoClass);
-      },
-    );
+    const mappedItems = this.mapArray(data, getAllDtoClass);
+    const totalPages = Math.ceil(totalCount / paginatedModel.pageSize);
+
+    return PaginatedResultDto.createSuccessPaginatedResult(mappedItems, totalCount, totalPages);
   }
+
 
   async getAllFiltered<TFilterDto>(
     filterDto: TFilterDto,
@@ -132,8 +132,10 @@ export abstract class BaseService<
       async () => {
         const entity = this.map(updateEntityDto, entityClass);
 
+        await this.repository.getAsync(updateEntityDto.id);
+
         this.repository.updateAsync(entity);
-        
+
         return updateEntityDto;
       },
     );

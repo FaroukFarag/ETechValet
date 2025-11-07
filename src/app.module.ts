@@ -11,6 +11,9 @@ import { ConfigModule } from '@nestjs/config';
 import { SitesModule } from './settings/sites/sites.module';
 import { GatesModule } from './settings/gates/gates.module';
 import { CompaniesModule } from './settings/companies/companies.module';
+import { RequestsModule } from './requests/requests.module';
+import { CardsModule } from './settings/cards/cards.module';
+import { ServicesModule } from './settings/services/services.module';
 
 @Module({
   imports: [
@@ -36,7 +39,10 @@ import { CompaniesModule } from './settings/companies/companies.module';
     RolesModule,
     UsersRolesModule,
     SitesModule,
-    GatesModule
+    GatesModule,
+    CardsModule,
+    ServicesModule,
+    RequestsModule
   ],
   controllers: [AppController],
   providers: [AppService],

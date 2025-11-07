@@ -48,6 +48,9 @@ export class User extends BaseModel<number> {
     @UpdateDateColumn()
     updatedAt: Date;
 
+    @Column()
+    status: number;
+
     @OneToMany(() => UserRole, userRole => userRole.user)
     userRoles: UserRole[];
 

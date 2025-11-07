@@ -17,7 +17,7 @@ export class NotificationsTemplate extends BaseModel<number> {
     messageTemplate: string;
 
     @Column()
-    status: string;
+    status: number;
 
     @ManyToOne(() => Site, site => site.notificationsTemplates)
     site: Site;

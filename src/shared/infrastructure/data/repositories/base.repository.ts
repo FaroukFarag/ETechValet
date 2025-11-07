@@ -45,14 +45,16 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
   async getAllPaginatedAsync(
     paginatedModel: PaginatedModel,
     spec?: BaseSpecification,
-  ): Promise<TEntity[]> {
+  ): Promise<{ data: TEntity[]; totalCount: number }> {
     const page = paginatedModel.pageNumber <= 0 ? 1 : paginatedModel.pageNumber;
     const query = this.applySpecification(spec);
 
-    return await query
+    const [data, totalCount] = await query
       .skip((page - 1) * paginatedModel.pageSize)
       .take(paginatedModel.pageSize)
-      .getMany();
+      .getManyAndCount();
+
+    return { data, totalCount };
   }
 
   async getAllFilteredAsync<TFilterDto>(
