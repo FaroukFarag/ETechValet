@@ -132,14 +132,28 @@ export abstract class BaseService<
       async () => {
         const entity = this.map(updateEntityDto, entityClass);
 
-        await this.repository.getAsync(updateEntityDto.id);
+        if (typeof updateEntityDto.id === 'object' && updateEntityDto.id !== null) {
+          Object.assign(entity, updateEntityDto.id);
 
-        this.repository.updateAsync(entity);
+          delete (entity as any).id;
+        } else if ('id' in updateEntityDto) {
+          (entity as any).id = updateEntityDto.id;
+        }
+
+        const id =
+          typeof updateEntityDto.id === 'object'
+            ? updateEntityDto.id
+            : { id: updateEntityDto.id };
+
+        await this.repository.getAsync(id);
+
+        await this.repository.updateAsync(entity);
 
         return updateEntityDto;
       },
     );
   }
+
 
   async updateRange(
     updateEntitiesDtos: TUpdateEntityDto[],
@@ -165,7 +179,7 @@ export abstract class BaseService<
     return this.executeServiceCall(
       `Delete ${entityClass.name} by ID`,
       async () => {
-        const entity = this.repository.deleteAsync(id);
+        const entity = await this.repository.deleteAsync(id);
 
         return this.map(entity, getDtoClass);
       },

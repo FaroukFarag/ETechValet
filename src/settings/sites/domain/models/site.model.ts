@@ -1,12 +1,11 @@
 import { Company } from "../../../../settings/companies/domain/models/company.model";
 import { Gate } from "../../../gates/domain/models/gate.model";
 import { BaseModel } from "../../../../shared/domain/models/base-model";
-import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
+import { Check, Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { User } from "../../../../settings/users/domain/models/user.model";
 import { NotificationsTemplate } from "../../../../settings/notifications-templates/domain/models/notifications-template.model";
-import { Request } from "../../../../requests/domain/models/request.model";
 import { Card } from "../../../../settings/cards/domain/models/card.model";
-import { Service } from "src/settings/services/domain/models/service.model";
+import { SiteService } from "../../../sites-services/domain/models/site-service.model";
 
 @Entity()
 export class Site extends BaseModel<number> {
@@ -19,11 +18,12 @@ export class Site extends BaseModel<number> {
     @Column()
     valueType: number;
 
-    @Column()
-    fixedValue: number;
+    @Column({ nullable: true })
+    fixedValue?: number;
 
-    @Column()
-    percentage: string;
+    @Column({ nullable: true })
+    @Check(`"percentage" <= 100`)
+    percentage?: number;
 
     @Column()
     address: string;
@@ -46,6 +46,6 @@ export class Site extends BaseModel<number> {
     @OneToMany(() => Card, card => card.site)
     cards: Card[];
 
-    @OneToMany(() => Request, request => request.site)
-    requests: Request[];
+    @OneToMany(() => SiteService, siteService => siteService.site)
+    siteServices: SiteService[];
 }

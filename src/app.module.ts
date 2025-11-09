@@ -14,6 +14,9 @@ import { CompaniesModule } from './settings/companies/companies.module';
 import { RequestsModule } from './requests/requests.module';
 import { CardsModule } from './settings/cards/cards.module';
 import { ServicesModule } from './settings/services/services.module';
+import { SitesServicesModule } from './settings/sites-services/sites-services.module';
+import { RequestsSitesServicesModule } from './requests-sites-services/requests-sites-services.module';
+import { UsersGatesModule } from './settings/users-gates/users-gates.module';
 
 @Module({
   imports: [
@@ -42,7 +45,10 @@ import { ServicesModule } from './settings/services/services.module';
     GatesModule,
     CardsModule,
     ServicesModule,
-    RequestsModule
+    SitesServicesModule,
+    RequestsSitesServicesModule,
+    RequestsModule,
+    UsersGatesModule
   ],
   controllers: [AppController],
   providers: [AppService],

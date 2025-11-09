@@ -4,6 +4,9 @@ import { UserRole } from "../../../users-roles/domain/models/user-role.model";
 import { UserClaim } from "./user-claim.model";
 import { Exclude } from "class-transformer";
 import { Site } from "../../../../settings/sites/domain/models/site.model";
+import { PickupRequest } from "../../../../requests/domain/models/pickup-request.model";
+import { RecallRequest } from "../../../../requests/domain/models/recall-request.model";
+import { UserGate } from "../../../../settings/users-gates/domain/models/user-gate.model";
 
 @Entity()
 export class User extends BaseModel<number> {
@@ -48,8 +51,14 @@ export class User extends BaseModel<number> {
     @UpdateDateColumn()
     updatedAt: Date;
 
+    @Column({ nullable: true })
+    workingHours: number;
+
     @Column()
     status: number;
+
+    @ManyToOne(() => Site, site => site.users)
+    site: Site;
 
     @OneToMany(() => UserRole, userRole => userRole.user)
     userRoles: UserRole[];
@@ -57,6 +66,15 @@ export class User extends BaseModel<number> {
     @OneToMany(() => UserClaim, userClaim => userClaim.user)
     userClaims: UserClaim[];
 
-    @ManyToOne(() => Site, site => site.users)
-    site: Site;
+    @OneToMany(() => PickupRequest, pickupRequest => pickupRequest.receivedBy)
+    receivedRequests: PickupRequest[];
+
+    @OneToMany(() => PickupRequest, pickupRequest => pickupRequest.parkedBy)
+    parkedRequests: PickupRequest[];
+
+    @OneToMany(() => RecallRequest, recallRequest => recallRequest.deliveredBy)
+    deliveredRequests: RecallRequest[];
+
+    @OneToMany(() => UserGate, userGate => userGate.user)
+    userGates: UserGate[];
 }

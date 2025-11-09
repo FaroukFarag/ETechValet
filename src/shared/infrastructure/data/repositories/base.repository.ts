@@ -24,18 +24,26 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
     return this.repository.save(entities);
   }
 
-  async getAsync(id: TPrimaryKey, spec?: BaseSpecification): Promise<TEntity> {
-    let query = this.applySpecification(spec);
+  async getAsync(id: TPrimaryKey | Record<string, any>, spec?: BaseSpecification): Promise<TEntity> {
+    const query = this.applySpecification(spec);
 
-    const entity = await query
-      .where(`${query.alias}.id = :id`, { id })
-      .getOne();
+    const isCompositeKey = typeof id === 'object' && id !== null;
+    const whereClause = isCompositeKey
+      ? Object.entries(id)
+        .map(([key]) => `${query.alias}.${key} = :${key}`)
+        .join(' AND ')
+      : `${query.alias}.id = :id`;
+
+    const parameters = isCompositeKey ? id : { id };
+
+    const entity = await query.where(whereClause, parameters).getOne();
 
     if (!entity)
-      throw new Error(`Entity with id ${id} not found.`);
+      throw new Error(`Entity not found with key(s): ${JSON.stringify(id)}`);
 
     return entity;
   }
+
 
   async getAllAsync(spec?: BaseSpecification): Promise<TEntity[]> {
     const query = this.applySpecification(spec);
@@ -80,14 +88,21 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
   }
 
   async deleteAsync(id: any): Promise<TEntity> {
-    const entity = await this.repository.findOneBy({ id } as any);
-    if (!entity)
-      throw new Error(`Entity with id ${id} not found.`);
+    const whereCondition = typeof id === 'object' && id !== null ? id : { id };
+    const entity = await this.repository.findOne({ where: whereCondition as any });
+
+    if (!entity) {
+      throw new Error(
+        `Entity with key ${typeof id === 'object' ? JSON.stringify(id) : id
+        } not found.`,
+      );
+    }
 
     await this.repository.remove(entity);
 
     return entity;
   }
+
 
   async deleteRangeAsync(entities: TEntity[]): Promise<void> {
     await this.repository.remove(entities);

@@ -1,5 +1,6 @@
+import { SiteService } from "../../../sites-services/domain/models/site-service.model";
 import { BaseModel } from "../../../../shared/domain/models/base-model";
-import { Column, Entity } from "typeorm";
+import { Column, Entity, OneToMany } from "typeorm";
 
 @Entity()
 export class Service extends BaseModel<number> {
@@ -11,4 +12,7 @@ export class Service extends BaseModel<number> {
 
     @Column()
     status: number;
+
+    @OneToMany(() => SiteService, siteService => siteService.service)
+    serviceSites: SiteService[];
 }
