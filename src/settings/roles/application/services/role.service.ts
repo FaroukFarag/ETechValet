@@ -5,6 +5,8 @@ import { Role } from "src/settings/roles/domain/models/role.model";
 import { RoleRepository } from "src/settings/roles/infrastructure/data/repositories/role.repository";
 import { ResultDto } from "src/shared/application/dtos/result.dto";
 import { BaseSpecification } from "src/shared/infrastructure/data/specifications/base-specification";
+import { RoleClaimRepository } from "../../infrastructure/data/repositories/role-claim.repository";
+import { Permission } from "src/shared/domain/enums/permission.enum";
 
 @Injectable()
 export class RoleService extends BaseService<
@@ -14,7 +16,9 @@ export class RoleService extends BaseService<
     RoleDto,
     Role,
     number> {
-    constructor(private readonly roleRepository: RoleRepository) {
+    constructor(
+        private readonly roleRepository: RoleRepository,
+        private readonly roleClaimRepository: RoleClaimRepository) {
         super(roleRepository);
     }
 
@@ -93,5 +97,53 @@ export class RoleService extends BaseService<
                 return this.map(roleToDelete, RoleDto);
             }
         );
+    }
+
+    async assignPermissions(roleId: number, permissions: Permission[]) {
+        return this.executeServiceCall("Assign Permissions to Role", async () => {
+            const role = await this.roleRepository.getAsync(roleId);
+
+            if (!role) throw new NotFoundException("Role not found");
+
+            const spec = new BaseSpecification();
+
+            spec.addCriteria(`"roleId" = ${role.id}`);
+
+            const roleClaims = await this.roleClaimRepository.getAllAsync(spec);
+
+            if (roleClaims && roleClaims.length > 0) {
+                await this.roleClaimRepository.deleteRangeAsync(roleClaims);
+            }
+
+            await this.roleClaimRepository.createRangeAsync(permissions.map((permission) => {
+                return {
+                    id: 0,
+                    roleId,
+                    claimType: "permission",
+                    claimValue: permission.toString(),
+                    role
+                }
+            }));
+
+            return { roleId, permissions };
+        });
+    }
+
+    async getPermissions(roleId: number): Promise<ResultDto<Permission[]>> {
+        return this.executeServiceCall(
+            "Get Role Permissions",
+            async () => {
+                const spec = new BaseSpecification();
+
+                spec.addCriteria(`"roleId" = ${roleId} AND "claimType" = "permission"`);
+                spec.addOrderByDescending('id');
+
+                const claims = await this.roleClaimRepository.getAllAsync(spec);
+
+                return claims
+                    .map((c) => c.claimValue)
+                    .filter((v): v is keyof typeof Permission => v in Permission)
+                    .map((v) => Permission[v]);
+            });
     }
 }

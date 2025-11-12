@@ -8,6 +8,7 @@ import { GateController } from "./presentation/controllers/gate.controller";
 @Module({
     imports: [TypeOrmModule.forFeature([Gate])],
     providers: [GateRepository, GateService],
-    controllers: [GateController]
+    controllers: [GateController],
+    exports: [GateRepository]
 })
 export class GatesModule { }

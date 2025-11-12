@@ -1,7 +1,9 @@
-import { Controller } from "@nestjs/common";
+import { Body, Controller, Post, UploadedFiles, UseInterceptors } from "@nestjs/common";
+import { FilesInterceptor } from "@nestjs/platform-express";
 import { PickupRequestDto } from "src/requests/application/dtos/pickup-request.dto";
 import { PickupRequestService } from "src/requests/application/services/pickup-request.service";
 import { PickupRequest } from "src/requests/domain/models/pickup-request.model";
+import { ResultDto } from "src/shared/application/dtos/result.dto";
 import { BaseController } from "src/shared/presentation/controllers/base.controller";
 
 @Controller('api/pickup-requests')
@@ -16,4 +18,14 @@ export class PickupRequestController extends BaseController<
     constructor(private readonly pickupRequestService: PickupRequestService) {
         super(pickupRequestService);
     }
+
+    @Post('create-with-photos')
+    @UseInterceptors(FilesInterceptor('inspectionPhotos'))
+    async createWithPhotos(
+        @UploadedFiles() files: Express.Multer.File[],
+        @Body() pickupRequestDto: PickupRequestDto
+    ): Promise<ResultDto<PickupRequestDto>> {
+        return this.pickupRequestService.createWithPhotos(pickupRequestDto, files);
+    }
+
 }

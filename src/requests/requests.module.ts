@@ -12,16 +12,23 @@ import { InspectionPhotoService } from "./application/services/inspection-photo.
 import { InspectionPhotoController } from "./presentation/controllers/inspection-photo.controller";
 import { PickupRequestController } from "./presentation/controllers/pickup-request.controller";
 import { RecallRequestController } from "./presentation/controllers/recall-request.controller";
+import { MulterModule } from "@nestjs/platform-express";
+import { FileManagementService } from "src/shared/application/services/file-management.service";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([PickupRequest, RecallRequest, InspectionPhoto])],
+    imports: [
+        TypeOrmModule.forFeature([PickupRequest, RecallRequest, InspectionPhoto]),
+        MulterModule.register({
+            dest: './uploads',
+        })],
     providers: [
         PickupRequestRepository,
         RecallRequestRepository,
         InspectionPhotoRepository,
         PickupRequestService,
         RecallRequestService,
-        InspectionPhotoService
+        InspectionPhotoService,
+        FileManagementService
     ],
     controllers: [
         PickupRequestController,

@@ -4,5 +4,5 @@ import { PickupRequestDto } from "./pickup-request.dto";
 export class InspectionPhotoDto extends BaseModelDto<number> {
     imagePath: string;
     pickupRequestId: number;
-    pickupRequest: PickupRequestDto;
+    pickupRequest?: PickupRequestDto;
 }

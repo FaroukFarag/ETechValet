@@ -11,6 +11,7 @@ import { Site } from "./domain/models/site.model";
         SiteRepository,
         SiteService
     ],
-    controllers: [SiteController]
+    controllers: [SiteController],
+    exports: [SiteRepository]
 })
 export class SitesModule { }

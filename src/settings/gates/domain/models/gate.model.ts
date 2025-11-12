@@ -4,6 +4,7 @@ import { BaseModel } from "../../../../shared/domain/models/base-model";
 import { Site } from "../../../sites/domain/models/site.model";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { UserGate } from "../../../../settings/users-gates/domain/models/user-gate.model";
+import { GatePricing } from "../../../../settings/gates-pricings/domain/models/gate-pricing.model";
 
 @Entity()
 export class Gate extends BaseModel<number> {
@@ -27,4 +28,7 @@ export class Gate extends BaseModel<number> {
 
     @OneToMany(() => UserGate, gateUser => gateUser.gate)
     gateUsers: UserGate[];
+
+    @OneToMany(() => GatePricing, gatePricing => gatePricing.pricing)
+    gatePricings: GatePricing[];
 }

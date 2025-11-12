@@ -5,7 +5,7 @@ import { Role } from "./role.model";
 @Entity()
 export class RoleClaim extends BaseModel<number> {
     @Column()
-    roleId: string;
+    roleId: number;
 
     @Column()
     claimType: string;

@@ -5,11 +5,12 @@ import { RolesController } from "./presentation/controllers/role.controller";
 import { RoleClaim } from "./domain/models/role-claim.model";
 import { Role } from "./domain/models/role.model";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { RoleClaimRepository } from "./infrastructure/data/repositories/role-claim.repository";
 
 @Module({
     imports:[TypeOrmModule.forFeature([Role, RoleClaim])],
     controllers: [RolesController],
-    providers: [RoleRepository, RoleService],
+    providers: [RoleRepository, RoleClaimRepository, RoleService],
     exports: [RoleRepository]
 })
 export class RolesModule { }

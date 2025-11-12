@@ -35,6 +35,7 @@ export abstract class BaseService<
   async create(
     createEntityDto: TCreateEntityDto,
     entityClass: new () => TEntity,
+    dtoClass: new () => TCreateEntityDto,
   ): Promise<ResultDto<TCreateEntityDto>> {
     return this.executeServiceCall(
       `Create ${entityClass.name}`,
@@ -43,7 +44,7 @@ export abstract class BaseService<
 
         await this.repository.createAsync(entity);
 
-        return createEntityDto;
+        return this.map(entity, dtoClass);
       },
     );
   }

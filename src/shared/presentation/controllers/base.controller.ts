@@ -34,7 +34,7 @@ export abstract class BaseController<
 
     @Post('create')
     async create(@Body() createEntityDto: TCreateEntityDto): Promise<ResultDto<TCreateEntityDto>> {
-        return this.service.create(createEntityDto, Object as any);
+        return this.service.create(createEntityDto, Object as any, Object as any);
     }
 
     @Post('create-range')
