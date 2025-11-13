@@ -5,14 +5,16 @@ import { Column, Entity, ManyToOne, OneToMany, OneToOne } from "typeorm";
 import { InspectionPhoto } from "./inspection-photo.model";
 import { BaseRequest } from "./base-request";
 import { RecallRequest } from "./recall-request.model";
+import { CustomerType } from "../../../settings/pricings/domain/enums/customer-type.enum";
+import { PaymentType } from "../enums/payment-type.enum";
 
 @Entity()
 export class PickupRequest extends BaseRequest {
-    @Column()
-    customerType: number;
+    @Column({ type: "enum", enum: CustomerType })
+    customerType: CustomerType;
 
-    @Column()
-    paymentType: number;
+    @Column({ type: "enum", enum: PaymentType })
+    paymentType: PaymentType;
 
     @Column({ nullable: true })
     brand?: string;

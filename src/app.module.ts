@@ -17,9 +17,10 @@ import { ServicesModule } from './settings/services/services.module';
 import { SitesServicesModule } from './settings/sites-services/sites-services.module';
 import { RequestsSitesServicesModule } from './requests-sites-services/requests-sites-services.module';
 import { UsersGatesModule } from './settings/users-gates/users-gates.module';
-import { FileManagementService } from './shared/application/services/file-management.service';
 import { GatesPricingsModule } from './settings/gates-pricings/gates-pricings.module';
 import { PricingsModule } from './settings/pricings/pricings.module';
+import { ValidatorsModule } from './settings/validators/validators.module';
+import { SitesServicesValidatorsModule } from './settings/sites-services-validators/sites-services-validators.module';
 
 @Module({
   imports: [
@@ -53,7 +54,9 @@ import { PricingsModule } from './settings/pricings/pricings.module';
     RequestsModule,
     UsersGatesModule,
     PricingsModule,
-    GatesPricingsModule
+    GatesPricingsModule,
+    ValidatorsModule,
+    SitesServicesValidatorsModule
   ],
   controllers: [AppController],
   providers: [AppService],

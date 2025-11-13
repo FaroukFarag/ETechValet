@@ -7,6 +7,7 @@ import { NotificationsTemplate } from "../../../../settings/notifications-templa
 import { Card } from "../../../../settings/cards/domain/models/card.model";
 import { SiteService } from "../../../sites-services/domain/models/site-service.model";
 import { Pricing } from "../../../../settings/pricings/domain/models/pricing.model";
+import { Validator } from "../../../../settings/validators/domain/models/validator.model";
 
 @Entity()
 export class Site extends BaseModel<number> {
@@ -52,4 +53,7 @@ export class Site extends BaseModel<number> {
 
     @OneToMany(() => Pricing, pricing => pricing.site)
     pricings: Pricing[];
+
+    @OneToMany(() => Validator, validator => validator.site)
+    validators: Validator[];
 }
