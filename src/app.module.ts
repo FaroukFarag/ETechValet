@@ -17,6 +17,7 @@ import { ServicesModule } from './settings/services/services.module';
 import { SitesServicesModule } from './settings/sites-services/sites-services.module';
 import { RequestsSitesServicesModule } from './requests-sites-services/requests-sites-services.module';
 import { UsersGatesModule } from './settings/users-gates/users-gates.module';
+import { PricingModule } from './pricing/modules/pricing.module';
 
 @Module({
   imports: [
@@ -48,7 +49,8 @@ import { UsersGatesModule } from './settings/users-gates/users-gates.module';
     SitesServicesModule,
     RequestsSitesServicesModule,
     RequestsModule,
-    UsersGatesModule
+    UsersGatesModule,
+    PricingModule
   ],
   controllers: [AppController],
   providers: [AppService],

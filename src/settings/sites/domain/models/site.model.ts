@@ -6,6 +6,7 @@ import { User } from "../../../../settings/users/domain/models/user.model";
 import { NotificationsTemplate } from "../../../../settings/notifications-templates/domain/models/notifications-template.model";
 import { Card } from "../../../../settings/cards/domain/models/card.model";
 import { SiteService } from "../../../sites-services/domain/models/site-service.model";
+import { Pricing } from "src/pricing/entities/pricing.model";
 
 @Entity()
 export class Site extends BaseModel<number> {
@@ -30,6 +31,9 @@ export class Site extends BaseModel<number> {
 
     @Column()
     status: number;
+
+    @OneToMany(() => Pricing, pricing => pricing.site)
+    pricings: Pricing[];
 
     @ManyToOne(() => Company, company => company.sites)
     company: Company;
