@@ -7,6 +7,7 @@ import { BaseRequest } from "./base-request";
 import { RecallRequest } from "./recall-request.model";
 import { CustomerType } from "../../../settings/pricings/domain/enums/customer-type.enum";
 import { PaymentType } from "../enums/payment-type.enum";
+import { PickupRequestStatus } from "../enums/pickup-request-status.enum";
 
 @Entity()
 export class PickupRequest extends BaseRequest {
@@ -24,6 +25,9 @@ export class PickupRequest extends BaseRequest {
 
     @Column({ nullable: true })
     notes?: string;
+
+    @Column({ type: "enum", enum: PaymentType })
+    status: PickupRequestStatus;
 
     @Column()
     receivedById: number;

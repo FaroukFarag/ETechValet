@@ -16,6 +16,9 @@ import { UserRole } from "src/settings/users-roles/domain/models/user-role.model
 import { RefreshTokenRepository } from "src/settings/users/infrastructure/data/repositories/refresh-token.repository";
 import { LoginDto } from "../dtos/login.dto";
 import { CreateUserDto } from "../dtos/create-user.dto";
+import { UserGate } from "src/settings/users-gates/domain/models/user-gate.model";
+import { UserGateRepository } from "src/settings/users-gates/infrastructure/data/repositories/user-gate.repository";
+import { UserGateDto } from "src/settings/users-gates/application/dtos/user-gate.dto";
 
 @Injectable()
 export class UserService extends BaseService<
@@ -30,6 +33,7 @@ export class UserService extends BaseService<
         private readonly roleRepository: RoleRepository,
         private readonly userRoleRepository: UserRoleRepository,
         private readonly refreshTokenRepository: RefreshTokenRepository,
+        private readonly userGateRepository: UserGateRepository,
         private jwtService: JwtService
     ) {
         super(userRepository);
@@ -40,9 +44,10 @@ export class UserService extends BaseService<
             `Create User`,
             async () => {
                 const emailSpec = new BaseSpecification();
-                emailSpec.addCriteria(`email = '${userDto.email}'`);
-                const usersByEmail = await this.userRepository.getAllAsync(emailSpec);
 
+                emailSpec.addCriteria(`email = '${userDto.email}'`);
+
+                const usersByEmail = await this.userRepository.getAllAsync(emailSpec);
                 const usernameSpec = new BaseSpecification();
 
                 usernameSpec.addCriteria(`user.userName = '${userDto.userName}'`);
@@ -60,10 +65,25 @@ export class UserService extends BaseService<
 
                 const createdUser = await this.userRepository.createAsync(user);
 
+                if (userDto.userGates && userDto.userGates.length > 0) {
+                    let userGates = userDto.userGates.map(userGateDto => {
+                        const userGate = new UserGate()
+
+                        userGate.userId = createdUser.id;
+                        userGate.gateId = userGateDto.id.gateId;
+
+                        return userGate;
+                    });
+
+                    userGates = await this.userGateRepository.updateRangeAsync(userGates);
+
+                    userDto.userGates = this.mapArray(userGates, UserGateDto);
+                }
+
                 for (const role of userDto.roles)
                     await this.addToRole(user.id, role.name);
 
-                return this.map(createdUser, CreateUserDto);
+                return this.map(userDto, CreateUserDto);
             },
         );
     }
@@ -86,6 +106,91 @@ export class UserService extends BaseService<
             },
         );
     }
+
+    override async update(userDto: UserDto): Promise<ResultDto<UserDto>> {
+        return this.executeServiceCall(
+            `Update User`,
+            async () => {
+                const user = await this.userRepository.getAsync(userDto.id);
+
+                if (!user) throw new NotFoundException("User not found");
+
+                const emailSpec = new BaseSpecification();
+
+                emailSpec.addCriteria(`email = '${userDto.email}' AND id != ${userDto.id}`);
+
+                const usernameSpec = new BaseSpecification();
+
+                usernameSpec.addCriteria(`userName = '${userDto.userName}' AND id != ${userDto.id}`);
+
+                const emailExists = await this.userRepository.getAllAsync(emailSpec);
+                const usernameExists = await this.userRepository.getAllAsync(usernameSpec);
+
+                if (emailExists.length > 0 || usernameExists.length > 0)
+                    throw new ConflictException("User already exists");
+
+                this.mapToExisting(userDto, user);
+
+                const userGateSpec = new BaseSpecification();
+
+                userGateSpec.addCriteria(`userId = '${userDto.id}`);
+
+                const currentGates = await this.userGateRepository.getAllAsync(userGateSpec);
+                const newGateIds = userDto.userGates?.map(g => g.id.gateId) ?? [];
+                const currentGateIds = currentGates.map(g => g.gateId);
+                const gatesToAdd = newGateIds.filter(g => !currentGateIds.includes(g));
+                const gatesToRemove = currentGateIds.filter(g => !newGateIds.includes(g));
+
+                if (gatesToAdd.length > 0) {
+                    const addEntities = gatesToAdd.map(g => {
+                        const userGate = new UserGate();
+                        userGate.userId = userDto.id;
+                        userGate.gateId = g;
+                        return userGate;
+                    });
+
+                    await this.userGateRepository.createRangeAsync(addEntities);
+                }
+
+                if (gatesToRemove.length > 0) {
+                    await this.userGateRepository
+                        .deleteRangeAsync(gatesToRemove.map(g => {
+                            const userGate = new UserGate();
+
+                            userGate.gateId = g;
+                            userGate.userId = userDto.id;
+
+                            return userGate
+                        }));
+                }
+
+                const userRoleSpec = new BaseSpecification();
+
+                userRoleSpec.addCriteria(`userId = '${userDto.id}`);
+                userRoleSpec.addInclude('role');
+
+                const currentRoles = await this.userRoleRepository.getAllAsync(userRoleSpec);
+                const newRoles = userDto.roles?.map(r => r.name) ?? [];
+
+                const currentRoleNames = currentRoles.map(ur => ur.role.name);
+                const rolesToAdd = newRoles.filter(r => !currentRoleNames.includes(r));
+                const rolesToRemove = currentRoleNames.filter(r => !newRoles.includes(r));
+
+                for (const role of rolesToAdd) {
+                    await this.addToRole(userDto.id, role);
+                }
+
+                for (const role of rolesToRemove) {
+                    await this.removeFromRole(userDto.id, role);
+                }
+
+                await this.userRepository.updateAsync(user);
+
+                return this.map(userDto, UserDto);
+            }
+        );
+    }
+
 
     async findByUsername(username: string): Promise<ResultDto<UserDto>> {
         return this.executeServiceCall(

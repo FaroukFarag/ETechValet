@@ -7,20 +7,21 @@ import { PricingController } from "./presentation/controllers/pricing.controller
 import { WeekDayPricing } from "./domain/models/week-day-pricing.model";
 import { WeekDayPricingRepository } from "./infrastructure/data/repositories/week-day-pricing.repository";
 import { GatesModule } from "../gates/gates.module";
-import { GatesPricingsModule } from "../gates-pricings/gates-pricings.module";
 import { SitesModule } from "../sites/sites.module";
+import { GatePricingRepository } from "../gates-pricings/infrastructure/data/repositories/gate-pricing.repository";
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Pricing, WeekDayPricing]),
         SitesModule,
-        GatesModule, 
-        GatesPricingsModule
+        GatesModule
     ],
     providers: [
         PricingRepository,
         WeekDayPricingRepository,
-        PricingService],
-    controllers: [PricingController]
+        PricingService
+    ],
+    controllers: [PricingController],
+    exports: [PricingRepository, WeekDayPricingRepository]
 })
 export class PricingsModule { }

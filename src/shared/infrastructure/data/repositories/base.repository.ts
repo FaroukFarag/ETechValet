@@ -50,6 +50,23 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
     return await query.getMany();
   }
 
+  async getAllProjectedAsync(
+    projections: string[],
+    spec?: BaseSpecification
+  ): Promise<any[]> {
+    let query = this.applySpecification(spec);
+    const { selects, joins } = this.buildProjection(query, projections);
+
+    joins.forEach(j => {
+      query = query.leftJoin(j.path, j.alias);
+    });
+
+    query = query.select(selects);
+
+    return query.getRawMany();
+  }
+
+
   async getAllPaginatedAsync(
     paginatedModel: PaginatedModel,
     spec?: BaseSpecification,
@@ -183,12 +200,58 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
       }
     }
 
-    if (spec.orderBy)
-      query = query.orderBy(`${query.alias}.${spec.orderBy}`, 'ASC');
+    if (spec.orderBy) {
+      const order = spec.orderBy.includes('.')
+        ? spec.orderBy
+        : `${query.alias}.${spec.orderBy}`;
 
-    if (spec.orderByDescending)
-      query = query.orderBy(`${query.alias}.${spec.orderByDescending}`, 'DESC');
+      query = query.orderBy(order, 'ASC');
+    }
+
+
+    if (spec.orderByDescending) {
+      const orderByDescending = spec.orderByDescending.includes('.')
+        ? spec.orderByDescending
+        : `${query.alias}.${spec.orderByDescending}`;
+
+      query = query.orderBy(orderByDescending, 'DESC');
+    }
 
     return query;
+  }
+
+  private buildProjection(
+    query: SelectQueryBuilder<TEntity>,
+    projections: string[]
+  ) {
+    const selects: string[] = [];
+    const joins: { path: string; alias: string }[] = [];
+
+    projections.forEach(p => {
+      let [path, alias] = p.split(/\s+as\s+/i).map(v => v.trim());
+
+      const parts = path.split(".");
+
+      if (parts.length === 2) {
+        const relation = parts[0];
+        const column = parts[1];
+        const joinAlias = relation;
+
+        joins.push({
+          path: `${query.alias}.${relation}`,
+          alias: joinAlias
+        });
+
+        selects.push(
+          `${joinAlias}.${column} AS "${alias ?? relation + column.charAt(0).toUpperCase() + column.slice(1)}"`
+        );
+      } else {
+        selects.push(
+          `${query.alias}.${path} AS "${alias ?? path}"`
+        );
+      }
+    });
+
+    return { selects, joins };
   }
 }

@@ -3,17 +3,13 @@ import { BaseService } from "src/shared/application/services/base.service";
 import { PricingDto } from "../dtos/pricing.dto";
 import { Pricing } from "../../domain/models/pricing.model";
 import { PricingRepository } from "../../infrastructure/data/repositories/pricing.repository";
-import { GatePricingRepository } from "src/settings/gates-pricings/infrastructure/data/repositories/gate-pricing.repository";
 import { SiteRepository } from "src/settings/sites/infrastructure/data/repositories/site.repository";
 import { ResultDto } from "src/shared/application/dtos/result.dto";
-import { GatePricing } from "src/settings/gates-pricings/domain/models/gate-pricing.model";
-import { PricingType } from "../../domain/enums/pricing-type.enum";
 import { BaseSpecification } from "src/shared/infrastructure/data/specifications/base-specification";
-import { GateRepository } from "src/settings/gates/infrastructure/data/repositories/gate.repository";
 import { WeekDayPricing } from "../../domain/models/week-day-pricing.model";
 import { WeekDayPricingDto } from "../dtos/week-day-pricing.dto";
 import { WeekDayPricingRepository } from "../../infrastructure/data/repositories/week-day-pricing.repository";
-import { GatePricingDto } from "src/settings/gates-pricings/application/dtos/gate-pricing.dto";
+import { ReOrderPricingsDto } from "../dtos/reorder-pricings.dto";
 
 @Injectable()
 export class PricingService extends BaseService<
@@ -26,8 +22,6 @@ export class PricingService extends BaseService<
 
     constructor(
         private readonly pricingRepository: PricingRepository,
-        private readonly gateRepository: GateRepository,
-        private readonly gatePricingRepository: GatePricingRepository,
         private readonly weekDayPricingRepository: WeekDayPricingRepository,
         private readonly siteRepository: SiteRepository
     ) {
@@ -36,28 +30,38 @@ export class PricingService extends BaseService<
 
     override async create(pricingDto: PricingDto): Promise<ResultDto<PricingDto>> {
         return this.executeServiceCall("Create Pricing", async () => {
+            const spec = new BaseSpecification();
+
+            spec.addCriteria(`"siteId" = ${pricingDto.siteId} AND "customerType" = '${pricingDto.customerType}'`);
+            spec.addOrderBy('order')
+
+            const pricings = await this.pricingRepository.getAllAsync(spec);
             const site = await this.siteRepository.getAsync(pricingDto.siteId);
 
             if (!site) throw new NotFoundException("Site not found");
 
             const pricing = this.map(pricingDto, Pricing);
 
-            pricing.site = site;
+            pricing.order = pricings && pricings.length > 0 ?
+                pricings[pricings.length - 1].order + 1 : 1;
 
-            if (pricing.weekDayBasedEnabled && !pricingDto.weekDayPricings) {
+            if (pricing.order !== 0 && (!pricingDto.weekDayPricings ||
+                pricingDto.weekDayPricings.length === 0)) {
                 throw new BadRequestException("Weekday-based pricing requires weekday rates.");
             }
 
             const createdPricing = await this.pricingRepository.createAsync(pricing);
 
-            if (pricingDto.applyToAllGates) {
-                const pricingGates = await this.applyPricingToAllGates(createdPricing.id, site.id);
+            if (pricing.order !== 0) {
+                const weekDayPricings = await this.weekDayPricingRepository
+                    .createRangeAsync(pricingDto.weekDayPricings.map(weekDayPricingDto => {
+                        const weekDayPricing = new WeekDayPricing();
 
-                pricingDto.pricingGates = this.mapArray(pricingGates, GatePricingDto);
-            }
+                        weekDayPricing.dayOfWeek = weekDayPricingDto.dayOfWeek;
+                        weekDayPricing.pricingId = createdPricing.id;
 
-            if (pricingDto.weekDayPricings && pricingDto.weekDayPricings.length > 0) {
-                const weekDayPricings = await this.saveWeekdayPricings(createdPricing.id, pricingDto.weekDayPricings);
+                        return weekDayPricing;
+                    }));
 
                 pricingDto.weekDayPricings = this.mapArray(weekDayPricings, WeekDayPricingDto);
             }
@@ -84,6 +88,7 @@ export class PricingService extends BaseService<
             const spec = new BaseSpecification();
 
             spec.addCriteria(`"siteId" = ${siteId}`);
+            spec.addOrderBy("order");
 
             const pricings = await this.pricingRepository.getAllAsync(spec);
 
@@ -91,66 +96,81 @@ export class PricingService extends BaseService<
         });
     }
 
-    override async update(dto: PricingDto): Promise<ResultDto<PricingDto>> {
+    override async update(pricingDto: PricingDto): Promise<ResultDto<PricingDto>> {
         return this.executeServiceCall("Update Pricing", async () => {
-            const pricing = await this.pricingRepository.getAsync(dto.id);
+            const pricing = await this.pricingRepository.getAsync(pricingDto.id);
 
             if (!pricing) throw new NotFoundException("Pricing not found");
 
-            const site = await this.siteRepository.getAsync(dto.siteId);
+            const site = await this.siteRepository.getAsync(pricingDto.siteId);
 
             if (!site) throw new NotFoundException("Site not found");
 
-            pricing.site = site;
-
-            Object.assign(pricing, dto);
-
-            if (dto.applyToAllGates) {
-                const pricingGates = await this.applyPricingToAllGates(pricing.id, site.id);
-
-                dto.pricingGates = this.mapArray(pricingGates, GatePricingDto);
+            if (!pricingDto.weekDayPricings || pricingDto.weekDayPricings.length == 0) {
+                throw new BadRequestException("Weekday-based pricing requires weekday rates.");
             }
 
-            if (dto.weekDayBasedEnabled) {
-                const weekDayPricings = await this.saveWeekdayPricings(pricing.id, dto.weekDayPricings);
-
-                dto.weekDayPricings = this.mapArray(weekDayPricings, WeekDayPricingDto);
-            }
+            Object.assign(pricing, pricingDto);
 
             const updated = await this.pricingRepository.updateAsync(pricing);
+
+            if (pricing.order != 1 && pricingDto.weekDayPricings &&
+                pricingDto.weekDayPricings.length > 0) {
+                const weekDayPricingSpec = new BaseSpecification();
+
+                weekDayPricingSpec.addCriteria(`"pricingId" = ${pricing.id}`);
+
+                const existingWeekDayPricings = await this.weekDayPricingRepository
+                    .getAllAsync(weekDayPricingSpec);
+
+                const weekDayPricingsToDelete = existingWeekDayPricings
+                    .filter(weekDay => !pricingDto.weekDayPricings
+                        .map(weekDayPricingDto => weekDayPricingDto.id)
+                        .includes(weekDay.id));
+
+                await this.weekDayPricingRepository.deleteRangeAsync(weekDayPricingsToDelete);
+
+                await this.weekDayPricingRepository
+                    .updateRangeAsync(pricingDto.weekDayPricings.map(weekDayPricingDto => {
+                        const weekDayPricing = new WeekDayPricing();
+
+                        weekDayPricing.id = weekDayPricingDto.id;
+                        weekDayPricing.dayOfWeek = weekDayPricingDto.dayOfWeek;
+                        weekDayPricing.pricingId = pricing.id;
+
+                        return weekDayPricing;
+                    }));
+            }
 
             return this.map(updated, PricingDto);
         });
     }
 
-    private async applyPricingToAllGates(pricingId: number, siteId: number): Promise<GatePricing[]> {
-        const spec = new BaseSpecification();
+    async reOrderPricings(reOrderPricingsDto: ReOrderPricingsDto): Promise<ResultDto<PricingDto[]>> {
+        return this.executeServiceCall("Reorder Pricings", async () => {
+            const ids = reOrderPricingsDto.reOrderPricingDtos.map(x => x.id).join(",");
+            const spec = new BaseSpecification();
 
-        spec.addCriteria(`"siteId" = ${siteId}`);
+            spec.addCriteria(`"siteId" = ${reOrderPricingsDto.siteId} AND "order" != 1 AND "id" IN (${ids})`);
 
-        const gates = await this.gateRepository.getAllAsync(spec);
+            let pricings = await this.pricingRepository.getAllAsync(spec);
 
-        if (!gates || gates.length === 0) return [];
+            if (!pricings || pricings.length === 0)
+                throw new NotFoundException("Pricings not found");
 
-        const gatePricings = gates.map(gate => {
-            const gatePricing = new GatePricing();
+            const sortedDtos = reOrderPricingsDto.reOrderPricingDtos.sort((a, b) => a.order - b.order);
+            let newOrder = 2;
 
-            gatePricing.pricingId = pricingId;
-            gatePricing.gateId = gate.id;
+            for (const dto of sortedDtos) {
+                const pricing = pricings.find(p => p.id === dto.id);
+                if (pricing) {
+                    pricing.order = newOrder++;
+                }
+            }
 
-            return gatePricing;
-        })
+            const updated = await this.pricingRepository.updateRangeAsync(pricings);
 
-        return await this.gatePricingRepository.updateRangeAsync(gatePricings);
-    }
-
-    private async saveWeekdayPricings(pricingId: number, weekdayPricingDtos: WeekDayPricingDto[]): Promise<WeekDayPricing[]> {
-        if (!weekdayPricingDtos || weekdayPricingDtos.length === 0) return [];
-
-        weekdayPricingDtos.forEach(wd => wd.pricingId = pricingId);
-
-        const weekdayPricings = this.mapArray(weekdayPricingDtos, WeekDayPricing)
-
-        return await this.weekDayPricingRepository.createRangeAsync(weekdayPricings);
+            return this.mapArray(updated, PricingDto);
+        });
     }
 }

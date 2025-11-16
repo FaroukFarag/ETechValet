@@ -28,6 +28,45 @@ export abstract class BaseService<
     });
   }
 
+  protected mapToExisting<S extends object, T extends object>(source: S, target: T): T {
+    for (const key of Object.keys(source)) {
+      const sourceValue = (source as any)[key];
+
+      if (sourceValue === undefined || sourceValue === null) continue;
+
+      const targetValue = (target as any)[key];
+      const isPrimitive =
+        typeof sourceValue !== 'object' ||
+        sourceValue instanceof Date;
+
+      if (isPrimitive) {
+        (target as any)[key] = sourceValue;
+        continue;
+      }
+
+      if (Array.isArray(sourceValue)) {
+        if (Array.isArray(targetValue)) {
+          (target as any)[key] = sourceValue;
+        }
+
+        continue;
+      }
+
+      if (typeof sourceValue === 'object') {
+        if (typeof targetValue === 'object' && targetValue !== null) {
+          this.mapToExisting(sourceValue, targetValue);
+        }
+
+        else {
+          (target as any)[key] = sourceValue;
+        }
+      }
+    }
+
+    return target;
+  }
+
+
   protected mapArray<T, U>(sources: T[], targetClass: new () => U): U[] {
     return sources.map((source) => this.map(source, targetClass));
   }

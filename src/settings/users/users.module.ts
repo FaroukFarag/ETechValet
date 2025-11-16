@@ -11,6 +11,7 @@ import { User } from './domain/models/user.model';
 import { UserClaim } from './domain/models/user-claim.model';
 import { RefreshToken } from './domain/models/refresh-token.model';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { UsersGatesModule } from '../users-gates/users-gates.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         signOptions: { expiresIn: config.get<number>('JWT_EXPIRES_IN') },
       }),
     }),
+    UsersGatesModule
   ],
 
   controllers: [UsersController],

@@ -5,6 +5,7 @@ import { CustomerType } from "../../domain/enums/customer-type.enum";
 import { PricingType } from "../../domain/enums/pricing-type.enum";
 import { ParkingPricingType } from "../../domain/enums/parking-pricing-type";
 import { WeekDayPricingDto } from "./week-day-pricing.dto";
+import { Type } from "class-transformer";
 
 export class PricingDto extends BaseModelDto<number> {
     siteId: number;
@@ -19,9 +20,7 @@ export class PricingDto extends BaseModelDto<number> {
     parkingDailyRate: number;
     parkingFreeHours: number;
     parkingHourlyRate: number;
-    applyToAllGates: boolean;
-    weekDayBasedEnabled: boolean;
     site: SiteDto;
-    pricingGates: GatePricingDto[];
+    pricingGate: GatePricingDto;
     weekDayPricings: WeekDayPricingDto[];
 }

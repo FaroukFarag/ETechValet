@@ -1,6 +1,6 @@
 import { Gate } from "../../../../settings/gates/domain/models/gate.model";
 import { Pricing } from "../../../../settings/pricings/domain/models/pricing.model";
-import { Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class GatePricing {

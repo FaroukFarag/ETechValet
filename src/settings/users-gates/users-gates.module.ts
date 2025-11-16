@@ -8,6 +8,7 @@ import { UserGateController } from "./presentation/controllers/user-gate.control
 @Module({
     imports: [TypeOrmModule.forFeature([UserGate])],
     providers: [UserGateRepository, UserGateService],
-    controllers: [UserGateController]
+    controllers: [UserGateController],
+    exports: [UserGateRepository]
 })
 export class UsersGatesModule { }

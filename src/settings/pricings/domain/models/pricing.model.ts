@@ -45,11 +45,8 @@ export class Pricing extends BaseModel<number> {
     @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
     parkingHourlyRate: number;
 
-    @Column({ default: false })
-    applyToAllGates: boolean;
-
-    @Column({ default: false })
-    weekDayBasedEnabled: boolean;
+    @Column()
+    order: number;
 
     @ManyToOne(() => Site, site => site.pricings)
     site: Site;
