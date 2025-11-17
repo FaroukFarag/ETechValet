@@ -12,6 +12,8 @@ export class PickupRequestDto extends BaseRequestDto {
     notes?: string;
     receivedById: number;
     parkedById?: number;
+    startTime?: Date;
+    endTime?: Date;
     gate: GateDto;
     receivedBy: UserDto;
     parkedBy: UserDto;

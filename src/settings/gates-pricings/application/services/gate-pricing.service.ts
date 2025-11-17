@@ -189,19 +189,19 @@ export class GatePricingService extends BaseService<
         });
     }
 
-    async reOrderPricings(reOrderPricingsDto: ReOrderGatePricingsDto): Promise<ResultDto<PricingDto[]>> {
+    async reOrderPricings(reOrderGatePricingsDto: ReOrderGatePricingsDto): Promise<ResultDto<PricingDto[]>> {
             return this.executeServiceCall("Reorder Pricings", async () => {
-                const ids = reOrderPricingsDto.reOrderPricingDtos.map(x => x.id.pricingId).join(",");
+                const ids = reOrderGatePricingsDto.reOrderGatePricingDtos.map(x => x.id.pricingId).join(",");
                 const spec = new BaseSpecification();
     
-                spec.addCriteria(`"siteId" = ${reOrderPricingsDto.siteId} AND "order" != 1 AND "id" IN (${ids})`);
+                spec.addCriteria(`"siteId" = ${reOrderGatePricingsDto.siteId} AND "order" != 1 AND "id" IN (${ids})`);
     
                 let pricings = await this.pricingRepository.getAllAsync(spec);
     
                 if (!pricings || pricings.length === 0)
                     throw new NotFoundException("Pricings not found");
     
-                const sortedDtos = reOrderPricingsDto.reOrderPricingDtos.sort((a, b) => a.order - b.order);
+                const sortedDtos = reOrderGatePricingsDto.reOrderGatePricingDtos.sort((a, b) => a.order - b.order);
                 let newOrder = 2;
     
                 for (const dto of sortedDtos) {

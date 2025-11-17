@@ -14,13 +14,18 @@ import { PickupRequestController } from "./presentation/controllers/pickup-reque
 import { RecallRequestController } from "./presentation/controllers/recall-request.controller";
 import { MulterModule } from "@nestjs/platform-express";
 import { FileManagementService } from "src/shared/application/services/file-management.service";
+import { PricingsModule } from "src/settings/pricings/pricings.module";
+import { GatesPricingsModule } from "src/settings/gates-pricings/gates-pricings.module";
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([PickupRequest, RecallRequest, InspectionPhoto]),
         MulterModule.register({
             dest: './uploads',
-        })],
+        }),
+        GatesPricingsModule,
+        PricingsModule
+    ],
     providers: [
         PickupRequestRepository,
         RecallRequestRepository,

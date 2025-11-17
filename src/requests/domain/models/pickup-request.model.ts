@@ -30,6 +30,12 @@ export class PickupRequest extends BaseRequest {
     status: PickupRequestStatus;
 
     @Column()
+    startTime: Date;
+
+    @Column({nullable: true})
+    endTime: Date;
+
+    @Column()
     receivedById: number;
 
     @Column({ nullable: true })

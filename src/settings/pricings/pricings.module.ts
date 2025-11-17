@@ -8,7 +8,6 @@ import { WeekDayPricing } from "./domain/models/week-day-pricing.model";
 import { WeekDayPricingRepository } from "./infrastructure/data/repositories/week-day-pricing.repository";
 import { GatesModule } from "../gates/gates.module";
 import { SitesModule } from "../sites/sites.module";
-import { GatePricingRepository } from "../gates-pricings/infrastructure/data/repositories/gate-pricing.repository";
 
 @Module({
     imports: [

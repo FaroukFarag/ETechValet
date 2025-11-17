@@ -45,6 +45,7 @@ export class RecallRequestService extends BaseService<
                 await this.recallRequestRepository.createAsync(recallRequest);
 
                 latestPickupRequest.recallRequestId = recallRequest.id;
+                latestPickupRequest.endTime = new Date();
 
                 await this.pickupRequestRepository.updateAsync(latestPickupRequest);
 

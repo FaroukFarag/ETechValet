@@ -191,7 +191,6 @@ export class UserService extends BaseService<
         );
     }
 
-
     async findByUsername(username: string): Promise<ResultDto<UserDto>> {
         return this.executeServiceCall(
             'Find User by Username',
@@ -435,6 +434,9 @@ export class UserService extends BaseService<
 
                 spec.addCriteria(`user.userName = '${loginDto.userName}'`);
 
+                spec.addInclude('site');
+                spec.addInclude('userGates');
+                spec.addInclude('userGates.gate');
                 spec.addInclude('userRoles');
                 spec.addInclude('userRoles.role');
 
@@ -463,9 +465,15 @@ export class UserService extends BaseService<
                 const roles = user.userRoles?.map(ur => ur.role.name) || [];
                 const payload = {
                     username: user.userName,
-                    sub: user.id,
+                    id: user.id,
                     email: user.email,
-                    roles
+                    roles,
+                    gates: user.userGates.map(userGate => {
+                        return {
+                            gateId: userGate.gateId,
+                            gateName: userGate.gate.name
+                        };
+                    })
                 };
 
                 const accessToken = this.jwtService.sign(payload);

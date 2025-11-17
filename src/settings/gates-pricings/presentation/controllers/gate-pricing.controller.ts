@@ -1,9 +1,10 @@
-import { Controller, Get, Param } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch } from "@nestjs/common";
 import { BaseController } from "src/shared/presentation/controllers/base.controller";
 import { GatePricingService } from "../../application/services/gate-pricing.service";
 import { GatePricingDto } from "../../application/dtos/gate-pricing.dto";
 import { GatePricing } from "../../domain/models/gate-pricing.model";
 import { ResultDto } from "src/shared/application/dtos/result.dto";
+import { ReOrderGatePricingsDto } from "../../application/dtos/reorder-gate-pricings.dto";
 
 @Controller('api/gates-pricings')
 export class GatePricingController extends BaseController<
@@ -29,5 +30,10 @@ export class GatePricingController extends BaseController<
     @Get('get-by-site/:siteId')
     async getBySite(@Param('siteId') siteId: number): Promise<ResultDto<GatePricingDto[]>> {
         return await this.gatePricingService.getBySite(siteId);
+    }
+
+    @Patch('reorder-gate-pricings')
+    async reOrderPricings(@Body() reOrderGatePricingsDto: ReOrderGatePricingsDto) {
+        return this.gatePricingService.reOrderPricings(reOrderGatePricingsDto);
     }
 }
