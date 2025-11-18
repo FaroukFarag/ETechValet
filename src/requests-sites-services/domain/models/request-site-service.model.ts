@@ -17,7 +17,7 @@ export class RequestSiteService {
     @Column({ type: "enum", enum: RequestSiteServiceStatus })
     status: RequestSiteServiceStatus;
 
-    @Column()
+    @Column({ nullable: true })
     notes: string;
 
     @ManyToOne(() => PickupRequest, request => request.requestSiteServices)

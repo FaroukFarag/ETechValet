@@ -16,6 +16,7 @@ import { MulterModule } from "@nestjs/platform-express";
 import { FileManagementService } from "src/shared/application/services/file-management.service";
 import { PricingsModule } from "src/settings/pricings/pricings.module";
 import { GatesPricingsModule } from "src/settings/gates-pricings/gates-pricings.module";
+import { PickupRequestGateway } from "./infrastructure/gateways/pickup-request.gateway";
 
 @Module({
     imports: [
@@ -33,7 +34,8 @@ import { GatesPricingsModule } from "src/settings/gates-pricings/gates-pricings.
         PickupRequestService,
         RecallRequestService,
         InspectionPhotoService,
-        FileManagementService
+        FileManagementService,
+        PickupRequestGateway
     ],
     controllers: [
         PickupRequestController,

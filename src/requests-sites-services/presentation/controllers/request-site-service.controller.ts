@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Patch } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch } from "@nestjs/common";
 import { RequestSiteServiceDto } from "src/requests-sites-services/application/dtos/request-site-service.dto";
 import { UpdateRequestSiteServiceStatusDto } from "src/requests-sites-services/application/dtos/update-request-site-service-status.dto";
 import { RequestSiteServiceService } from "src/requests-sites-services/application/services/request-site-service.service";
@@ -28,7 +28,7 @@ export class RequestSiteServiceController extends BaseController<
     }
 
     @Patch('update-request-site-service-status')
-    async updateRequestServiceStatus(updateRequestSiteServiceStatusDto: UpdateRequestSiteServiceStatusDto) {
+    async updateRequestServiceStatus(@Body() updateRequestSiteServiceStatusDto: UpdateRequestSiteServiceStatusDto) {
         return this.requestSiteServiceService.updateRequestSiteServiceStatus(updateRequestSiteServiceStatusDto);
     }
 }

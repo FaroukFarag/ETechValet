@@ -1,5 +1,5 @@
 export enum PickupRequestStatus {
-    CreatedUp = 1,
+    Created = 1,
     PickedUp,
     Parked,
     Delivered
