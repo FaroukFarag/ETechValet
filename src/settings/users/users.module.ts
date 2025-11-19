@@ -12,10 +12,13 @@ import { UserClaim } from './domain/models/user-claim.model';
 import { RefreshToken } from './domain/models/refresh-token.model';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersGatesModule } from '../users-gates/users-gates.module';
+import { ResetPasswordTokenRepository } from './infrastructure/data/repositories/reset-password-token.repository';
+import { EmailService } from 'src/shared/infrastructure/email/email.service';
+import { ResetPasswordToken } from './domain/models/reset-password-token.model';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, UserClaim, RefreshToken]),
+    TypeOrmModule.forFeature([User, UserClaim, RefreshToken, ResetPasswordToken]),
     RolesModule,
     UsersRolesModule,
     ConfigModule,
@@ -34,7 +37,9 @@ import { UsersGatesModule } from '../users-gates/users-gates.module';
   providers: [
     UserRepository,
     RefreshTokenRepository,
-    UserService
+    ResetPasswordTokenRepository,
+    UserService,
+    EmailService
   ]
 })
 export class UsersModule { }

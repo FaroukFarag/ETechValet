@@ -7,6 +7,7 @@ import { Site } from "../../../../settings/sites/domain/models/site.model";
 import { PickupRequest } from "../../../../requests/domain/models/pickup-request.model";
 import { RecallRequest } from "../../../../requests/domain/models/recall-request.model";
 import { UserGate } from "../../../../settings/users-gates/domain/models/user-gate.model";
+import { ResetPasswordToken } from "./reset-password-token.model";
 
 @Entity()
 export class User extends BaseModel<number> {
@@ -57,6 +58,9 @@ export class User extends BaseModel<number> {
     @Column()
     status: number;
 
+    @Column({ nullable: true })
+    siteId: number;
+
     @ManyToOne(() => Site, site => site.users)
     site: Site;
 
@@ -77,4 +81,7 @@ export class User extends BaseModel<number> {
 
     @OneToMany(() => UserGate, userGate => userGate.user)
     userGates: UserGate[];
+
+    @OneToMany(() => ResetPasswordToken, resetPasswordToken => resetPasswordToken.user)
+    resetPasswordTokens: ResetPasswordToken[];
 }

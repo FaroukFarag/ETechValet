@@ -7,6 +7,8 @@ export class UserDto extends BaseModelDto<number> {
     email: string;
     workingHours: number;
     phoneNumber: string;
+    status: number;
+    siteId: number;
     roles: RoleDto[];
     userGates: UserGateDto[];
 }

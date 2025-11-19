@@ -10,8 +10,6 @@ export class CreateUserDto {
     @IsEmail()
     email: string;
 
-    workingHours: number;
-
     @Matches(/^(?:00966|\+966|0)?5\d{8}$/, {
         message: 'Invalid phone number',
     })
@@ -28,5 +26,4 @@ export class CreateUserDto {
     confirmPassword: string;
 
     roles: RoleDto[];
-    userGates: UserGateDto[];
 }

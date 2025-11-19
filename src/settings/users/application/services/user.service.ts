@@ -19,6 +19,10 @@ import { CreateUserDto } from "../dtos/create-user.dto";
 import { UserGate } from "src/settings/users-gates/domain/models/user-gate.model";
 import { UserGateRepository } from "src/settings/users-gates/infrastructure/data/repositories/user-gate.repository";
 import { UserGateDto } from "src/settings/users-gates/application/dtos/user-gate.dto";
+import { ResetPasswordTokenRepository } from "../../infrastructure/data/repositories/reset-password-token.repository";
+import { ResetPasswordToken } from "../../domain/models/reset-password-token.model";
+import { ResetPasswordDto } from "../dtos/reset-password.dto";
+import { EmailService } from "src/shared/infrastructure/email/email.service";
 
 @Injectable()
 export class UserService extends BaseService<
@@ -33,8 +37,10 @@ export class UserService extends BaseService<
         private readonly roleRepository: RoleRepository,
         private readonly userRoleRepository: UserRoleRepository,
         private readonly refreshTokenRepository: RefreshTokenRepository,
+        private readonly resetPasswordTokenRepository: ResetPasswordTokenRepository,
         private readonly userGateRepository: UserGateRepository,
-        private jwtService: JwtService
+        private readonly emailService: EmailService,
+        private readonly jwtService: JwtService
     ) {
         super(userRepository);
     }
@@ -63,22 +69,7 @@ export class UserService extends BaseService<
                 user.passwordHash = await bcrypt.hash(userDto.password, 10);
                 user.securityStamp = uuidv4();
 
-                const createdUser = await this.userRepository.createAsync(user);
-
-                if (userDto.userGates && userDto.userGates.length > 0) {
-                    let userGates = userDto.userGates.map(userGateDto => {
-                        const userGate = new UserGate()
-
-                        userGate.userId = createdUser.id;
-                        userGate.gateId = userGateDto.id.gateId;
-
-                        return userGate;
-                    });
-
-                    userGates = await this.userGateRepository.updateRangeAsync(userGates);
-
-                    userDto.userGates = this.mapArray(userGates, UserGateDto);
-                }
+                await this.userRepository.createAsync(user);
 
                 for (const role of userDto.roles)
                     await this.addToRole(user.id, role.name);
@@ -103,6 +94,48 @@ export class UserService extends BaseService<
                 const createdEntities = await this.userRepository.createRangeAsync(entities);
 
                 return createdEntities.length === entities.length;
+            },
+        );
+    }
+
+    async updateMemberData(userDto: UserDto): Promise<ResultDto<UserDto>> {
+        return this.executeServiceCall(
+            `Create User`,
+            async () => {
+                const usernameSpec = new BaseSpecification();
+
+                usernameSpec.addCriteria(`"userName" = '${userDto.userName}'`);
+
+                const usersByUsername = await this.userRepository.getAllAsync(usernameSpec);
+
+                if (usersByUsername.length == 0) {
+                    throw new NotFoundException('User Not Found');
+                }
+
+                const user = usersByUsername[0];
+
+                user.siteId = userDto.siteId;
+                user.phoneNumber = userDto.phoneNumber;
+                user.workingHours = userDto.workingHours;
+
+                await this.userRepository.updateAsync(user);
+
+                if (userDto.userGates && userDto.userGates.length > 0) {
+                    let userGates = userDto.userGates.map(userGateDto => {
+                        const userGate = new UserGate()
+
+                        userGate.userId = user.id;
+                        userGate.gateId = userGateDto.id.gateId;
+
+                        return userGate;
+                    });
+
+                    userGates = await this.userGateRepository.updateRangeAsync(userGates);
+
+                    userDto.userGates = this.mapArray(userGates, UserGateDto);
+                }
+
+                return this.map(user, UserDto);
             },
         );
     }
@@ -257,6 +290,93 @@ export class UserService extends BaseService<
                 const updatedUser = await this.userRepository.updateAsync(user);
 
                 return this.map(updatedUser, UserDto);
+            }
+        );
+    }
+
+    async forgotPassword(email: string): Promise<ResultDto<{ message: string }>> {
+        return this.executeServiceCall(
+            'Forgot Password',
+            async () => {
+                const spec = new BaseSpecification();
+
+                spec.addCriteria(`email = '${email}'`);
+
+                const users = await this.userRepository.getAllAsync(spec);
+
+                if (!users || users.length === 0) {
+                    return { message: 'A reset link has been sent to your email.' };
+                }
+
+                const user = users[0];
+                const token = uuidv4();
+                const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+                const resetToken = new ResetPasswordToken();
+
+                resetToken.userId = user.id;
+                resetToken.token = token;
+                resetToken.expiresAt = expiresAt;
+                resetToken.isUsed = false;
+
+                await this.resetPasswordTokenRepository.createAsync(resetToken);
+
+                const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
+
+                const html = `
+                    <h2>Password Reset</h2>
+                    <p>Hello ${user.userName},</p>
+                    <p>Click the link below to reset your password:</p>
+                    <a href="${resetLink}">${resetLink}</a>
+                    <p>This link expires in 1 hour.</p>
+                `;
+
+                await this.emailService.sendEmail(user.email, "Password Reset", html);
+
+                return { message: 'A reset link has been sent to your email.' };
+            }
+        );
+    }
+
+    async resetPassword(resetDto: ResetPasswordDto): Promise<ResultDto<{ message: string }>> {
+        return this.executeServiceCall(
+            'Reset Password',
+            async () => {
+                const spec = new BaseSpecification();
+
+                spec.addCriteria(`token = '${resetDto.token}'`);
+
+                const resetTokens = await this.resetPasswordTokenRepository.getAllAsync(spec);
+
+                if (!resetTokens || resetTokens.length === 0) {
+                    throw new UnauthorizedException('Invalid reset token');
+                }
+
+                const resetToken = resetTokens[0];
+
+                if (resetToken.isUsed) {
+                    throw new UnauthorizedException('Reset token already used');
+                }
+
+                if (new Date(resetToken.expiresAt) < new Date()) {
+                    throw new UnauthorizedException('Reset token expired');
+                }
+
+                const user = await this.userRepository.getAsync(resetToken.userId);
+
+                if (!user) {
+                    throw new NotFoundException('User not found');
+                }
+
+                user.passwordHash = await bcrypt.hash(resetDto.newPassword, 10);
+                user.securityStamp = uuidv4();
+
+                await this.userRepository.updateAsync(user);
+
+                resetToken.isUsed = true;
+
+                await this.resetPasswordTokenRepository.updateAsync(resetToken);
+
+                return { message: 'Password has been reset successfully.' };
             }
         );
     }

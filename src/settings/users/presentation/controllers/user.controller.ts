@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
 import { BaseController } from 'src/shared/presentation/controllers/base.controller';
 import { UserDto } from 'src/settings/users/application/dtos/user.dto';
 import { UserService } from 'src/settings/users/application/services/user.service';
@@ -40,6 +40,10 @@ export class UsersController extends BaseController<
         return await this.userService.logout(refreshToken);
     }
 
+    @Patch('update-member-data')
+    async updateMemberData(@Body() userDto: UserDto) {
+        return await this.userService.updateMemberData(userDto);
+    }
     @Post('change-password')
     @UseGuards(JwtAuthGuard)
     async changePassword(
