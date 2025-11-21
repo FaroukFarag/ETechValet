@@ -6,7 +6,7 @@ import { RequestSiteServiceStatus } from "../enums/request-site-service-status.e
 @Entity()
 export class RequestSiteService {
     @PrimaryColumn()
-    pickupRequestId: number;
+    requestId: number;
 
     @PrimaryColumn()
     siteId: number;

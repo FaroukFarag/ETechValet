@@ -4,7 +4,6 @@ import { BaseModel } from "../../../../shared/domain/models/base-model";
 import { CustomerType } from "../enums/customer-type.enum";
 import { PricingType } from "../enums/pricing-type.enum";
 import { GatePricing } from "../../../../settings/gates-pricings/domain/models/gate-pricing.model";
-import { ParkingPricingType } from "../enums/parking-pricing-type";
 import { WeekDayPricing } from "./week-day-pricing.model";
 
 @Entity()
@@ -33,8 +32,8 @@ export class Pricing extends BaseModel<number> {
     @Column()
     parkingEnabled: boolean;
 
-    @Column({ type: "enum", enum: ParkingPricingType })
-    parkingPricingType: ParkingPricingType;
+    @Column({ type: "enum", enum: PricingType })
+    parkingPricingType: PricingType;
 
     @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
     parkingDailyRate: number;

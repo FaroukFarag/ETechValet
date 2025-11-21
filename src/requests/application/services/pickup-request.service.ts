@@ -18,6 +18,8 @@ import { GenerateReceiptDto } from "../dtos/generate-receipt.dto";
 import { PickupRequestGateway } from "src/requests/infrastructure/gateways/pickup-request.gateway";
 import { PickupDto } from "../dtos/pickup.dto";
 import { CustomerType } from "src/settings/pricings/domain/enums/customer-type.enum";
+import { Pricing } from "src/settings/pricings/domain/models/pricing.model";
+import { PricingType } from "src/settings/pricings/domain/enums/pricing-type.enum";
 
 @Injectable()
 export class PickupRequestService extends BaseService<
@@ -191,26 +193,97 @@ export class PickupRequestService extends BaseService<
         return this.executeServiceCall(
             'Generate Request Receipt',
             async () => {
-                const pickupRequest = await this.pickupRequestRepository.getAsync(generateReceiptDto.pickupRequestId);
+                const pickupRequestSpec = new BaseSpecification();
+
+                pickupRequestSpec.addInclude('requestSiteServices.siteService');
+
+                const pickupRequest = await this.pickupRequestRepository
+                    .getAsync(generateReceiptDto.pickupRequestId, pickupRequestSpec);
 
                 if (!pickupRequest) throw new NotFoundException('Pickup Request Not Found');
 
                 if (!generateReceiptDto.endTime) throw new BadRequestException('End Time is missing');
 
                 const day = new Date(generateReceiptDto.endTime).getDay();
-                const pickupRequestReceiptDto = new PickupRequestReceiptDto();
                 const gatePricingSpec = new BaseSpecification();
 
                 gatePricingSpec.addInclude('pricing');
                 gatePricingSpec.addInclude('pricing.weekDayPricings');
 
-                gatePricingSpec.addCriteria(`"gateId" = ${generateReceiptDto.gateId} AND weekDayPricings.dayOfWeek = '${day}'`);
+                gatePricingSpec.addCriteria(`"customerType" = '${pickupRequest.customerType}' AND "gateId" = ${generateReceiptDto.gateId} AND weekDayPricings.dayOfWeek = '${day}'`);
                 gatePricingSpec.addOrderByDescending('pricing.order');
 
                 const gatePricings = await this.gatePricingRepository.getAllAsync(gatePricingSpec);
+                const pricing = gatePricings.length > 0 ? gatePricings[0].pricing : null!;
+                const pickupRequestReceiptDto = new PickupRequestReceiptDto();
+
+                pickupRequestReceiptDto.plateNumber = pickupRequest.plateNumber;
+                pickupRequestReceiptDto.startTime = pickupRequest.startTime;
+                pickupRequestReceiptDto.endTime = generateReceiptDto.endTime;
+
+                const start = new Date(pickupRequest.startTime);
+                const end = new Date(generateReceiptDto.endTime);
+                const totalHours = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60));
+
+                pickupRequestReceiptDto.valet = this.calculatePricingForDuration(
+                    pricing.pricingType,
+                    totalHours,
+                    pricing.freeHours,
+                    pricing.hourlyRate,
+                    pricing.dailyRate,
+                    pricing.dailyMaxRate
+                );
+
+                if (pricing.parkingEnabled) {
+                    pickupRequestReceiptDto.fee = this.calculatePricingForDuration(
+                        pricing.parkingPricingType,
+                        totalHours,
+                        pricing.parkingFreeHours ?? 0,
+                        pricing.parkingHourlyRate,
+                        pricing.parkingDailyRate,
+                        pricing.dailyMaxRate
+                    );
+                }
+
+                const sumServices = pickupRequest.requestSiteServices?.reduce((sum, s) => sum + s?.siteService?.amount, 0) ?? 0;
+
+                pickupRequestReceiptDto.extraServices = sumServices;
 
                 return pickupRequestReceiptDto;
             }
         );
     }
+
+    private calculatePricingForDuration(
+        pricingType: PricingType,
+        totalHours: number,
+        freeHours: number,
+        hourlyRate: number,
+        dailyRate: number,
+        dailyMaxRate: number
+    ): number {
+        if (pricingType === PricingType.fixedAmount) {
+            return dailyRate ?? 0;
+        }
+
+        if (totalHours <= freeHours) return 0;
+
+        let payableHours = totalHours - freeHours;
+        let total = 0;
+
+        while (payableHours > 0) {
+            let hoursToday = Math.min(payableHours, 24);
+            let todayAmount = hoursToday * hourlyRate;
+
+            if (dailyMaxRate && todayAmount > dailyMaxRate) {
+                todayAmount = dailyMaxRate;
+            }
+
+            total += todayAmount;
+            payableHours -= hoursToday;
+        }
+
+        return total;
+    }
+
 }

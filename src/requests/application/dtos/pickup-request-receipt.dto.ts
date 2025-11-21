@@ -2,7 +2,7 @@ export class PickupRequestReceiptDto {
     plateNumber: string;
     startTime: Date;
     endTime: Date;
-    extraServices: boolean;
+    extraServices: number;
     valet: number;
     fee: number;
 }
