@@ -26,7 +26,7 @@ export class PickupRequest extends BaseRequest {
     @Column({ nullable: true })
     notes?: string;
 
-    @Column({ type: "enum", enum: PaymentType })
+    @Column({ type: "enum", enum: PickupRequestStatus })
     status: PickupRequestStatus;
 
     @Column()

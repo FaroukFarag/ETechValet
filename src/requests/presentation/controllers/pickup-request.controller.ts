@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UploadedFiles, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Query, UploadedFiles, UseInterceptors } from "@nestjs/common";
 import { FilesInterceptor } from "@nestjs/platform-express";
 import { GenerateReceiptDto } from "src/requests/application/dtos/generate-receipt.dto";
 import { PickupRequestDto } from "src/requests/application/dtos/pickup-request.dto";
@@ -35,6 +35,20 @@ export class PickupRequestController extends BaseController<
     @Get('get-all-by-status/:status')
     async getAllByStatus(@Param('status') status: PickupRequestStatus) {
         return this.pickupRequestService.getAllByStatus(status);
+    }
+
+    @Get('get-total-parked-requests')
+    async getTotalParkedRequests(
+        @Query('startTime') startTime?: Date,
+        @Query('endTime') endTime?: Date) {
+        return this.pickupRequestService.getTotalParkedRequests(startTime, endTime);
+    }
+
+    @Get('get-top-customer-type')
+    async getActiveGate(
+        @Query('startTime') startTime?: Date,
+        @Query('endTime') endTime?: Date) {
+        return this.pickupRequestService.getTopCustomerType(startTime, endTime);
     }
 
     @Patch('pickup')

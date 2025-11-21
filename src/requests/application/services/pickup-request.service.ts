@@ -17,6 +17,7 @@ import { PickupRequestStatus } from "src/requests/domain/enums/pickup-request-st
 import { GenerateReceiptDto } from "../dtos/generate-receipt.dto";
 import { PickupRequestGateway } from "src/requests/infrastructure/gateways/pickup-request.gateway";
 import { PickupDto } from "../dtos/pickup.dto";
+import { CustomerType } from "src/settings/pricings/domain/enums/customer-type.enum";
 
 @Injectable()
 export class PickupRequestService extends BaseService<
@@ -95,6 +96,46 @@ export class PickupRequestService extends BaseService<
         )
     }
 
+    async getTotalParkedRequests(startTime?: Date, endTime?: Date): Promise<ResultDto<number>> {
+        return this.executeServiceCall(
+            'Get Total Parked Requests',
+            async () => {
+                const spec = new BaseSpecification();
+                let criteria = '';
+
+                if (startTime && endTime) {
+                    criteria = `"startTime" BETWEEN '${startTime}' AND '${endTime}' AND status = '${PickupRequestStatus.Parked}'`;
+                }
+
+                else if (startTime) {
+                    criteria = `"startTime" >= '${startTime}' AND status = '${PickupRequestStatus.Parked}'`;
+                }
+
+                else if (endTime) {
+                    criteria = `"startTime" <= '${endTime}' AND status = '${PickupRequestStatus.Parked}'`;
+                }
+
+                else {
+                    criteria = `status = '${PickupRequestStatus.Parked}'`;
+                }
+
+                spec.addCriteria(criteria);
+
+                return await this.pickupRequestRepository.getCountAsync(spec);
+            }
+        );
+    }
+
+    async getTopCustomerType(startTime?: Date, endTime?: Date):
+        Promise<ResultDto<{ customerType: CustomerType; requestCount: number } | null>> {
+        return this.executeServiceCall(
+            'Get Customer Type With Max Requests',
+            async () => {
+                return await this.pickupRequestRepository.getTopCustomerType(startTime, endTime);
+            }
+        )
+    }
+
     async updatePickupRequestStatus(updatePickupRequestStatusDto: UpdatePickupRequestStatusDto): Promise<ResultDto<PickupRequestDto>> {
         return this.executeServiceCall(
             'Update Pickup Request Status',
@@ -112,7 +153,7 @@ export class PickupRequestService extends BaseService<
 
                 return this.map(pickupRequest, PickupRequestDto)
             }
-        )
+        );
     }
 
     async pickup(pickupDto: PickupDto): Promise<ResultDto<PickupRequestDto>> {

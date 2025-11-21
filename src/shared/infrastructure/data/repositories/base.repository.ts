@@ -7,7 +7,7 @@ import { BaseSpecification } from '../specifications/base-specification';
 
 @Injectable()
 export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
-  private readonly repository: Repository<TEntity>;
+  protected readonly repository: Repository<TEntity>;
 
   constructor(
     private readonly dataSource: DataSource,
