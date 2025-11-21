@@ -11,7 +11,7 @@ export class PickupRequestRepository extends BaseRepository<PickupRequest, numbe
     }
 
     async getTopCustomerType(
-        startTime?: Date, 
+        startTime?: Date,
         endTime?: Date
     ): Promise<{ customerType: CustomerType; requestCount: number } | null> {
         let queryBuilder = this.repository
@@ -25,18 +25,18 @@ export class PickupRequestRepository extends BaseRepository<PickupRequest, numbe
                 'pickupRequest.startTime BETWEEN :startTime AND :endTime',
                 { startTime, endTime }
             );
-        } 
-        
+        }
+
         else if (startTime) {
             queryBuilder = queryBuilder.andWhere(
-                'pickupRequest.startTime >= :startTime', 
+                'pickupRequest.startTime >= :startTime',
                 { startTime }
             );
-        } 
-        
+        }
+
         else if (endTime) {
             queryBuilder = queryBuilder.andWhere(
-                'pickupRequest.startTime <= :endTime', 
+                'pickupRequest.startTime <= :endTime',
                 { endTime }
             );
         }
@@ -55,4 +55,30 @@ export class PickupRequestRepository extends BaseRepository<PickupRequest, numbe
             requestCount: parseInt(result.requestCount, 10)
         };
     }
+
+    async getAverageParkingHours(startTime?: Date, endTime?: Date): Promise<number> {
+        const query = this.repository.createQueryBuilder('pr');
+
+        if (startTime && endTime) {
+            query.andWhere('pr.startTime BETWEEN :startTime AND :endTime', { startTime, endTime });
+        }
+
+        else if (startTime) {
+            query.andWhere('pr.startTime >= :startTime', { startTime });
+        }
+
+        else if (endTime) {
+            query.andWhere('pr.startTime <= :endTime', { endTime });
+        }
+
+        query.select(
+            `AVG(EXTRACT(EPOCH FROM (pr.endTime - pr.startTime)) / 3600)`,
+            'avgHours'
+        );
+
+        const result = await query.getRawOne();
+
+        return Number(result?.avgHours ?? 0);
+    }
+
 }

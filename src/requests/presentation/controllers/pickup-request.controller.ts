@@ -51,6 +51,13 @@ export class PickupRequestController extends BaseController<
         return this.pickupRequestService.getTopCustomerType(startTime, endTime);
     }
 
+    @Get('get-average-parking-time')
+    async getAverageParkingTime(
+        @Query('startTime') startTime?: Date,
+        @Query('endTime') endTime?: Date) {
+        return this.pickupRequestService.getAverageParkingTime(startTime, endTime);
+    }
+
     @Patch('pickup')
     async pickup(@Body() pickupDto: PickupDto) {
         return this.pickupRequestService.pickup(pickupDto);

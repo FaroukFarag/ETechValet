@@ -98,6 +98,65 @@ export class UserService extends BaseService<
         );
     }
 
+    async getByUsername(username: string): Promise<ResultDto<UserDto>> {
+        return this.executeServiceCall(
+            'Get User by Username',
+            async () => {
+                const spec = new BaseSpecification();
+
+                spec.addCriteria(`userName = '${username}'`);
+                spec.addInclude('userRoles');
+                spec.addInclude('userRoles.role');
+
+                const users = await this.userRepository.getAllAsync(spec);
+
+                if (!users || users.length === 0) {
+                    throw new NotFoundException('User not found');
+                }
+
+                return this.map(users[0], UserDto);
+            }
+        );
+    }
+
+    async getByEmail(email: string): Promise<ResultDto<UserDto>> {
+        return this.executeServiceCall(
+            'Get User by Email',
+            async () => {
+                const spec = new BaseSpecification();
+
+                spec.addCriteria(`email = '${email}'`);
+
+                const users = await this.userRepository.getAllAsync(spec);
+
+                if (!users || users.length === 0) {
+                    throw new NotFoundException('User not found');
+                }
+
+                return this.map(users[0], UserDto);
+            }
+        );
+    }
+
+    async getTeamMembers(): Promise<ResultDto<UserDto[]>> {
+        return this.executeServiceCall(
+            'Get Team Members',
+            async () => {
+                const spec = new BaseSpecification();
+                const columns = [
+                    "id", "userName", "site.name as siteName",
+                    "phoneNumber", "status"
+                ];
+
+                spec.addCriteria(`"siteId" IS NOT NULL`);
+
+                const users = await this.userRepository.getAllProjectedAsync(columns, spec);
+
+                return this.mapArray(users, UserDto);
+            }
+        );
+    }
+
     async updateMemberData(userDto: UserDto): Promise<ResultDto<UserDto>> {
         return this.executeServiceCall(
             `Create User`,
@@ -220,46 +279,6 @@ export class UserService extends BaseService<
                 await this.userRepository.updateAsync(user);
 
                 return this.map(userDto, UserDto);
-            }
-        );
-    }
-
-    async findByUsername(username: string): Promise<ResultDto<UserDto>> {
-        return this.executeServiceCall(
-            'Find User by Username',
-            async () => {
-                const spec = new BaseSpecification();
-
-                spec.addCriteria(`userName = '${username}'`);
-                spec.addInclude('userRoles');
-                spec.addInclude('userRoles.role');
-
-                const users = await this.userRepository.getAllAsync(spec);
-
-                if (!users || users.length === 0) {
-                    throw new NotFoundException('User not found');
-                }
-
-                return this.map(users[0], UserDto);
-            }
-        );
-    }
-
-    async findByEmail(email: string): Promise<ResultDto<UserDto>> {
-        return this.executeServiceCall(
-            'Find User by Email',
-            async () => {
-                const spec = new BaseSpecification();
-
-                spec.addCriteria(`email = '${email}'`);
-
-                const users = await this.userRepository.getAllAsync(spec);
-
-                if (!users || users.length === 0) {
-                    throw new NotFoundException('User not found');
-                }
-
-                return this.map(users[0], UserDto);
             }
         );
     }

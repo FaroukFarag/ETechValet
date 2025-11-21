@@ -8,6 +8,7 @@ import { PickupRequest } from "../../../../requests/domain/models/pickup-request
 import { RecallRequest } from "../../../../requests/domain/models/recall-request.model";
 import { UserGate } from "../../../../settings/users-gates/domain/models/user-gate.model";
 import { ResetPasswordToken } from "./reset-password-token.model";
+import { UserStatus } from "../enums/user-status.enum";
 
 @Entity()
 export class User extends BaseModel<number> {
@@ -55,8 +56,8 @@ export class User extends BaseModel<number> {
     @Column({ nullable: true })
     workingHours: number;
 
-    @Column()
-    status: number;
+    @Column({ nullable: true, type: "enum", enum: UserStatus })
+    status: UserStatus;
 
     @Column({ nullable: true })
     siteId: number;

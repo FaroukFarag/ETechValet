@@ -51,11 +51,11 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
   }
 
   async getAllProjectedAsync(
-    projections: string[],
+    columns: string[],
     spec?: BaseSpecification
   ): Promise<any[]> {
     let query = this.applySpecification(spec);
-    const { selects, joins } = this.buildProjection(query, projections);
+    const { selects, joins } = this.buildProjection(query, columns);
 
     joins.forEach(j => {
       query = query.leftJoin(j.path, j.alias);

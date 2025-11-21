@@ -136,6 +136,16 @@ export class PickupRequestService extends BaseService<
         )
     }
 
+    async getAverageParkingTime(startTime?: Date, endTime?: Date): Promise<ResultDto<number>> {
+        return this.executeServiceCall(
+            'Get Average Parking Time',
+            async () => {
+                return await this.pickupRequestRepository
+                    .getAverageParkingHours(startTime, endTime);
+            }
+        );
+    }
+
     async updatePickupRequestStatus(updatePickupRequestStatusDto: UpdatePickupRequestStatusDto): Promise<ResultDto<PickupRequestDto>> {
         return this.executeServiceCall(
             'Update Pickup Request Status',
