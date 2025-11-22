@@ -214,7 +214,16 @@ export class PickupRequestService extends BaseService<
                 gatePricingSpec.addOrderByDescending('pricing.order');
 
                 const gatePricings = await this.gatePricingRepository.getAllAsync(gatePricingSpec);
-                const pricing = gatePricings.length > 0 ? gatePricings[0].pricing : null!;
+                const pricingSpec = new BaseSpecification();
+
+                pricingSpec.addInclude('weekDayPricings');
+
+                pricingSpec.addCriteria(`"customerType" = '${pickupRequest.customerType}' AND weekDayPricings.dayOfWeek = '${day}'`);
+                pricingSpec.addOrderByDescending('pricing.order');
+
+                const pricings = await this.pricingRepository.getAllAsync(pricingSpec);
+
+                const pricing = gatePricings.length > 0 ? gatePricings[0].pricing : pricings[0];
                 const pickupRequestReceiptDto = new PickupRequestReceiptDto();
 
                 pickupRequestReceiptDto.plateNumber = pickupRequest.plateNumber;
@@ -225,7 +234,7 @@ export class PickupRequestService extends BaseService<
                 const end = new Date(generateReceiptDto.endTime);
                 const totalHours = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60));
 
-                pickupRequestReceiptDto.valet = this.calculatePricingForDuration(
+                pickupRequestReceiptDto.valet = +this.calculatePricingForDuration(
                     pricing.pricingType,
                     totalHours,
                     pricing.freeHours,
@@ -235,7 +244,7 @@ export class PickupRequestService extends BaseService<
                 );
 
                 if (pricing.parkingEnabled) {
-                    pickupRequestReceiptDto.fee = this.calculatePricingForDuration(
+                    pickupRequestReceiptDto.fee = +this.calculatePricingForDuration(
                         pricing.parkingPricingType,
                         totalHours,
                         pricing.parkingFreeHours ?? 0,

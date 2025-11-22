@@ -1,6 +1,6 @@
 import { PickupRequest } from "../../../requests/domain/models/pickup-request.model";
 import { SiteService } from "../../../settings/sites-services/domain/models/site-service.model";
-import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 import { RequestSiteServiceStatus } from "../enums/request-site-service-status.enum";
 
 @Entity()
@@ -23,6 +23,10 @@ export class RequestSiteService {
     @ManyToOne(() => PickupRequest, request => request.requestSiteServices)
     request: PickupRequest;
 
-    @ManyToOne(() => SiteService, siteService => siteService.requestSiteServices)
+    @ManyToOne(() => SiteService, ss => ss.requestSiteServices)
+    @JoinColumn([
+        { name: "siteId", referencedColumnName: "siteId" },
+        { name: "serviceId", referencedColumnName: "serviceId" }
+    ])
     siteService: SiteService;
 }
