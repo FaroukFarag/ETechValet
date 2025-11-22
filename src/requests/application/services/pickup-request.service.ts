@@ -11,7 +11,6 @@ import { BaseSpecification } from "src/shared/infrastructure/data/specifications
 import { UpdatePickupRequestStatusDto } from "../dtos/update-pickup-request-status.dto";
 import { PickupRequestReceiptDto } from "../dtos/pickup-request-receipt.dto";
 import { PricingRepository } from "src/settings/pricings/infrastructure/data/repositories/pricing.repository";
-import { WeekDayPricingRepository } from "src/settings/pricings/infrastructure/data/repositories/week-day-pricing.repository";
 import { GatePricingRepository } from "src/settings/gates-pricings/infrastructure/data/repositories/gate-pricing.repository";
 import { PickupRequestStatus } from "src/requests/domain/enums/pickup-request-status.enum";
 import { GenerateReceiptDto } from "../dtos/generate-receipt.dto";
@@ -19,6 +18,8 @@ import { PickupRequestGateway } from "src/requests/infrastructure/gateways/picku
 import { PickupDto } from "../dtos/pickup.dto";
 import { PricingType } from "src/settings/pricings/domain/enums/pricing-type.enum";
 import { CustomerType } from "src/settings/customer-types/domain/models/customer-type.model";
+import { Pricing } from "src/settings/pricings/domain/models/pricing.model";
+import { GatePricing } from "src/settings/gates-pricings/domain/models/gate-pricing.model";
 
 @Injectable()
 export class PickupRequestService extends BaseService<
@@ -37,6 +38,26 @@ export class PickupRequestService extends BaseService<
         private readonly pickupRequestGateway: PickupRequestGateway
     ) {
         super(pickupRequestRepository);
+    }
+
+    override async create(pickupRequestDto: PickupRequestDto): Promise<ResultDto<PickupRequestDto>> {
+        return this.executeServiceCall(
+            `Create ${PickupRequest.name}`,
+            async () => {
+                const pickupRequest = this.map(pickupRequestDto, PickupRequest);
+
+                pickupRequest.startTime = new Date();
+                pickupRequest.status = PickupRequestStatus.Created;
+
+                await this.pickupRequestRepository.createAsync(pickupRequest);
+
+                this.pickupRequestGateway.notifyPickupRequestCreated(
+                    this.map(pickupRequest, PickupRequestDto),
+                );
+
+                return this.map(pickupRequest, PickupRequestDto);
+            }
+        );
     }
 
     async createWithPhotos(pickupRequestDto: PickupRequestDto, files: Express.Multer.File[]): Promise<ResultDto<PickupRequestDto>> {
@@ -208,25 +229,23 @@ export class PickupRequestService extends BaseService<
 
                 gatePricingSpec.addInclude('pricing');
                 gatePricingSpec.addInclude('pricing.weekDayPricings');
-
-                gatePricingSpec.addCriteria(`"customerType" = '${pickupRequest.customerType}' AND "gateId" = ${generateReceiptDto.gateId} AND weekDayPricings.dayOfWeek = '${day}'`);
+                gatePricingSpec.addCriteria(`"customerTypeId" = ${pickupRequest.customerTypeId} AND "gateId" = ${generateReceiptDto.gateId} AND weekDayPricings.dayOfWeek = '${day}'`);
                 gatePricingSpec.addOrderByDescending('pricing.order');
 
                 const gatePricings = await this.gatePricingRepository.getAllAsync(gatePricingSpec);
                 const pricingSpec = new BaseSpecification();
 
                 pricingSpec.addInclude('weekDayPricings');
-
-                pricingSpec.addCriteria(`"customerType" = '${pickupRequest.customerType}' AND weekDayPricings.dayOfWeek = '${day}'`);
+                pricingSpec.addCriteria(`("customerTypeId" = ${pickupRequest.customerTypeId} OR "customerTypeId" IS NULL) AND ("order" = 1 OR weekDayPricings.dayOfWeek = '${day}')`);
                 pricingSpec.addOrderByDescending('pricing.order');
 
                 const pricings = await this.pricingRepository.getAllAsync(pricingSpec);
 
-                if (!pricings || pricings.length == 0)
-                    throw Error('There are no defined pricings')
+                if (!pricings?.length) throw Error('There are no defined pricings');
 
-                const pricing = gatePricings && gatePricings.length > 0 ?
-                    gatePricings[0].pricing : pricings[0];
+                const gatePricing = gatePricings.length ? gatePricings[0] : null;
+                const valetPricing = this.resolveValetPricing(gatePricing, pricings);
+                const parkingPricing = this.resolveParkingPricing(gatePricing, pricings);
                 const pickupRequestReceiptDto = new PickupRequestReceiptDto();
 
                 pickupRequestReceiptDto.plateNumber = pickupRequest.plateNumber;
@@ -238,32 +257,69 @@ export class PickupRequestService extends BaseService<
                 const totalHours = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60));
 
                 pickupRequestReceiptDto.valet = this.calculatePricingForDuration(
-                    pricing.pricingType,
+                    valetPricing.pricingType,
                     totalHours,
-                    pricing.freeHours,
-                    pricing.hourlyRate,
-                    pricing.dailyRate,
-                    pricing.dailyMaxRate
+                    valetPricing.freeHours,
+                    valetPricing.hourlyRate,
+                    valetPricing.dailyRate,
+                    valetPricing.dailyMaxRate
                 );
 
-                if (pricing.parkingEnabled) {
-                    pickupRequestReceiptDto.fee = this.calculatePricingForDuration(
-                        pricing.parkingPricingType,
+                pickupRequestReceiptDto.fee = parkingPricing.parkingEnabled
+                    ? this.calculatePricingForDuration(
+                        parkingPricing.parkingPricingType,
                         totalHours,
-                        pricing.parkingFreeHours ?? 0,
-                        pricing.parkingHourlyRate,
-                        pricing.parkingDailyRate,
-                        pricing.dailyMaxRate
-                    );
-                }
+                        parkingPricing.parkingFreeHours ?? 0,
+                        parkingPricing.parkingHourlyRate,
+                        parkingPricing.parkingDailyRate,
+                        parkingPricing.dailyMaxRate
+                    )
+                    : 0;
 
-                const sumServices = pickupRequest.requestSiteServices?.reduce((sum, s) => sum + s?.siteService?.amount, 0) ?? 0;
-
-                pickupRequestReceiptDto.extraServices = sumServices;
+                pickupRequestReceiptDto.extraServices = pickupRequest.requestSiteServices
+                    ?.reduce((sum, x) => sum + (x.siteService?.amount ?? 0), 0) ?? 0;
 
                 return pickupRequestReceiptDto;
             }
         );
+    }
+
+    private resolveValetPricing(
+        gatePricing: GatePricing | null,
+        pricings: Pricing[]
+    ): Pricing {
+        if (gatePricing?.enableValetPricing) {
+            return gatePricing.pricing;
+        }
+
+        const gateOrder = gatePricing?.pricing?.order ?? Infinity;
+
+        for (const p of pricings) {
+            if (p.order < gateOrder) {
+                return p;
+            }
+        }
+
+        return pricings[pricings.length - 1];
+    }
+
+    private resolveParkingPricing(
+        gatePricing: GatePricing | null,
+        pricings: Pricing[]
+    ): Pricing {
+        if (gatePricing?.enableParkingPricing) {
+            return gatePricing.pricing;
+        }
+
+        const gateOrder = gatePricing?.pricing?.order ?? Infinity;
+
+        for (const p of pricings) {
+            if (p.order < gateOrder) {
+                return p;
+            }
+        }
+
+        return pricings[pricings.length - 1];
     }
 
     private calculatePricingForDuration(
@@ -297,5 +353,4 @@ export class PickupRequestService extends BaseService<
 
         return +total;
     }
-
 }

@@ -32,7 +32,7 @@ export class PricingService extends BaseService<
         return this.executeServiceCall("Create Pricing", async () => {
             const spec = new BaseSpecification();
 
-            spec.addCriteria(`"siteId" = ${pricingDto.siteId} AND "customerType" = '${pricingDto.customerType}'`);
+            spec.addCriteria(`"siteId" = ${pricingDto.siteId}`);
             spec.addOrderBy('order')
 
             const pricings = await this.pricingRepository.getAllAsync(spec);
@@ -42,6 +42,8 @@ export class PricingService extends BaseService<
 
             const pricing = this.map(pricingDto, Pricing);
 
+            pricing.customerTypeId = pricings && pricings.length > 0 ?
+                pricing.customerTypeId : undefined;
             pricing.order = pricings && pricings.length > 0 ?
                 pricings[pricings.length - 1].order + 1 : 1;
 

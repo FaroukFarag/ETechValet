@@ -73,6 +73,8 @@ export class GatePricingService extends BaseService<
             const pricingGate = new GatePricing();
 
             pricingGate.gateId = gatePricingDto.id.gateId;
+            pricingGate.enableValetPricing = gatePricingDto.enableValetPricing;
+            pricingGate.enableParkingPricing = gatePricingDto.enableParkingPricing;
             pricingGate.pricingId = createdPricing.id;
 
             await this.gatePricingRepository

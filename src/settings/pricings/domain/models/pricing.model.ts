@@ -11,8 +11,8 @@ export class Pricing extends BaseModel<number> {
     @Column()
     siteId: number;
 
-    @Column()
-    customerTypeId: number;
+    @Column({ nullable: true })
+    customerTypeId: number |undefined;
 
     @Column({ type: "enum", enum: PricingType })
     pricingType: PricingType;

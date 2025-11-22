@@ -10,6 +10,12 @@ export class GatePricing {
     @PrimaryColumn()
     gateId: number;
 
+    @Column()
+    enableValetPricing: boolean;
+
+    @Column()
+    enableParkingPricing: boolean;
+
     @ManyToOne(() => Pricing, pricing => pricing.pricingGates)
     pricing: Pricing;
 
