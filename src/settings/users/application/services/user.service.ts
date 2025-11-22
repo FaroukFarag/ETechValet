@@ -138,6 +138,21 @@ export class UserService extends BaseService<
         );
     }
 
+    async getSiteUsers(siteId: number): Promise<ResultDto<UserDto[]>> {
+        return this.executeServiceCall(
+            'Get Site Users',
+            async () => {
+                const spec = new BaseSpecification();
+
+                spec.addCriteria(`"siteId" = ${siteId}`);
+
+                const users = await this.userRepository.getAllAsync(spec);
+
+                return this.mapArray(users, UserDto);
+            }
+        );
+    }
+
     async getTeamMembers(): Promise<ResultDto<UserDto[]>> {
         return this.executeServiceCall(
             'Get Team Members',

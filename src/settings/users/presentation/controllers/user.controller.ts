@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { BaseController } from 'src/shared/presentation/controllers/base.controller';
 import { UserDto } from 'src/settings/users/application/dtos/user.dto';
 import { UserService } from 'src/settings/users/application/services/user.service';
@@ -21,6 +21,11 @@ export class UsersController extends BaseController<
     number> {
     constructor(private readonly userService: UserService) {
         super(userService);
+    }
+
+    @Get('get-site-users/:siteId')
+    async getSiteUsers(@Param('siteId') siteId: number) {
+        return await this.userService.getSiteUsers(siteId);
     }
 
     @Get('get-team-members')

@@ -234,7 +234,7 @@ export class PickupRequestService extends BaseService<
                 const end = new Date(generateReceiptDto.endTime);
                 const totalHours = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60));
 
-                pickupRequestReceiptDto.valet = +this.calculatePricingForDuration(
+                pickupRequestReceiptDto.valet = this.calculatePricingForDuration(
                     pricing.pricingType,
                     totalHours,
                     pricing.freeHours,
@@ -244,7 +244,7 @@ export class PickupRequestService extends BaseService<
                 );
 
                 if (pricing.parkingEnabled) {
-                    pickupRequestReceiptDto.fee = +this.calculatePricingForDuration(
+                    pickupRequestReceiptDto.fee = this.calculatePricingForDuration(
                         pricing.parkingPricingType,
                         totalHours,
                         pricing.parkingFreeHours ?? 0,
@@ -292,7 +292,7 @@ export class PickupRequestService extends BaseService<
             payableHours -= hoursToday;
         }
 
-        return total;
+        return +total;
     }
 
 }
