@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PickupRequest } from "src/requests/domain/models/pickup-request.model";
-import { CustomerType } from "src/settings/pricings/domain/enums/customer-type.enum";
+import { CustomerType } from "src/settings/customer-types/domain/models/customer-type.model";
 import { BaseRepository } from "src/shared/infrastructure/data/repositories/base.repository";
 import { DataSource } from "typeorm";
 

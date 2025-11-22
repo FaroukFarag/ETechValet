@@ -8,6 +8,7 @@ import { Card } from "../../../../settings/cards/domain/models/card.model";
 import { SiteService } from "../../../sites-services/domain/models/site-service.model";
 import { Pricing } from "../../../../settings/pricings/domain/models/pricing.model";
 import { Validator } from "../../../../settings/validators/domain/models/validator.model";
+import { CustomerType } from "../../../../settings/customer-types/domain/models/customer-type.model";
 
 @Entity()
 export class Site extends BaseModel<number> {
@@ -56,4 +57,7 @@ export class Site extends BaseModel<number> {
 
     @OneToMany(() => Validator, validator => validator.site)
     validators: Validator[];
+
+    @OneToMany(() => CustomerType, customerType => customerType.site)
+    customerTypes: CustomerType[];
 }

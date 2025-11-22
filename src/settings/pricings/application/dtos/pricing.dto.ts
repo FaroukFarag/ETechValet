@@ -1,13 +1,13 @@
 import { BaseModelDto } from "src/shared/application/dtos/base-model.dto";
 import { SiteDto } from "src/settings/sites/application/dtos/site.dto";
 import { GatePricingDto } from "src/settings/gates-pricings/application/dtos/gate-pricing.dto";
-import { CustomerType } from "../../domain/enums/customer-type.enum";
 import { PricingType } from "../../domain/enums/pricing-type.enum";
 import { WeekDayPricingDto } from "./week-day-pricing.dto";
+import { CustomerTypeDto } from "src/settings/customer-types/application/dtos/customer-type.dto";
 
 export class PricingDto extends BaseModelDto<number> {
     siteId: number;
-    customerType: CustomerType;
+    customerType: CustomerTypeDto;
     pricingType: PricingType;
     dailyRate: number;
     freeHours: number;

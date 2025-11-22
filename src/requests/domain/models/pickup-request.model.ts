@@ -5,14 +5,14 @@ import { Column, Entity, ManyToOne, OneToMany, OneToOne } from "typeorm";
 import { InspectionPhoto } from "./inspection-photo.model";
 import { BaseRequest } from "./base-request";
 import { RecallRequest } from "./recall-request.model";
-import { CustomerType } from "../../../settings/pricings/domain/enums/customer-type.enum";
 import { PaymentType } from "../enums/payment-type.enum";
 import { PickupRequestStatus } from "../enums/pickup-request-status.enum";
+import { CustomerType } from "../../../settings/customer-types/domain/models/customer-type.model";
 
 @Entity()
 export class PickupRequest extends BaseRequest {
-    @Column({ type: "enum", enum: CustomerType })
-    customerType: CustomerType;
+    @Column()
+    customerTypeId: number;
 
     @Column({ type: "enum", enum: PaymentType })
     paymentType: PaymentType;
@@ -32,7 +32,7 @@ export class PickupRequest extends BaseRequest {
     @Column()
     startTime: Date;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     endTime: Date;
 
     @Column()
@@ -43,6 +43,9 @@ export class PickupRequest extends BaseRequest {
 
     @Column({ nullable: true })
     recallRequestId?: number;
+
+    @ManyToOne(() => CustomerType, customerType => customerType.pickupRequests)
+    customerType: CustomerType;
 
     @ManyToOne(() => Gate, gate => gate.pickupRequests)
     gate: Gate;

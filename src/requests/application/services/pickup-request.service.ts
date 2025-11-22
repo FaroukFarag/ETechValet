@@ -17,9 +17,8 @@ import { PickupRequestStatus } from "src/requests/domain/enums/pickup-request-st
 import { GenerateReceiptDto } from "../dtos/generate-receipt.dto";
 import { PickupRequestGateway } from "src/requests/infrastructure/gateways/pickup-request.gateway";
 import { PickupDto } from "../dtos/pickup.dto";
-import { CustomerType } from "src/settings/pricings/domain/enums/customer-type.enum";
-import { Pricing } from "src/settings/pricings/domain/models/pricing.model";
 import { PricingType } from "src/settings/pricings/domain/enums/pricing-type.enum";
+import { CustomerType } from "src/settings/customer-types/domain/models/customer-type.model";
 
 @Injectable()
 export class PickupRequestService extends BaseService<
@@ -226,8 +225,8 @@ export class PickupRequestService extends BaseService<
                 if (!pricings || pricings.length == 0)
                     throw Error('There are no defined pricings')
 
-                    const pricing = gatePricings && gatePricings.length > 0 ?
-                        gatePricings[0].pricing : pricings[0];
+                const pricing = gatePricings && gatePricings.length > 0 ?
+                    gatePricings[0].pricing : pricings[0];
                 const pickupRequestReceiptDto = new PickupRequestReceiptDto();
 
                 pickupRequestReceiptDto.plateNumber = pickupRequest.plateNumber;

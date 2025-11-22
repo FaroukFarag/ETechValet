@@ -1,18 +1,18 @@
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { Site } from "../../../../settings/sites/domain/models/site.model";
 import { BaseModel } from "../../../../shared/domain/models/base-model";
-import { CustomerType } from "../enums/customer-type.enum";
 import { PricingType } from "../enums/pricing-type.enum";
 import { GatePricing } from "../../../../settings/gates-pricings/domain/models/gate-pricing.model";
 import { WeekDayPricing } from "./week-day-pricing.model";
+import { CustomerType } from "../../../../settings/customer-types/domain/models/customer-type.model";
 
 @Entity()
 export class Pricing extends BaseModel<number> {
     @Column()
     siteId: number;
 
-    @Column({ type: "enum", enum: CustomerType })
-    customerType: CustomerType;
+    @Column()
+    customerTypeId: number;
 
     @Column({ type: "enum", enum: PricingType })
     pricingType: PricingType;
@@ -49,6 +49,9 @@ export class Pricing extends BaseModel<number> {
 
     @ManyToOne(() => Site, site => site.pricings)
     site: Site;
+
+    @ManyToOne(() => CustomerType, customerType => customerType.pricings)
+    customerType: CustomerType;
 
     @OneToMany(() => GatePricing, pricingGate => pricingGate.pricing)
     pricingGates: GatePricing[];

@@ -22,6 +22,7 @@ import { PricingsModule } from './settings/pricings/pricings.module';
 import { ValidatorsModule } from './settings/validators/validators.module';
 import { SitesServicesValidatorsModule } from './settings/sites-services-validators/sites-services-validators.module';
 import { ShiftsModule } from './shifts/shifts.module';
+import { CustomerTypesModule } from './settings/customer-types/customer-types.module';
 
 @Module({
   imports: [
@@ -58,7 +59,8 @@ import { ShiftsModule } from './shifts/shifts.module';
     GatesPricingsModule,
     ValidatorsModule,
     SitesServicesValidatorsModule,
-    ShiftsModule
+    ShiftsModule,
+    CustomerTypesModule
   ],
   controllers: [AppController],
   providers: [AppService],
