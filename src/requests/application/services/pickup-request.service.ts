@@ -223,7 +223,11 @@ export class PickupRequestService extends BaseService<
 
                 const pricings = await this.pricingRepository.getAllAsync(pricingSpec);
 
-                const pricing = gatePricings.length > 0 ? gatePricings[0].pricing : pricings[0];
+                if (!pricings || pricings.length == 0)
+                    throw Error('There are no defined pricings')
+
+                    const pricing = gatePricings && gatePricings.length > 0 ?
+                        gatePricings[0].pricing : pricings[0];
                 const pickupRequestReceiptDto = new PickupRequestReceiptDto();
 
                 pickupRequestReceiptDto.plateNumber = pickupRequest.plateNumber;

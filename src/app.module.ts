@@ -21,6 +21,7 @@ import { GatesPricingsModule } from './settings/gates-pricings/gates-pricings.mo
 import { PricingsModule } from './settings/pricings/pricings.module';
 import { ValidatorsModule } from './settings/validators/validators.module';
 import { SitesServicesValidatorsModule } from './settings/sites-services-validators/sites-services-validators.module';
+import { ShiftsModule } from './shifts/shifts.module';
 
 @Module({
   imports: [
@@ -56,7 +57,8 @@ import { SitesServicesValidatorsModule } from './settings/sites-services-validat
     PricingsModule,
     GatesPricingsModule,
     ValidatorsModule,
-    SitesServicesValidatorsModule
+    SitesServicesValidatorsModule,
+    ShiftsModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -9,6 +9,7 @@ import { RecallRequest } from "../../../../requests/domain/models/recall-request
 import { UserGate } from "../../../../settings/users-gates/domain/models/user-gate.model";
 import { ResetPasswordToken } from "./reset-password-token.model";
 import { UserStatus } from "../enums/user-status.enum";
+import { Shift } from "../../../../shifts/domain/models/shift.model";
 
 @Entity()
 export class User extends BaseModel<number> {
@@ -82,6 +83,9 @@ export class User extends BaseModel<number> {
 
     @OneToMany(() => UserGate, userGate => userGate.user)
     userGates: UserGate[];
+
+    @OneToMany(() => Shift, shift => shift.user)
+    shifts: Shift[];
 
     @OneToMany(() => ResetPasswordToken, resetPasswordToken => resetPasswordToken.user)
     resetPasswordTokens: ResetPasswordToken[];

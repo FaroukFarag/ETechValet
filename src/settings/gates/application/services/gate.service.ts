@@ -4,7 +4,6 @@ import { GateDto } from "../dtos/gate.dto";
 import { Gate } from "src/settings/gates/domain/models/gate.model";
 import { GateRepository } from "src/settings/gates/infrastructure/data/repositories/gate.repository";
 import { ResultDto } from "src/shared/application/dtos/result.dto";
-import { BaseSpecification } from "src/shared/infrastructure/data/specifications/base-specification";
 
 @Injectable()
 export class GateService extends BaseService<

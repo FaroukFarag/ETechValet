@@ -23,6 +23,8 @@ import { ResetPasswordTokenRepository } from "../../infrastructure/data/reposito
 import { ResetPasswordToken } from "../../domain/models/reset-password-token.model";
 import { ResetPasswordDto } from "../dtos/reset-password.dto";
 import { EmailService } from "src/shared/infrastructure/email/email.service";
+import { ShiftRepository } from "src/shifts/infrastructure/data/repositories/shift.repository";
+import { Shift } from "src/shifts/domain/models/shift.model";
 
 @Injectable()
 export class UserService extends BaseService<
@@ -39,6 +41,7 @@ export class UserService extends BaseService<
         private readonly refreshTokenRepository: RefreshTokenRepository,
         private readonly resetPasswordTokenRepository: ResetPasswordTokenRepository,
         private readonly userGateRepository: UserGateRepository,
+        private readonly shiftRepository: ShiftRepository,
         private readonly emailService: EmailService,
         private readonly jwtService: JwtService
     ) {
@@ -580,66 +583,26 @@ export class UserService extends BaseService<
         );
     }
 
-    async login(loginDto: LoginDto): Promise<ResultDto<{ accessToken: string; refreshToken: string; expiresIn: number }>> {
-        return this.executeServiceCall(
-            'Login',
-            async () => {
-                const spec = new BaseSpecification();
+    async login(
+        loginDto: LoginDto
+    ): Promise<ResultDto<{ accessToken: string; refreshToken: string; expiresIn: number }>> {
+        return this.handleLogin('Login', loginDto, async () => {
+            return {};
+        });
+    }
 
-                spec.addCriteria(`user.userName = '${loginDto.userName}'`);
+    async mobileLogin(
+        loginDto: LoginDto
+    ): Promise<ResultDto<{ accessToken: string; refreshToken: string; expiresIn: number }>> {
+        return this.handleLogin('Mobile Login', loginDto, async (user) => {
+            const shift = new Shift();
+            shift.startTime = new Date();
+            shift.userId = user.id;
 
-                spec.addInclude('site');
-                spec.addInclude('userGates');
-                spec.addInclude('userGates.gate');
-                spec.addInclude('userRoles');
-                spec.addInclude('userRoles.role');
+            await this.shiftRepository.createAsync(shift);
 
-                const users = await this.userRepository.getAllAsync(spec);
-
-                if (!users || users.length === 0) {
-                    throw new UnauthorizedException('Invalid credentials');
-                }
-
-                const user = users[0];
-
-                if (await this.isLockedOut(user)) {
-                    throw new UnauthorizedException('Account is locked');
-                }
-
-                const isPasswordValid = await this.validatePassword(user, loginDto.password);
-
-                if (!isPasswordValid) {
-                    await this.accessFailed(user);
-
-                    throw new UnauthorizedException('Invalid credentials');
-                }
-
-                await this.resetAccessFailedCount(user.id);
-
-                const roles = user.userRoles?.map(ur => ur.role.name) || [];
-                const payload = {
-                    username: user.userName,
-                    id: user.id,
-                    email: user.email,
-                    roles,
-                    gates: user.userGates.map(userGate => {
-                        return {
-                            gateId: userGate.gateId,
-                            gateName: userGate.gate.name
-                        };
-                    })
-                };
-
-                const accessToken = this.jwtService.sign(payload);
-                const refreshToken = await this.createRefreshToken(user.id);
-
-                return {
-                    accessToken,
-                    refreshToken,
-                    expiresIn: 900
-                };
-            }
-        );
+            return { shiftId: shift.id };
+        });
     }
 
     async createRefreshToken(userId: number): Promise<string> {
@@ -756,5 +719,74 @@ export class UserService extends BaseService<
                 return { message: 'Logged out successfully' };
             }
         );
+    }
+
+    private async handleLogin(
+        actionName: string,
+        loginDto: LoginDto,
+        extraPayload: (user: User) => Promise<Record<string, any>>
+    ): Promise<ResultDto<{ accessToken: string; refreshToken: string; expiresIn: number }>> {
+        return this.executeServiceCall(actionName, async () => {
+            const user = await this.loadUser(loginDto.userName);
+
+            await this.validateUserCredentials(user, loginDto.password);
+
+            const extra = await extraPayload(user);
+            const roles = user.userRoles?.map(ur => ur.role.name) || [];
+            const payload = {
+                username: user.userName,
+                id: user.id,
+                email: user.email,
+                roles,
+                ...extra,
+                gates: user.userGates.map(ug => ({
+                    gateId: ug.gateId,
+                    gateName: ug.gate.name
+                }))
+            };
+
+            const accessToken = this.jwtService.sign(payload);
+            const refreshToken = await this.createRefreshToken(user.id);
+
+            return {
+                accessToken,
+                refreshToken,
+                expiresIn: 900
+            };
+        });
+    }
+
+    private async loadUser(username: string): Promise<User> {
+        const spec = new BaseSpecification();
+
+        spec.addCriteria(`user.userName = '${username}'`);
+        spec.addInclude('site');
+        spec.addInclude('userGates');
+        spec.addInclude('userGates.gate');
+        spec.addInclude('userRoles');
+        spec.addInclude('userRoles.role');
+
+        const users = await this.userRepository.getAllAsync(spec);
+
+        if (!users?.length) {
+            throw new UnauthorizedException('Invalid credentials');
+        }
+
+        return users[0];
+    }
+
+    private async validateUserCredentials(user: User, password: string): Promise<void> {
+        if (await this.isLockedOut(user)) {
+            throw new UnauthorizedException('Account is locked');
+        }
+
+        const isPasswordValid = await this.validatePassword(user, password);
+
+        if (!isPasswordValid) {
+            await this.accessFailed(user);
+            throw new UnauthorizedException('Invalid credentials');
+        }
+
+        await this.resetAccessFailedCount(user.id);
     }
 }

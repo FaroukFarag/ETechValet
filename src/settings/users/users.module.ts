@@ -15,6 +15,7 @@ import { UsersGatesModule } from '../users-gates/users-gates.module';
 import { ResetPasswordTokenRepository } from './infrastructure/data/repositories/reset-password-token.repository';
 import { EmailService } from 'src/shared/infrastructure/email/email.service';
 import { ResetPasswordToken } from './domain/models/reset-password-token.model';
+import { ShiftsModule } from 'src/shifts/shifts.module';
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { ResetPasswordToken } from './domain/models/reset-password-token.model';
         signOptions: { expiresIn: config.get<number>('JWT_EXPIRES_IN') },
       }),
     }),
-    UsersGatesModule
+    UsersGatesModule,
+    ShiftsModule
   ],
 
   controllers: [UsersController],

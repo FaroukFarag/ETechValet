@@ -40,6 +40,12 @@ export class UsersController extends BaseController<
     }
 
     @Public()
+    @Post('mobile-login')
+    async mobileLogin(@Body() loginDto: LoginDto) {
+        return await this.userService.mobileLogin(loginDto);
+    }
+
+    @Public()
     @Post('refresh')
     async refresh(@Body('refreshToken') refreshToken: string) {
         return await this.userService.refreshToken(refreshToken);
