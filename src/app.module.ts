@@ -24,6 +24,7 @@ import { SitesServicesValidatorsModule } from './settings/sites-services-validat
 import { ShiftsModule } from './shifts/shifts.module';
 import { CustomerTypesModule } from './settings/customer-types/customer-types.module';
 import { NotesModule } from './notes/notes.module';
+import { ReceiptsModule } from './receipts/receipts.module';
 
 @Module({
   imports: [
@@ -62,7 +63,8 @@ import { NotesModule } from './notes/notes.module';
     SitesServicesValidatorsModule,
     ShiftsModule,
     CustomerTypesModule,
-    NotesModule
+    NotesModule,
+    ReceiptsModule
   ],
   controllers: [AppController],
   providers: [AppService],

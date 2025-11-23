@@ -9,6 +9,8 @@ import { PaymentType } from "../enums/payment-type.enum";
 import { PickupRequestStatus } from "../enums/pickup-request-status.enum";
 import { CustomerType } from "../../../settings/customer-types/domain/models/customer-type.model";
 import { Note } from "../../../notes/domain/models/note.model";
+import { Shift } from "../../../shifts/domain/models/shift.model";
+import { Receipt } from "../../../receipts/domain/models/receipt.model";
 
 @Entity()
 export class PickupRequest extends BaseRequest {
@@ -42,6 +44,9 @@ export class PickupRequest extends BaseRequest {
     @Column({ nullable: true })
     recallRequestId?: number;
 
+    @Column({ nullable: true })
+    receiptId?: number;
+
     @ManyToOne(() => CustomerType, customerType => customerType.pickupRequests)
     customerType: CustomerType;
 
@@ -54,6 +59,9 @@ export class PickupRequest extends BaseRequest {
     @ManyToOne(() => User, user => user.parkedRequests)
     parkedBy: User;
 
+    @ManyToOne(() => Shift, shift => shift.requests)
+    shift: Shift;
+
     @OneToOne(() => RecallRequest, recallRequest => recallRequest.pickupRequest)
     recallRequest: RecallRequest;
 
@@ -65,4 +73,7 @@ export class PickupRequest extends BaseRequest {
 
     @OneToMany(() => InspectionPhoto, inspectionPhoto => inspectionPhoto.pickupRequest)
     inspectionPhotos: InspectionPhoto[];
+
+    @OneToOne(() => Receipt, receipt => receipt.request)
+    receipt: Receipt;
 }

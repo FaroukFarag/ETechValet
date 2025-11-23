@@ -1,6 +1,7 @@
 import { BaseModel } from "../../../shared/domain/models/base-model";
 import { User } from "../../../settings/users/domain/models/user.model";
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
+import { PickupRequest } from "src/requests/domain/models/pickup-request.model";
 
 @Entity()
 export class Shift extends BaseModel<number> {
@@ -15,4 +16,7 @@ export class Shift extends BaseModel<number> {
 
     @ManyToOne(() => User, user => user.shifts)
     user: User;
+
+    @OneToMany(() => PickupRequest, pickupRequest => pickupRequest.shift)
+    requests: PickupRequest[];
 }

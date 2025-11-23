@@ -9,7 +9,6 @@ import { InspectionPhotoService } from "./inspection-photo.service";
 import { InspectionPhoto } from "src/requests/domain/models/inspection-photo.model";
 import { BaseSpecification } from "src/shared/infrastructure/data/specifications/base-specification";
 import { UpdatePickupRequestStatusDto } from "../dtos/update-pickup-request-status.dto";
-import { PickupRequestReceiptDto } from "../dtos/pickup-request-receipt.dto";
 import { PricingRepository } from "src/settings/pricings/infrastructure/data/repositories/pricing.repository";
 import { GatePricingRepository } from "src/settings/gates-pricings/infrastructure/data/repositories/gate-pricing.repository";
 import { PickupRequestStatus } from "src/requests/domain/enums/pickup-request-status.enum";
@@ -22,6 +21,9 @@ import { Pricing } from "src/settings/pricings/domain/models/pricing.model";
 import { GatePricing } from "src/settings/gates-pricings/domain/models/gate-pricing.model";
 import { NoteRepository } from "src/notes/infrastructure/data/repositories/note.repository";
 import { Note } from "src/notes/domain/models/note.model";
+import { ReceiptRepository } from "src/receipts/infrastructure/data/repositories/receipt.repository";
+import { ReceiptDto } from "src/receipts/application/dtos/receipt.dto";
+import { Receipt } from "src/receipts/domain/models/receipt.model";
 
 @Injectable()
 export class PickupRequestService extends BaseService<
@@ -36,6 +38,7 @@ export class PickupRequestService extends BaseService<
         private readonly gatePricingRepository: GatePricingRepository,
         private readonly pricingRepository: PricingRepository,
         private readonly noteRepository: NoteRepository,
+        private readonly receiptRepository: ReceiptRepository,
         private readonly inspectionPhotoService: InspectionPhotoService,
         private readonly fileManagementService: FileManagementService,
         private readonly pickupRequestGateway: PickupRequestGateway
@@ -247,7 +250,7 @@ export class PickupRequestService extends BaseService<
         );
     }
 
-    async generateReceipt(generateReceiptDto: GenerateReceiptDto): Promise<ResultDto<PickupRequestReceiptDto>> {
+    async generateReceipt(generateReceiptDto: GenerateReceiptDto): Promise<ResultDto<ReceiptDto>> {
         return this.executeServiceCall(
             'Generate Request Receipt',
             async () => {
@@ -261,6 +264,19 @@ export class PickupRequestService extends BaseService<
                 if (!pickupRequest) throw new NotFoundException('Pickup Request Not Found');
 
                 if (!generateReceiptDto.endTime) throw new BadRequestException('End Time is missing');
+
+                const receiptDto = new ReceiptDto();
+
+                if (pickupRequest.receiptId) {
+                    const receipt = await this.receiptRepository.getAsync(pickupRequest.receiptId);
+                    const receiptDto = this.map(receipt, ReceiptDto);
+
+                    receiptDto.plateNumber = pickupRequest.plateNumber;
+                    receiptDto.startTime = pickupRequest.startTime;
+                    receiptDto.endTime = pickupRequest.endTime;
+
+                    return receiptDto;
+                }
 
                 const day = new Date(generateReceiptDto.endTime).getDay();
                 const gatePricingSpec = new BaseSpecification();
@@ -284,17 +300,16 @@ export class PickupRequestService extends BaseService<
                 const gatePricing = gatePricings.length ? gatePricings[0] : null;
                 const valetPricing = this.resolveValetPricing(gatePricing, pricings);
                 const parkingPricing = this.resolveParkingPricing(gatePricing, pricings);
-                const pickupRequestReceiptDto = new PickupRequestReceiptDto();
 
-                pickupRequestReceiptDto.plateNumber = pickupRequest.plateNumber;
-                pickupRequestReceiptDto.startTime = pickupRequest.startTime;
-                pickupRequestReceiptDto.endTime = generateReceiptDto.endTime;
+                receiptDto.plateNumber = pickupRequest.plateNumber;
+                receiptDto.startTime = pickupRequest.startTime;
+                receiptDto.endTime = generateReceiptDto.endTime;
 
                 const start = new Date(pickupRequest.startTime);
                 const end = new Date(generateReceiptDto.endTime);
                 const totalHours = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60));
 
-                pickupRequestReceiptDto.valet = this.calculatePricingForDuration(
+                receiptDto.valet = this.calculatePricingForDuration(
                     valetPricing.pricingType,
                     totalHours,
                     valetPricing.freeHours,
@@ -303,7 +318,7 @@ export class PickupRequestService extends BaseService<
                     valetPricing.dailyMaxRate
                 );
 
-                pickupRequestReceiptDto.fee = parkingPricing.parkingEnabled
+                receiptDto.parking = parkingPricing.parkingEnabled
                     ? this.calculatePricingForDuration(
                         parkingPricing.parkingPricingType,
                         totalHours,
@@ -314,10 +329,21 @@ export class PickupRequestService extends BaseService<
                     )
                     : 0;
 
-                pickupRequestReceiptDto.extraServices = pickupRequest.requestSiteServices
+                receiptDto.extraServices = pickupRequest.requestSiteServices
                     ?.reduce((sum, x) => sum + (x.siteService?.amount ?? 0), 0) ?? 0;
 
-                return pickupRequestReceiptDto;
+                const receipt = this.map(receiptDto, Receipt);
+
+                receipt.tax = 0;
+                receipt.requestId = pickupRequest.id;
+
+                await this.receiptRepository.createAsync(receipt);
+
+                pickupRequest.receiptId = receipt.id;
+
+                await this.pickupRequestRepository.updateAsync(pickupRequest);
+
+                return receiptDto;
             }
         );
     }

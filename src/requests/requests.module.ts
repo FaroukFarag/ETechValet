@@ -18,6 +18,7 @@ import { PricingsModule } from "src/settings/pricings/pricings.module";
 import { GatesPricingsModule } from "src/settings/gates-pricings/gates-pricings.module";
 import { PickupRequestGateway } from "./infrastructure/gateways/pickup-request.gateway";
 import { NotesModule } from "src/notes/notes.module";
+import { ReceiptsModule } from "src/receipts/receipts.module";
 
 @Module({
     imports: [
@@ -27,7 +28,8 @@ import { NotesModule } from "src/notes/notes.module";
         }),
         GatesPricingsModule,
         PricingsModule,
-        NotesModule
+        NotesModule,
+        ReceiptsModule
     ],
     providers: [
         PickupRequestRepository,
