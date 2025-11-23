@@ -10,6 +10,7 @@ import { UserGate } from "../../../../settings/users-gates/domain/models/user-ga
 import { ResetPasswordToken } from "./reset-password-token.model";
 import { UserStatus } from "../enums/user-status.enum";
 import { Shift } from "../../../../shifts/domain/models/shift.model";
+import { Note } from "../../../../notes/domain/models/note.model";
 
 @Entity()
 export class User extends BaseModel<number> {
@@ -77,6 +78,9 @@ export class User extends BaseModel<number> {
 
     @OneToMany(() => PickupRequest, pickupRequest => pickupRequest.parkedBy)
     parkedRequests: PickupRequest[];
+
+    @OneToMany(() => Note, note => note.request)
+    notes: Note[];
 
     @OneToMany(() => RecallRequest, recallRequest => recallRequest.deliveredBy)
     deliveredRequests: RecallRequest[];

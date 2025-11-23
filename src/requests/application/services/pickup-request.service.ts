@@ -20,6 +20,8 @@ import { PricingType } from "src/settings/pricings/domain/enums/pricing-type.enu
 import { CustomerType } from "src/settings/customer-types/domain/models/customer-type.model";
 import { Pricing } from "src/settings/pricings/domain/models/pricing.model";
 import { GatePricing } from "src/settings/gates-pricings/domain/models/gate-pricing.model";
+import { NoteRepository } from "src/notes/infrastructure/data/repositories/note.repository";
+import { Note } from "src/notes/domain/models/note.model";
 
 @Injectable()
 export class PickupRequestService extends BaseService<
@@ -33,6 +35,7 @@ export class PickupRequestService extends BaseService<
         private readonly pickupRequestRepository: PickupRequestRepository,
         private readonly gatePricingRepository: GatePricingRepository,
         private readonly pricingRepository: PricingRepository,
+        private readonly noteRepository: NoteRepository,
         private readonly inspectionPhotoService: InspectionPhotoService,
         private readonly fileManagementService: FileManagementService,
         private readonly pickupRequestGateway: PickupRequestGateway
@@ -50,6 +53,18 @@ export class PickupRequestService extends BaseService<
                 pickupRequest.status = PickupRequestStatus.Created;
 
                 await this.pickupRequestRepository.createAsync(pickupRequest);
+
+                if (pickupRequestDto.notes && pickupRequestDto.notes.length > 0)
+                    await this.noteRepository.createRangeAsync(pickupRequestDto.notes
+                        .map(noteDto => {
+                            const note = new Note();
+
+                            note.message = noteDto.message;
+                            note.requestId = pickupRequest.id;
+                            note.userId = noteDto.userId;
+
+                            return note;
+                        }));
 
                 this.pickupRequestGateway.notifyPickupRequestCreated(
                     this.map(pickupRequest, PickupRequestDto),
@@ -83,6 +98,18 @@ export class PickupRequestService extends BaseService<
                         .createRange(pickupRequestDto.inspectionPhotos, InspectionPhoto);
                 }
 
+                if (pickupRequestDto.notes && pickupRequestDto.notes.length > 0)
+                    await this.noteRepository.createRangeAsync(pickupRequestDto.notes
+                        .map(noteDto => {
+                            const note = new Note();
+
+                            note.message = noteDto.message;
+                            note.requestId = pickupRequest.id;
+                            note.requestId = noteDto.userId;
+
+                            return note;
+                        }));
+
                 this.pickupRequestGateway.notifyPickupRequestCreated(
                     this.map(pickupRequest, PickupRequestDto),
                 );
@@ -99,6 +126,7 @@ export class PickupRequestService extends BaseService<
                 const spec = new BaseSpecification();
 
                 spec.addInclude(`inspectionPhotos`);
+                spec.addInclude(`notes`);
 
                 return this.map(this.pickupRequestRepository.getAsync(id, spec), getDtoClass);
             }
@@ -178,8 +206,18 @@ export class PickupRequestService extends BaseService<
 
                 pickupRequest.status = updatePickupRequestStatusDto.status;
 
-                if (updatePickupRequestStatusDto.notes)
-                    pickupRequest.notes = updatePickupRequestStatusDto.notes
+                if (updatePickupRequestStatusDto.notes &&
+                    updatePickupRequestStatusDto.notes.length > 0)
+                    await this.noteRepository.createRangeAsync(updatePickupRequestStatusDto.notes
+                        .map(noteDto => {
+                            const note = new Note();
+
+                            note.message = noteDto.message;
+                            note.requestId = pickupRequest!.id;
+                            note.requestId = noteDto.userId;
+
+                            return note;
+                        }));
 
                 pickupRequest = await this.pickupRequestRepository.updateAsync(pickupRequest);
 

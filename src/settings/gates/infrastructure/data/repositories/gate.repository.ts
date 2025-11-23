@@ -10,7 +10,7 @@ export class GateRepository extends BaseRepository<Gate, number> {
         super(dataSource, Gate);
     }
 
-    async getActiveGate(startTime?: Date, endTime?: Date): Promise<Gate | undefined> {
+    async getActiveGate(startTime?: Date, endTime?: Date): Promise<Gate | null> {
         const queryBuilder = this.repository
             .createQueryBuilder('gate')
             .leftJoin('gate.pickupRequests', 'pickupRequest')
@@ -23,12 +23,12 @@ export class GateRepository extends BaseRepository<Gate, number> {
                 'pickupRequest.startTime BETWEEN :startTime AND :endTime',
                 { startTime, endTime }
             );
-        } 
-        
+        }
+
         else if (startTime) {
             queryBuilder.andWhere('pickupRequest.startTime >= :startTime', { startTime });
         }
-        
+
         else if (endTime) {
             queryBuilder.andWhere('pickupRequest.startTime <= :endTime', { endTime });
         }
@@ -40,7 +40,7 @@ export class GateRepository extends BaseRepository<Gate, number> {
         const result = await queryBuilder.getRawOne();
 
         if (!result) {
-            return undefined;
+            return null;
         }
 
         return await this.getAsync(result.gate_id);

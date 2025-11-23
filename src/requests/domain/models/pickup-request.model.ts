@@ -8,6 +8,7 @@ import { RecallRequest } from "./recall-request.model";
 import { PaymentType } from "../enums/payment-type.enum";
 import { PickupRequestStatus } from "../enums/pickup-request-status.enum";
 import { CustomerType } from "../../../settings/customer-types/domain/models/customer-type.model";
+import { Note } from "../../../notes/domain/models/note.model";
 
 @Entity()
 export class PickupRequest extends BaseRequest {
@@ -22,9 +23,6 @@ export class PickupRequest extends BaseRequest {
 
     @Column({ nullable: true })
     color?: string;
-
-    @Column({ nullable: true })
-    notes?: string;
 
     @Column({ type: "enum", enum: PickupRequestStatus })
     status: PickupRequestStatus;
@@ -58,6 +56,9 @@ export class PickupRequest extends BaseRequest {
 
     @OneToOne(() => RecallRequest, recallRequest => recallRequest.pickupRequest)
     recallRequest: RecallRequest;
+
+    @OneToMany(() => Note, note => note.request)
+    notes: Note[];
 
     @OneToMany(() => RequestSiteService, rss => rss.request)
     requestSiteServices: RequestSiteService[];

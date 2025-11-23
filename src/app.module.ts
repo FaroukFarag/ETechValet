@@ -23,6 +23,7 @@ import { ValidatorsModule } from './settings/validators/validators.module';
 import { SitesServicesValidatorsModule } from './settings/sites-services-validators/sites-services-validators.module';
 import { ShiftsModule } from './shifts/shifts.module';
 import { CustomerTypesModule } from './settings/customer-types/customer-types.module';
+import { NotesModule } from './notes/notes.module';
 
 @Module({
   imports: [
@@ -60,7 +61,8 @@ import { CustomerTypesModule } from './settings/customer-types/customer-types.mo
     ValidatorsModule,
     SitesServicesValidatorsModule,
     ShiftsModule,
-    CustomerTypesModule
+    CustomerTypesModule,
+    NotesModule
   ],
   controllers: [AppController],
   providers: [AppService],

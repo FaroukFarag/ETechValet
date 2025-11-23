@@ -24,7 +24,8 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
     return this.repository.save(entities);
   }
 
-  async getAsync(id: TPrimaryKey | Record<string, any>, spec?: BaseSpecification): Promise<TEntity> {
+  async getAsync(id: TPrimaryKey | Record<string, any>, spec?: BaseSpecification):
+    Promise<TEntity | null> {
     const query = this.applySpecification(spec);
 
     const isCompositeKey = typeof id === 'object' && id !== null;
@@ -36,12 +37,7 @@ export class BaseRepository<TEntity extends ObjectLiteral, TPrimaryKey> {
 
     const parameters = isCompositeKey ? id : { id };
 
-    const entity = await query.where(whereClause, parameters).getOne();
-
-    if (!entity)
-      throw new Error(`Entity not found with key(s): ${JSON.stringify(id)}`);
-
-    return entity;
+    return await query.where(whereClause, parameters).getOne();
   }
 
 

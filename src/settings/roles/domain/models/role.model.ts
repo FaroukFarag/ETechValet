@@ -1,10 +1,12 @@
-import { BaseModel } from '../../../../shared/domain/models/base-model';
-import { Entity, Column, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany, PrimaryColumn } from 'typeorm';
 import { RoleClaim } from './role-claim.model';
 import { UserRole } from '../../../users-roles/domain/models/user-role.model';
 
 @Entity()
-export class Role extends BaseModel<number> {
+export class Role {
+    @PrimaryColumn()
+    id: number;
+
     @Column({ unique: true })
     name: string;
 

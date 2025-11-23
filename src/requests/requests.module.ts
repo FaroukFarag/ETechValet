@@ -17,6 +17,7 @@ import { FileManagementService } from "src/shared/application/services/file-mana
 import { PricingsModule } from "src/settings/pricings/pricings.module";
 import { GatesPricingsModule } from "src/settings/gates-pricings/gates-pricings.module";
 import { PickupRequestGateway } from "./infrastructure/gateways/pickup-request.gateway";
+import { NotesModule } from "src/notes/notes.module";
 
 @Module({
     imports: [
@@ -25,7 +26,8 @@ import { PickupRequestGateway } from "./infrastructure/gateways/pickup-request.g
             dest: './uploads',
         }),
         GatesPricingsModule,
-        PricingsModule
+        PricingsModule,
+        NotesModule
     ],
     providers: [
         PickupRequestRepository,
