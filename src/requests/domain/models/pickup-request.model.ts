@@ -1,7 +1,7 @@
 import { User } from "../../../settings/users/domain/models/user.model";
 import { RequestSiteService } from "../../../requests-sites-services/domain/models/request-site-service.model";
 import { Gate } from "../../../settings/gates/domain/models/gate.model";
-import { Column, Entity, ManyToOne, OneToMany, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from "typeorm";
 import { InspectionPhoto } from "./inspection-photo.model";
 import { BaseRequest } from "./base-request";
 import { RecallRequest } from "./recall-request.model";
@@ -38,6 +38,9 @@ export class PickupRequest extends BaseRequest {
     @Column()
     receivedById: number;
 
+    @Column()
+    shiftId: number;
+
     @Column({ nullable: true })
     parkedById?: number;
 
@@ -63,6 +66,7 @@ export class PickupRequest extends BaseRequest {
     shift: Shift;
 
     @OneToOne(() => RecallRequest, recallRequest => recallRequest.pickupRequest)
+    @JoinColumn({ name: "recallRequestId" })
     recallRequest: RecallRequest;
 
     @OneToMany(() => Note, note => note.request)
@@ -75,5 +79,6 @@ export class PickupRequest extends BaseRequest {
     inspectionPhotos: InspectionPhoto[];
 
     @OneToOne(() => Receipt, receipt => receipt.request)
+    @JoinColumn({ name: "receiptId" })
     receipt: Receipt;
 }

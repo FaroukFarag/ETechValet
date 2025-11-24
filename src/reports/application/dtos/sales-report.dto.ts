@@ -4,7 +4,7 @@ export class SalesReportDto {
     startTime: Date;
     plateNumber: string;
     gateName: string;
-    customerMobile: string;
+    customerMobileNumber?: string | undefined;
     receivedByName: string;
     parkedByName: string;
     deliveredByName: string;

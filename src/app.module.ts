@@ -25,6 +25,7 @@ import { ShiftsModule } from './shifts/shifts.module';
 import { CustomerTypesModule } from './settings/customer-types/customer-types.module';
 import { NotesModule } from './notes/notes.module';
 import { ReceiptsModule } from './receipts/receipts.module';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -64,7 +65,8 @@ import { ReceiptsModule } from './receipts/receipts.module';
     ShiftsModule,
     CustomerTypesModule,
     NotesModule,
-    ReceiptsModule
+    ReceiptsModule,
+    ReportsModule
   ],
   controllers: [AppController],
   providers: [AppService],

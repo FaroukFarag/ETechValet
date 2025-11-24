@@ -1,7 +1,7 @@
 import { BaseModel } from "../../../shared/domain/models/base-model";
 import { User } from "../../../settings/users/domain/models/user.model";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
-import { PickupRequest } from "src/requests/domain/models/pickup-request.model";
+import { PickupRequest } from "../../../requests/domain/models/pickup-request.model";
 
 @Entity()
 export class Shift extends BaseModel<number> {

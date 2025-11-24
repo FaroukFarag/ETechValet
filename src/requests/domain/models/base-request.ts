@@ -12,7 +12,7 @@ export class BaseRequest extends BaseModel<number> {
     cardNumber?: number;
 
     @Column({ nullable: true })
-    customerMobileNumber?: number;
+    customerMobileNumber?: string;
 
     @Column()
     gateId: number;
