@@ -7,11 +7,13 @@ import { SalesReportDto } from "../dtos/sales-report.dto";
 import { UserRepository } from "src/settings/users/infrastructure/data/repositories/user.repository";
 import { DriverProductivityReportDto } from "../dtos/driver-productivity-report.dto";
 import { RoleName } from "src/settings/roles/domain/enums/role-name.enum";
+import { PickupRequestRepository } from "src/requests/infrastructure/data/repositories/pickup-request.repository";
 
 @Injectable()
 export class ReportService {
     constructor(
         private readonly shiftRepository: ShiftRepository,
+        private readonly pickupRequestRepository: PickupRequestRepository,
         private readonly userRepository: UserRepository) { }
 
     async getShiftSalesReport(shiftDate?: Date): Promise<ResultDto<SalesReportDto[]>> {
@@ -32,6 +34,65 @@ export class ReportService {
             const shifts = await this.shiftRepository.getAllAsync(spec);
 
             shifts.forEach(shift => requests.push(...shift.requests));
+
+            const salesReportDtos = requests.map(request => {
+                const salesReportDto = new SalesReportDto();
+
+                salesReportDto.siteName = request.gate?.site?.name;
+                salesReportDto.requestNo = request.id.toString();
+                salesReportDto.startTime = request.startTime;
+                salesReportDto.plateNumber = request.plateNumber;
+                salesReportDto.gateName = request.gate?.name;
+                salesReportDto.customerMobileNumber = request.customerMobileNumber;
+                salesReportDto.receivedByName = request.receivedBy?.userName;
+                salesReportDto.parkedByName = request.parkedBy?.userName;
+                salesReportDto.deliveredByName = request.recallRequest?.deliveredBy?.userName;
+                salesReportDto.amount = request.receipt?.valet;
+                salesReportDto.paymentTypeName = request.paymentType.toString();
+
+                return salesReportDto;
+            });
+
+            return ResultDto.createSuccessResult(salesReportDtos);
+        }
+
+        catch (error) {
+            const errorMessage =
+                error instanceof Error ? error.message : 'Unknown error';
+
+            return ResultDto.createFailResult(
+                `Get Sales Report By Shift failed: ${errorMessage}`,
+            );
+        }
+    }
+
+    async getDateSalesReport(startTime?: Date, endTime?: Date):
+        Promise<ResultDto<SalesReportDto[]>> {
+        try {
+            const spec = new BaseSpecification();
+            let criteria = '';
+
+            if (startTime && endTime) {
+                criteria = `"startTime" BETWEEN '${startTime}' AND '${endTime}'`;
+            }
+
+            else if (startTime) {
+                criteria = `"startTime" >= '${startTime}'`;
+            }
+
+            else if (endTime) {
+                criteria = `"startTime" <= '${endTime}'`;
+            }
+
+            spec.addCriteria(criteria);
+
+            spec.addInclude('receivedBy');
+            spec.addInclude('parkedBy');
+            spec.addInclude('recallRequest.deliveredBy');
+            spec.addInclude('receipt');
+            spec.addInclude('gate.site');
+
+            const requests = await this.pickupRequestRepository.getAllAsync(spec);
 
             const salesReportDtos = requests.map(request => {
                 const salesReportDto = new SalesReportDto();
@@ -112,13 +173,12 @@ export class ReportService {
     private buildDateCriteria(start?: Date, end?: Date): string | null {
         if (!start && !end) return null;
 
-        const startIso = start ? `'${start.toISOString()}'` : null;
-        const endIso = end ? `'${end.toISOString()}'` : null;
+        const startIso = start ? `'${start}'` : null;
+        const endIso = end ? `'${end}'` : null;
 
         const fields = [
             "receivedRequests.startTime",
-            "parkedRequests.startTime",
-            "deliveredRequests.startTime"
+            "parkedRequests.startTime"
         ];
 
         let conditions: string[] = [];

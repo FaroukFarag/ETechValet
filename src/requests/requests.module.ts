@@ -45,6 +45,7 @@ import { ReceiptsModule } from "src/receipts/receipts.module";
         PickupRequestController,
         RecallRequestController,
         InspectionPhotoController
-    ]
+    ],
+    exports: [PickupRequestRepository]
 })
 export class RequestsModule { }

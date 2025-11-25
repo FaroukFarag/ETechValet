@@ -14,6 +14,14 @@ export class ReportController {
         return this.reportService.getShiftSalesReport(shiftDate);
     }
 
+    @Get('get-date-sales-report')
+    async getDateSalesReport(
+        @Query('startTime') startTime?: Date,
+        @Query('endTime') endTime?: Date):
+        Promise<ResultDto<SalesReportDto[]>> {
+        return this.reportService.getDateSalesReport(startTime, endTime);
+    }
+
     @Get('get-driver-productivity-report')
     async getDriverProductivityReport(
         @Query('siteId') siteId?: number,
