@@ -141,6 +141,22 @@ export class UserService extends BaseService<
         );
     }
 
+    async getAllUsersByRole(roleId: number): Promise<ResultDto<UserDto[]>> {
+        return this.executeServiceCall(
+            'Get All Users By Role',
+            async () => {
+                const spec = new BaseSpecification();
+
+                spec.addInclude("userRoles");
+                spec.addCriteria(`userRoles.roleId = ${roleId}`);
+
+                const users = await this.userRepository.getAllAsync(spec);
+
+                return this.mapArray(users, UserDto);
+            }
+        );
+    }
+
     async getSiteUsers(siteId: number): Promise<ResultDto<UserDto[]>> {
         return this.executeServiceCall(
             'Get Site Users',

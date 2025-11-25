@@ -1,4 +1,5 @@
 import { Controller, Get, Query } from "@nestjs/common";
+import { DriverProductivityReportDto } from "src/reports/application/dtos/driver-productivity-report.dto";
 import { SalesReportDto } from "src/reports/application/dtos/sales-report.dto";
 import { ReportService } from "src/reports/application/services/report.service";
 import { ResultDto } from "src/shared/application/dtos/result.dto";
@@ -7,9 +8,18 @@ import { ResultDto } from "src/shared/application/dtos/result.dto";
 export class ReportController {
     constructor(private readonly reportService: ReportService) { }
 
-    @Get('get-sales-report-by-shift')
+    @Get('get-shift-sales-report')
     async getSalesReportByShift(@Query('shiftDate') shiftDate?: Date):
         Promise<ResultDto<SalesReportDto[]>> {
-        return this.reportService.getSalesReportByShift(shiftDate);
+        return this.reportService.getShiftSalesReport(shiftDate);
+    }
+
+    @Get('get-driver-productivity-report')
+    async getDriverProductivityReport(
+        @Query('siteId') siteId?: number,
+        @Query('startTime') startTime?: Date,
+        @Query('endTime') endTime?: Date):
+        Promise<ResultDto<DriverProductivityReportDto[]>> {
+        return this.reportService.getDriverProductivityReport(siteId, startTime, endTime);
     }
 }

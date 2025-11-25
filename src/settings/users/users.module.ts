@@ -34,14 +34,14 @@ import { ShiftsModule } from 'src/shifts/shifts.module';
     UsersGatesModule,
     ShiftsModule
   ],
-
-  controllers: [UsersController],
   providers: [
     UserRepository,
     RefreshTokenRepository,
     ResetPasswordTokenRepository,
     UserService,
     EmailService
-  ]
+  ],
+  controllers: [UsersController],
+  exports: [UserRepository]
 })
 export class UsersModule { }
