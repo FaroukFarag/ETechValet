@@ -19,6 +19,8 @@ import { GatesPricingsModule } from "src/settings/gates-pricings/gates-pricings.
 import { PickupRequestGateway } from "./infrastructure/gateways/pickup-request.gateway";
 import { NotesModule } from "src/notes/notes.module";
 import { ReceiptsModule } from "src/receipts/receipts.module";
+import { RequestsSitesServicesModule } from "src/requests-sites-services/requests-sites-services.module";
+import { NestjsFormDataModule } from "nestjs-form-data";
 
 @Module({
     imports: [
@@ -26,9 +28,11 @@ import { ReceiptsModule } from "src/receipts/receipts.module";
         MulterModule.register({
             dest: './uploads',
         }),
+        NestjsFormDataModule,
         GatesPricingsModule,
         PricingsModule,
         NotesModule,
+        RequestsSitesServicesModule,
         ReceiptsModule
     ],
     providers: [

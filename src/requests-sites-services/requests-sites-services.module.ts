@@ -8,6 +8,7 @@ import { RequestSiteServiceController } from "./presentation/controllers/request
 @Module({
     imports: [TypeOrmModule.forFeature([RequestSiteService])],
     providers: [RequestSiteServiceRepository, RequestSiteServiceService],
-    controllers: [RequestSiteServiceController]
+    controllers: [RequestSiteServiceController],
+    exports: [RequestSiteServiceRepository]
 })
 export class RequestsSitesServicesModule { }

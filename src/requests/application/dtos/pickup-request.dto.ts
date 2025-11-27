@@ -2,9 +2,9 @@ import { GateDto } from "src/settings/gates/application/dtos/gate.dto";
 import { BaseRequestDto } from "./base-request.dto";
 import { UserDto } from "src/settings/users/application/dtos/user.dto";
 import { RequestSiteServiceDto } from "src/requests-sites-services/application/dtos/request-site-service.dto";
-import { InspectionPhotoDto } from "./inspection-photo.dto";
 import { PickupRequestStatus } from "src/requests/domain/enums/pickup-request-status.enum";
 import { NoteDto } from "src/notes/application/dtos/note.dto";
+import { MemoryStoredFile } from 'nestjs-form-data';
 
 export class PickupRequestDto extends BaseRequestDto {
     customerType: number;
@@ -19,7 +19,7 @@ export class PickupRequestDto extends BaseRequestDto {
     gate: GateDto;
     receivedBy: UserDto;
     parkedBy: UserDto;
-    notes: NoteDto[];
+    notes: NoteDto[] = [];
     requestSiteServices: RequestSiteServiceDto[];
-    inspectionPhotos: InspectionPhotoDto[];
+    inspectionPhotos: MemoryStoredFile[];
 }

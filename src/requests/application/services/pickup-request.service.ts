@@ -24,6 +24,9 @@ import { Note } from "src/notes/domain/models/note.model";
 import { ReceiptRepository } from "src/receipts/infrastructure/data/repositories/receipt.repository";
 import { ReceiptDto } from "src/receipts/application/dtos/receipt.dto";
 import { Receipt } from "src/receipts/domain/models/receipt.model";
+import { RequestSiteServiceRepository } from "src/requests-sites-services/infrastructure/data/repositories/request-site-service.repository";
+import { RequestSiteService } from "src/requests-sites-services/domain/models/request-site-service.model";
+import { NoteDto } from "src/notes/application/dtos/note.dto";
 
 @Injectable()
 export class PickupRequestService extends BaseService<
@@ -38,6 +41,7 @@ export class PickupRequestService extends BaseService<
         private readonly gatePricingRepository: GatePricingRepository,
         private readonly pricingRepository: PricingRepository,
         private readonly noteRepository: NoteRepository,
+        private readonly requestSiteServiceRepository: RequestSiteServiceRepository,
         private readonly receiptRepository: ReceiptRepository,
         private readonly inspectionPhotoService: InspectionPhotoService,
         private readonly fileManagementService: FileManagementService,
@@ -48,7 +52,7 @@ export class PickupRequestService extends BaseService<
 
     override async create(pickupRequestDto: PickupRequestDto): Promise<ResultDto<PickupRequestDto>> {
         return this.executeServiceCall(
-            `Create ${PickupRequest.name}`,
+            `Create ${PickupRequest.name} With Photos`,
             async () => {
                 const pickupRequest = this.map(pickupRequestDto, PickupRequest);
 
@@ -56,6 +60,18 @@ export class PickupRequestService extends BaseService<
                 pickupRequest.status = PickupRequestStatus.Created;
 
                 await this.pickupRequestRepository.createAsync(pickupRequest);
+
+                const saveFilesResult = await this.fileManagementService
+                    .saveFiles(pickupRequestDto.inspectionPhotos, 'images');
+
+
+                if (pickupRequestDto.inspectionPhotos && pickupRequestDto.inspectionPhotos.length > 0) {
+                    const inspectionPhotos = saveFilesResult.files
+                        .map(f => ({ id: 0, imagePath: f.path, pickupRequestId: pickupRequest!.id }));
+
+                    this.inspectionPhotoService
+                        .createRange(inspectionPhotos, InspectionPhoto);
+                }
 
                 if (pickupRequestDto.notes && pickupRequestDto.notes.length > 0)
                     await this.noteRepository.createRangeAsync(pickupRequestDto.notes
@@ -69,49 +85,19 @@ export class PickupRequestService extends BaseService<
                             return note;
                         }));
 
-                this.pickupRequestGateway.notifyPickupRequestCreated(
-                    this.map(pickupRequest, PickupRequestDto),
-                );
+                if (pickupRequestDto.requestSiteServices && pickupRequestDto.requestSiteServices.length > 0)
+                    await this.requestSiteServiceRepository.createRangeAsync(
+                        pickupRequestDto.requestSiteServices
+                            .map(requestSiteServiceDto => {
+                                const requestSiteService = new RequestSiteService();
 
-                return this.map(pickupRequest, PickupRequestDto);
-            }
-        );
-    }
+                                requestSiteService.requestId = pickupRequest.id;
+                                requestSiteService.siteId = requestSiteServiceDto.id.siteId;
+                                requestSiteService.serviceId = requestSiteServiceDto.id.serviceId;
+                                requestSiteService.status = requestSiteServiceDto.status;
 
-    async createWithPhotos(pickupRequestDto: PickupRequestDto, files: Express.Multer.File[]): Promise<ResultDto<PickupRequestDto>> {
-        return this.executeServiceCall(
-            `Create ${PickupRequest.name} With Photos`,
-            async () => {
-                const pickupRequest = this.map(pickupRequestDto, PickupRequest);
-
-                pickupRequest.startTime = new Date();
-                pickupRequest.status = PickupRequestStatus.Created;
-
-                await this.pickupRequestRepository.createAsync(pickupRequest);
-
-                const saveFilesResult = await this.fileManagementService
-                    .saveFiles('images', files);
-
-
-                if (pickupRequestDto.inspectionPhotos && pickupRequestDto.inspectionPhotos.length > 0) {
-                    pickupRequestDto.inspectionPhotos = saveFilesResult.files
-                        .map(f => ({ id: 0, imagePath: f.path, pickupRequestId: pickupRequest!.id }));
-
-                    this.inspectionPhotoService
-                        .createRange(pickupRequestDto.inspectionPhotos, InspectionPhoto);
-                }
-
-                if (pickupRequestDto.notes && pickupRequestDto.notes.length > 0)
-                    await this.noteRepository.createRangeAsync(pickupRequestDto.notes
-                        .map(noteDto => {
-                            const note = new Note();
-
-                            note.message = noteDto.message;
-                            note.requestId = pickupRequest.id;
-                            note.requestId = noteDto.userId;
-
-                            return note;
-                        }));
+                                return requestSiteService;
+                            }));
 
                 this.pickupRequestGateway.notifyPickupRequestCreated(
                     this.map(pickupRequest, PickupRequestDto),
@@ -129,9 +115,12 @@ export class PickupRequestService extends BaseService<
                 const spec = new BaseSpecification();
 
                 spec.addInclude(`inspectionPhotos`);
+                spec.addInclude(`requestSiteServices`);
                 spec.addInclude(`notes`);
 
-                return this.map(this.pickupRequestRepository.getAsync(id, spec), getDtoClass);
+                const pickupRequest = await this.pickupRequestRepository.getAsync(id, spec)
+
+                return this.map(pickupRequest, getDtoClass);
             }
         )
     }

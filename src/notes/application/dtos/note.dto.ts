@@ -6,6 +6,6 @@ export class NoteDto extends BaseModelDto<number> {
     message: string;
     requestId: number;
     userId: number;
-    request: PickupRequestDto;
-    user: UserGateDto;
+    request?: PickupRequestDto;
+    user?: UserGateDto;
 }
