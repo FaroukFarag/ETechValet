@@ -197,6 +197,7 @@ export class PickupRequestService extends BaseService<
                 if (!pickupRequest) throw new NotFoundException("Pickup Request not found");
 
                 pickupRequest.status = updatePickupRequestStatusDto.status;
+                pickupRequest.parkingLocation = updatePickupRequestStatusDto.parkingLocation;
 
                 if (updatePickupRequestStatusDto.notes &&
                     updatePickupRequestStatusDto.notes.length > 0)

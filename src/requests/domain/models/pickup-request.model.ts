@@ -32,6 +32,9 @@ export class PickupRequest extends BaseRequest {
     @Column()
     startTime: Date;
 
+    @Column()
+    parkingLocation: string;
+
     @Column({ nullable: true })
     endTime: Date;
 
