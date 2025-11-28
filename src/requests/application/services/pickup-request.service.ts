@@ -207,7 +207,7 @@ export class PickupRequestService extends BaseService<
 
                             note.message = noteDto.message;
                             note.requestId = pickupRequest!.id;
-                            note.requestId = noteDto.userId;
+                            note.userId = noteDto.userId;
 
                             return note;
                         }));

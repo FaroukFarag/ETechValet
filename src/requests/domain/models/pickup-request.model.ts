@@ -32,7 +32,7 @@ export class PickupRequest extends BaseRequest {
     @Column()
     startTime: Date;
 
-    @Column({default: ''})
+    @Column({nullable: true})
     parkingLocation: string;
 
     @Column({ nullable: true })
