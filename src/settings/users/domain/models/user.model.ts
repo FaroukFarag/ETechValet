@@ -76,11 +76,17 @@ export class User extends BaseModel<number> {
     @OneToMany(() => PickupRequest, pickupRequest => pickupRequest.receivedBy)
     receivedRequests: PickupRequest[];
 
+    @OneToMany(() => PickupRequest, pickupRequest => pickupRequest.pickedUpBy)
+    pickedUpRequests: PickupRequest[];
+
     @OneToMany(() => PickupRequest, pickupRequest => pickupRequest.parkedBy)
     parkedRequests: PickupRequest[];
 
     @OneToMany(() => Note, note => note.request)
     notes: Note[];
+
+    @OneToMany(() => RecallRequest, recallRequest => recallRequest.recalledBy)
+    recalledRequests: RecallRequest[];
 
     @OneToMany(() => RecallRequest, recallRequest => recallRequest.deliveredBy)
     deliveredRequests: RecallRequest[];

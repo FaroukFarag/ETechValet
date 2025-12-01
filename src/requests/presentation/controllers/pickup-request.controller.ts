@@ -57,6 +57,13 @@ export class PickupRequestController extends BaseController<
         return this.pickupRequestService.getAverageParkingTime(startTime, endTime);
     }
 
+    @Get('get-user-pickup-requests-by-shift/:userId/:shiftId')
+    async getUserPickupRequestsByShift(
+        @Param('userId') userId: number,
+        @Param('shiftId') shiftId: number) {
+        return this.pickupRequestService.getUserPickupRequestsByShift(userId, shiftId);
+    }
+
     @Patch('pickup')
     async pickup(@Body() pickupDto: PickupDto) {
         return this.pickupRequestService.pickup(pickupDto);

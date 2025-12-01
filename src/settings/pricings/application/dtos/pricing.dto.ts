@@ -18,6 +18,7 @@ export class PricingDto extends BaseModelDto<number> {
     parkingDailyRate: number;
     parkingFreeHours: number;
     parkingHourlyRate: number;
+    order: number;
     site: SiteDto;
     pricingGate: GatePricingDto;
     weekDayPricings: WeekDayPricingDto[];

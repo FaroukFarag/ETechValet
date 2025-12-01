@@ -32,7 +32,7 @@ export class PickupRequest extends BaseRequest {
     @Column()
     startTime: Date;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     parkingLocation: string;
 
     @Column({ nullable: true })
@@ -43,6 +43,9 @@ export class PickupRequest extends BaseRequest {
 
     @Column()
     shiftId: number;
+
+    @Column({ nullable: true })
+    pickedUpById?: number;
 
     @Column({ nullable: true })
     parkedById?: number;
@@ -62,6 +65,9 @@ export class PickupRequest extends BaseRequest {
     @ManyToOne(() => User, user => user.receivedRequests)
     receivedBy: User;
 
+    @ManyToOne(() => User, user => user.pickedUpRequests)
+    pickedUpBy: User;
+
     @ManyToOne(() => User, user => user.parkedRequests)
     parkedBy: User;
 
@@ -75,8 +81,8 @@ export class PickupRequest extends BaseRequest {
     @OneToMany(() => Note, note => note.request)
     notes: Note[];
 
-    @OneToMany(() => RequestSiteService, rss => rss.request)
-    requestSiteServices: RequestSiteService[];
+    @OneToMany(() => RequestSiteService, rss => rss.request, { cascade: false })
+    requestSiteServices?: RequestSiteService[];
 
     @OneToMany(() => InspectionPhoto, inspectionPhoto => inspectionPhoto.pickupRequest)
     inspectionPhotos: InspectionPhoto[];

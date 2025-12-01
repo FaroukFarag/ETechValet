@@ -23,8 +23,7 @@ export class GatePricingController extends BaseController<
     override async get(
         @Param() id: { pricingId: number, gateId: number },
     ): Promise<ResultDto<GatePricingDto>> {
-        return this.gatePricingService
-            .getById(id, GatePricing, GatePricingDto);
+        return this.gatePricingService.getById(id, GatePricing, GatePricingDto);
     }
 
     @Get('get-by-site/:siteId')

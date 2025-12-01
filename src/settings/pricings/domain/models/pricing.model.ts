@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
+import { Check, Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { Site } from "../../../../settings/sites/domain/models/site.model";
 import { BaseModel } from "../../../../shared/domain/models/base-model";
 import { PricingType } from "../enums/pricing-type.enum";
@@ -21,6 +21,7 @@ export class Pricing extends BaseModel<number> {
     dailyRate: number;
 
     @Column()
+    @Check(`"freeHours" <= 24`)
     freeHours: number;
 
     @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
@@ -39,6 +40,7 @@ export class Pricing extends BaseModel<number> {
     parkingDailyRate: number;
 
     @Column({ nullable: true })
+    @Check(`"parkingFreeHours" <= 24`)
     parkingFreeHours: number;
 
     @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })

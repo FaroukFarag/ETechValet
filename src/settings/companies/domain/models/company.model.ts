@@ -10,7 +10,7 @@ export class Company extends BaseModel<number> {
     @Column()
     shortName: string;
 
-     @Column()
+    @Column()
     contactPerson: string;
 
     @Column()

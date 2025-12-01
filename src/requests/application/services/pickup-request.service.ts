@@ -26,7 +26,6 @@ import { ReceiptDto } from "src/receipts/application/dtos/receipt.dto";
 import { Receipt } from "src/receipts/domain/models/receipt.model";
 import { RequestSiteServiceRepository } from "src/requests-sites-services/infrastructure/data/repositories/request-site-service.repository";
 import { RequestSiteService } from "src/requests-sites-services/domain/models/request-site-service.model";
-import { NoteDto } from "src/notes/application/dtos/note.dto";
 
 @Injectable()
 export class PickupRequestService extends BaseService<
@@ -52,7 +51,7 @@ export class PickupRequestService extends BaseService<
 
     override async create(pickupRequestDto: PickupRequestDto): Promise<ResultDto<PickupRequestDto>> {
         return this.executeServiceCall(
-            `Create ${PickupRequest.name} With Photos`,
+            `Create ${PickupRequest.name}`,
             async () => {
                 const pickupRequest = this.map(pickupRequestDto, PickupRequest);
 
@@ -61,11 +60,10 @@ export class PickupRequestService extends BaseService<
 
                 await this.pickupRequestRepository.createAsync(pickupRequest);
 
-                const saveFilesResult = await this.fileManagementService
-                    .saveFiles(pickupRequestDto.inspectionPhotos, 'images');
-
-
                 if (pickupRequestDto.inspectionPhotos && pickupRequestDto.inspectionPhotos.length > 0) {
+                    const saveFilesResult = await this.fileManagementService
+                        .saveFiles(pickupRequestDto.inspectionPhotos, 'images');
+
                     const inspectionPhotos = saveFilesResult.files
                         .map(f => ({ id: 0, imagePath: f.path, pickupRequestId: pickupRequest!.id }));
 
@@ -127,7 +125,7 @@ export class PickupRequestService extends BaseService<
 
     async getAllByStatus(status: PickupRequestStatus): Promise<ResultDto<PickupRequestDto[]>> {
         return this.executeServiceCall(
-            'Get All Pickup Request By Status',
+            'Get All Pickup Requests By Status',
             async () => {
                 const spec = new BaseSpecification();
 
@@ -188,6 +186,20 @@ export class PickupRequestService extends BaseService<
         );
     }
 
+    async getUserPickupRequestsByShift(userId: number, shiftId: number):
+        Promise<ResultDto<number>> {
+        return this.executeServiceCall(
+            'Get User Pickup Requests By Shift',
+            async () => {
+                const spec = new BaseSpecification();
+
+                spec.addCriteria(`"pickedUpById" = ${userId} AND "shiftId" = ${shiftId}`);
+
+                return await this.pickupRequestRepository.getCountAsync(spec);
+            }
+        )
+    }
+
     async updatePickupRequestStatus(updatePickupRequestStatusDto: UpdatePickupRequestStatusDto): Promise<ResultDto<PickupRequestDto>> {
         return this.executeServiceCall(
             'Update Pickup Request Status',
@@ -198,6 +210,10 @@ export class PickupRequestService extends BaseService<
 
                 pickupRequest.status = updatePickupRequestStatusDto.status;
                 pickupRequest.parkingLocation = updatePickupRequestStatusDto.parkingLocation;
+
+                pickupRequest.parkedById =
+                    updatePickupRequestStatusDto.status === PickupRequestStatus.Parked ?
+                        updatePickupRequestStatusDto.userId : pickupRequest.parkedById;
 
                 if (updatePickupRequestStatusDto.notes &&
                     updatePickupRequestStatusDto.notes.length > 0)
@@ -231,7 +247,7 @@ export class PickupRequestService extends BaseService<
                     throw new Error('This Request Already Picked Up');
 
                 pickupRequest.status = PickupRequestStatus.PickedUp;
-                pickupRequest.parkedById = pickupDto.parkedById;
+                pickupRequest.pickedUpById = pickupDto.pickedUpById;
 
                 await this.pickupRequestRepository.updateAsync(pickupRequest);
 
@@ -253,7 +269,7 @@ export class PickupRequestService extends BaseService<
 
                 if (!pickupRequest) throw new NotFoundException('Pickup Request Not Found');
 
-                if (!generateReceiptDto.endTime) throw new BadRequestException('End Time is missing');
+                if (!pickupRequest.endTime) throw new BadRequestException('End Time is missing');
 
                 const receiptDto = new ReceiptDto();
 
@@ -268,7 +284,7 @@ export class PickupRequestService extends BaseService<
                     return receiptDto;
                 }
 
-                const day = new Date(generateReceiptDto.endTime).getDay();
+                const day = new Date(pickupRequest.endTime).getDay();
                 const gatePricingSpec = new BaseSpecification();
 
                 gatePricingSpec.addInclude('pricing');
@@ -293,10 +309,10 @@ export class PickupRequestService extends BaseService<
 
                 receiptDto.plateNumber = pickupRequest.plateNumber;
                 receiptDto.startTime = pickupRequest.startTime;
-                receiptDto.endTime = generateReceiptDto.endTime;
+                receiptDto.endTime = pickupRequest.endTime;
 
                 const start = new Date(pickupRequest.startTime);
-                const end = new Date(generateReceiptDto.endTime);
+                const end = new Date(pickupRequest.endTime);
                 const totalHours = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60));
 
                 receiptDto.valet = this.calculatePricingForDuration(
@@ -330,6 +346,8 @@ export class PickupRequestService extends BaseService<
                 await this.receiptRepository.createAsync(receipt);
 
                 pickupRequest.receiptId = receipt.id;
+
+                delete pickupRequest.requestSiteServices;
 
                 await this.pickupRequestRepository.updateAsync(pickupRequest);
 

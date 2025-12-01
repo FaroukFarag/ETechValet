@@ -9,6 +9,6 @@ import { ShiftController } from "./presentation/controllers/shift.controller";
     imports: [TypeOrmModule.forFeature([Shift])],
     providers: [ShiftRepository, ShiftService],
     controllers: [ShiftController],
-    exports: [ShiftRepository]
+    exports: [ShiftRepository, ShiftService]
 })
 export class ShiftsModule { }

@@ -25,6 +25,10 @@ import { ResetPasswordDto } from "../dtos/reset-password.dto";
 import { EmailService } from "src/shared/infrastructure/email/email.service";
 import { ShiftRepository } from "src/shifts/infrastructure/data/repositories/shift.repository";
 import { Shift } from "src/shifts/domain/models/shift.model";
+import { ShiftStatus } from "src/shifts/domain/enums/shift-status.enum";
+import { ShiftService } from "src/shifts/application/services/shift.service";
+import { ShiftDto } from "src/shifts/application/dtos/shift.dto";
+import { MobileLogoutDto } from "../dtos/mobile-logout.dto";
 
 @Injectable()
 export class UserService extends BaseService<
@@ -41,7 +45,7 @@ export class UserService extends BaseService<
         private readonly refreshTokenRepository: RefreshTokenRepository,
         private readonly resetPasswordTokenRepository: ResetPasswordTokenRepository,
         private readonly userGateRepository: UserGateRepository,
-        private readonly shiftRepository: ShiftRepository,
+        private readonly shiftService: ShiftService,
         private readonly emailService: EmailService,
         private readonly jwtService: JwtService
     ) {
@@ -611,13 +615,25 @@ export class UserService extends BaseService<
         loginDto: LoginDto
     ): Promise<ResultDto<{ accessToken: string; refreshToken: string; expiresIn: number }>> {
         return this.handleLogin('Mobile Login', loginDto, async (user) => {
-            const shift = new Shift();
-            shift.startTime = new Date();
-            shift.userId = user.id;
+            const shiftResult = await this.shiftService.getUserLastOpenedShift(user.id);
 
-            await this.shiftRepository.createAsync(shift);
+            if (shiftResult.isSuccess && shiftResult.data)
+                return { shiftId: shiftResult?.data?.id };
 
-            return { shiftId: shift.id };
+            let shiftDto = new ShiftDto();
+
+            shiftDto.startTime = new Date();
+            shiftDto.userId = user.id;
+            shiftDto.status = ShiftStatus.Opened;
+
+            const result = await this.shiftService.create(shiftDto, Shift, ShiftDto);
+
+            if (!result.isSuccess)
+                throw new Error('Failed to open new shift for this user');
+
+            shiftDto = result.data!;
+
+            return { shiftId: shiftDto.id };
         });
     }
 
@@ -737,6 +753,19 @@ export class UserService extends BaseService<
         );
     }
 
+    async mobileLogout(mobileLogoutDto: MobileLogoutDto): Promise<ResultDto<{ message: string }>> {
+        return this.executeServiceCall(
+            'Logout',
+            async () => {
+                await this.revokeRefreshToken(mobileLogoutDto.refreshToken);
+
+                await this.shiftService.closeShift(mobileLogoutDto.shiftId);
+
+                return { message: 'Logged out successfully' };
+            }
+        );
+    }
+
     private async handleLogin(
         actionName: string,
         loginDto: LoginDto,
@@ -753,6 +782,8 @@ export class UserService extends BaseService<
                 username: user.userName,
                 id: user.id,
                 email: user.email,
+                siteName: user?.site?.name,
+                workingHours: user.workingHours,
                 roles,
                 ...extra,
                 gates: user.userGates.map(ug => ({

@@ -12,12 +12,14 @@ export class PickupRequestDto extends BaseRequestDto {
     brand?: string;
     color?: string;
     receivedById: number;
+    pickedById: number;
     parkedById?: number;
     status?: PickupRequestStatus
     startTime?: Date;
     endTime?: Date;
     gate: GateDto;
     receivedBy: UserDto;
+    pickedBy: UserDto;
     parkedBy: UserDto;
     notes: NoteDto[] = [];
     requestSiteServices: RequestSiteServiceDto[];

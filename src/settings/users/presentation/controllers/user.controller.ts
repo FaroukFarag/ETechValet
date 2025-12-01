@@ -9,6 +9,7 @@ import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { ChangePasswordDto } from 'src/settings/users/application/dtos/change-password.dto';
 import { CreateUserDto } from 'src/settings/users/application/dtos/create-user.dto';
+import { MobileLogoutDto } from '../../application/dtos/mobile-logout.dto';
 
 @Controller('api/users')
 export class UsersController extends BaseController<
@@ -54,6 +55,11 @@ export class UsersController extends BaseController<
     @Post('logout')
     async logout(@Body('refreshToken') refreshToken: string) {
         return await this.userService.logout(refreshToken);
+    }
+
+    @Post('mobile-logout')
+    async mobileLogout(@Body() mobileLogoutDto: MobileLogoutDto) {
+        return await this.userService.mobileLogout(mobileLogoutDto);
     }
 
     @Patch('update-member-data')

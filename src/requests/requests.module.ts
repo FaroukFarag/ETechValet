@@ -21,6 +21,7 @@ import { NotesModule } from "src/notes/notes.module";
 import { ReceiptsModule } from "src/receipts/receipts.module";
 import { RequestsSitesServicesModule } from "src/requests-sites-services/requests-sites-services.module";
 import { NestjsFormDataModule } from "nestjs-form-data";
+import { RecallRequestGateway } from "./infrastructure/gateways/recall-request.gateway";
 
 @Module({
     imports: [
@@ -43,7 +44,8 @@ import { NestjsFormDataModule } from "nestjs-form-data";
         RecallRequestService,
         InspectionPhotoService,
         FileManagementService,
-        PickupRequestGateway
+        PickupRequestGateway,
+        RecallRequestGateway
     ],
     controllers: [
         PickupRequestController,

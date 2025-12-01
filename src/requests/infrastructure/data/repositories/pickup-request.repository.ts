@@ -80,5 +80,4 @@ export class PickupRequestRepository extends BaseRepository<PickupRequest, numbe
 
         return Number(result?.avgHours ?? 0);
     }
-
 }
