@@ -10,6 +10,9 @@ import { PricingValidationService } from "./pricing-validation.service";
 import { ResultDto } from "src/shared/application/dtos/result.dto";
 import { ReOrderPricingsDto } from "../dtos/reorder-pricings.dto";
 import { BaseSpecification } from "src/shared/infrastructure/data/specifications/base-specification";
+import { PaginatedResultDto } from "src/shared/application/dtos/paginated-result.dto";
+import { PaginatedModelDto } from "src/shared/application/dtos/paginated.model.dto";
+import { PaginatedModel } from "src/shared/domain/models/paginated.model";
 
 @Injectable()
 export class PricingService extends BaseService<
@@ -47,6 +50,20 @@ export class PricingService extends BaseService<
 
             return this.map(created, PricingDto);
         });
+    }
+
+    override async getAllPaginated(paginatedModelDto: PaginatedModelDto, getAllDtoClass: new () => PricingDto): Promise<PaginatedResultDto<PricingDto>> {
+        const spec = new BaseSpecification();
+
+        spec.addInclude("customerType");
+
+        const paginatedModel = this.map(paginatedModelDto, PaginatedModel);
+        const { data, totalCount } = await this.pricingRepository
+            .getAllPaginatedAsync(paginatedModel, spec);
+
+        const totalPages = Math.ceil(totalCount / paginatedModel.pageSize);
+
+        return PaginatedResultDto.createSuccessPaginatedResult(this.mapArray(data, getAllDtoClass), totalCount, totalPages);
     }
 
     override async update(dto: PricingDto): Promise<ResultDto<PricingDto>> {

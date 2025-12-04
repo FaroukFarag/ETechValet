@@ -36,6 +36,13 @@ export class PickupRequestController extends BaseController<
         return this.pickupRequestService.getAllByStatus(status);
     }
 
+    @Get('get-total-requests')
+    async getTotalRequests(
+        @Query('startTime') startTime?: Date,
+        @Query('endTime') endTime?: Date) {
+        return this.pickupRequestService.getTotalRequests(startTime, endTime);
+    }
+
     @Get('get-total-parked-requests')
     async getTotalParkedRequests(
         @Query('startTime') startTime?: Date,
@@ -55,6 +62,13 @@ export class PickupRequestController extends BaseController<
         @Query('startTime') startTime?: Date,
         @Query('endTime') endTime?: Date) {
         return this.pickupRequestService.getAverageParkingTime(startTime, endTime);
+    }
+
+    @Get('get-total-revenue')
+    async getTotalRevenue(
+        @Query('startTime') startTime?: Date,
+        @Query('endTime') endTime?: Date) {
+        return this.pickupRequestService.getTotalRevenue(startTime, endTime);
     }
 
     @Get('get-user-pickup-requests-by-shift/:userId/:shiftId')

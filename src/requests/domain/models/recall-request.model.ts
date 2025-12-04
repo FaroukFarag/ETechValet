@@ -25,6 +25,9 @@ export class RecallRequest extends BaseModel<number> {
     @Column({ nullable: true })
     notes: string;
 
+    @Column({default: new Date()})
+    recalledAt: Date;
+
     @ManyToOne(() => User, user => user.recalledRequests)
     recalledBy: User;
 

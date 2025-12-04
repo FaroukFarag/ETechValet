@@ -136,33 +136,21 @@ export class PickupRequestService extends BaseService<
         )
     }
 
+    async getTotalRequests(startTime?: Date, endTime?: Date): Promise<ResultDto<number>> {
+        return this.countRequests(
+            'Get Total Requests',
+            undefined,
+            startTime,
+            endTime,
+        );
+    }
+
     async getTotalParkedRequests(startTime?: Date, endTime?: Date): Promise<ResultDto<number>> {
-        return this.executeServiceCall(
+        return this.countRequests(
             'Get Total Parked Requests',
-            async () => {
-                const spec = new BaseSpecification();
-                let criteria = '';
-
-                if (startTime && endTime) {
-                    criteria = `"startTime" BETWEEN '${startTime}' AND '${endTime}' AND status = '${PickupRequestStatus.Parked}'`;
-                }
-
-                else if (startTime) {
-                    criteria = `"startTime" >= '${startTime}' AND status = '${PickupRequestStatus.Parked}'`;
-                }
-
-                else if (endTime) {
-                    criteria = `"startTime" <= '${endTime}' AND status = '${PickupRequestStatus.Parked}'`;
-                }
-
-                else {
-                    criteria = `status = '${PickupRequestStatus.Parked}'`;
-                }
-
-                spec.addCriteria(criteria);
-
-                return await this.pickupRequestRepository.getCountAsync(spec);
-            }
+            PickupRequestStatus.Parked,
+            startTime,
+            endTime,
         );
     }
 
@@ -182,6 +170,15 @@ export class PickupRequestService extends BaseService<
             async () => {
                 return await this.pickupRequestRepository
                     .getAverageParkingHours(startTime, endTime);
+            }
+        );
+    }
+
+    async getTotalRevenue(startTime?: Date, endTime?: Date): Promise<ResultDto<number>> {
+        return this.executeServiceCall(
+            'Get Total Revenue',
+            async () => {
+                return await this.pickupRequestRepository.getTotalRevenue(startTime, endTime);
             }
         );
     }
@@ -355,6 +352,52 @@ export class PickupRequestService extends BaseService<
             }
         );
     }
+
+    private buildDateCriteria(startTime?: Date, endTime?: Date): string {
+        if (startTime && endTime)
+            return `"startTime" BETWEEN '${startTime}' AND '${endTime}'`;
+
+        if (startTime)
+            return `"startTime" >= '${startTime}'`;
+
+        if (endTime)
+            return `"startTime" <= '${endTime}'`;
+
+        return '';
+    }
+
+    private async countRequests(
+        label: string,
+        status?: PickupRequestStatus,
+        startTime?: Date,
+        endTime?: Date,
+    ): Promise<ResultDto<number>> {
+
+        return this.executeServiceCall(label, async () => {
+            const spec = new BaseSpecification();
+
+            const dateCriteria = this.buildDateCriteria(startTime, endTime);
+
+            let criteria = '';
+
+            if (dateCriteria) {
+                criteria = dateCriteria;
+            }
+
+            if (status) {
+                criteria = criteria
+                    ? `${criteria} AND status = '${status}'`
+                    : `status = '${status}'`;
+            }
+
+            if (criteria) {
+                spec.addCriteria(criteria);
+            }
+
+            return this.pickupRequestRepository.getCountAsync(spec);
+        });
+    }
+
 
     private resolveValetPricing(
         gatePricing: GatePricing | null,

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Query } from "@nestjs/common";
 import { RecallRequestDto } from "src/requests/application/dtos/recall-request.dto";
 import { RecallDto } from "src/requests/application/dtos/recall.dto";
 import { RecallRequestService } from "src/requests/application/services/recall-request.service";
@@ -29,6 +29,13 @@ export class RecallRequestController extends BaseController<
         @Param('userId') userId: number,
         @Param('shiftId') shiftId: number) {
         return this.recallRequestService.getUserRecallRequestsByShift(userId, shiftId);
+    }
+
+    @Get('get-total-requests')
+    async getTotalRequests(
+        @Query('startTime') startTime?: Date,
+        @Query('endTime') endTime?: Date) {
+        return this.recallRequestService.getTotalRequests(startTime, endTime);
     }
 
     @Patch('recall')

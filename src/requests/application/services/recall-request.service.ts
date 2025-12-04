@@ -122,6 +122,32 @@ export class RecallRequestService extends BaseService<
         )
     }
 
+    async getTotalRequests(startTime?: Date, endTime?: Date): Promise<ResultDto<number>> {
+        return this.executeServiceCall(
+            'Get Total Requests',
+            async () => {
+                const spec = new BaseSpecification();
+                let criteria = '';
+
+                if (startTime && endTime) {
+                    criteria = `"recalledAt" BETWEEN '${startTime}' AND '${endTime}'`;
+                }
+
+                else if (startTime) {
+                    criteria = `"recalledAt" >= '${startTime}'`;
+                }
+
+                else if (endTime) {
+                    criteria = `"recalledAt" <= '${endTime}'`;
+                }
+
+                spec.addCriteria(criteria);
+
+                return await this.recallRequestRepository.getCountAsync(spec);
+            }
+        );
+    }
+
     async recall(recallDto: RecallDto): Promise<ResultDto<RecallRequestDto>> {
         return this.executeServiceCall(
             'Recall',

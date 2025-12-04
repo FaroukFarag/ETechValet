@@ -7,7 +7,7 @@ import { CustomerTypeDto } from "src/settings/customer-types/application/dtos/cu
 
 export class PricingDto extends BaseModelDto<number> {
     siteId: number;
-    customerType: CustomerTypeDto;
+    customerTypeId: number;
     pricingType: PricingType;
     dailyRate: number;
     freeHours: number;
@@ -20,6 +20,7 @@ export class PricingDto extends BaseModelDto<number> {
     parkingHourlyRate: number;
     order: number;
     site: SiteDto;
+    customerType: CustomerTypeDto;
     pricingGate: GatePricingDto;
     weekDayPricings: WeekDayPricingDto[];
 }

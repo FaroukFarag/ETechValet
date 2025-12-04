@@ -29,6 +29,9 @@ import { ShiftStatus } from "src/shifts/domain/enums/shift-status.enum";
 import { ShiftService } from "src/shifts/application/services/shift.service";
 import { ShiftDto } from "src/shifts/application/dtos/shift.dto";
 import { MobileLogoutDto } from "../dtos/mobile-logout.dto";
+import { PaginatedResultDto } from "src/shared/application/dtos/paginated-result.dto";
+import { PaginatedModelDto } from "src/shared/application/dtos/paginated.model.dto";
+import { PaginatedModel } from "src/shared/domain/models/paginated.model";
 
 @Injectable()
 export class UserService extends BaseService<
@@ -143,6 +146,21 @@ export class UserService extends BaseService<
                 return this.map(users[0], UserDto);
             }
         );
+    }
+
+    override async getAllPaginated(paginatedModelDto: PaginatedModelDto, getAllDtoClass: new () => UserDto): Promise<PaginatedResultDto<UserDto>> {
+        const spec = new BaseSpecification();
+
+        spec.addInclude("userRoles");
+        spec.addInclude("userRoles.role");
+
+        const paginatedModel = this.map(paginatedModelDto, PaginatedModel);
+        const { data, totalCount } = await this.userRepository
+            .getAllPaginatedAsync(paginatedModel, spec);
+
+        const totalPages = Math.ceil(totalCount / paginatedModel.pageSize);
+
+        return PaginatedResultDto.createSuccessPaginatedResult(this.mapArray(data, getAllDtoClass), totalCount, totalPages);
     }
 
     async getAllUsersByRole(roleId: number): Promise<ResultDto<UserDto[]>> {

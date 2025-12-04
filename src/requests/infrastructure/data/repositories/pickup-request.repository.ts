@@ -80,4 +80,31 @@ export class PickupRequestRepository extends BaseRepository<PickupRequest, numbe
 
         return Number(result?.avgHours ?? 0);
     }
+
+    async getTotalRevenue(startTime?: Date, endTime?: Date): Promise<number> {
+        const query = this.repository
+            .createQueryBuilder('pr')
+            .leftJoin('pr.receipt', 'receipt');
+
+        if (startTime && endTime) {
+            query.andWhere('pr.startTime BETWEEN :startTime AND :endTime', { startTime, endTime });
+        }
+
+        else if (startTime) {
+            query.andWhere('pr.startTime >= :startTime', { startTime });
+        }
+
+        else if (endTime) {
+            query.andWhere('pr.startTime <= :endTime', { endTime });
+        }
+
+        query.select(
+            `SUM(receipt.extraServices + receipt.valet + receipt.parking + receipt.tax)`,
+            'totalRevenue'
+        );
+
+        const result = await query.getRawOne();
+
+        return Number(result?.totalRevenue ?? 0);
+    }
 }
