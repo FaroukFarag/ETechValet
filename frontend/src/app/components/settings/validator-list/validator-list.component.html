@@ -1,0 +1,230 @@
+<div class="validators-page">
+  <header class="validators-header">
+    <div class="header-left">
+      <h1>Validators</h1>
+    </div>
+    <div class="header-actions">
+      <button type="button" class="ghost-btn" (click)="exportValidators()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Export
+      </button>
+      <button type="button" class="primary-btn" (click)="addNewValidator()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Add New Validator
+      </button>
+    </div>
+  </header>
+
+  <section class="validators-table-card" *ngIf="!isLoading && !loadError && validators.length > 0; else tableState">
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Name <span class="sort-indicator"></span></th>
+            <th>Site Name <span class="sort-indicator"></span></th>
+            <th>Description <span class="sort-indicator"></span></th>
+            <th>Current Balance <span class="sort-indicator"></span></th>
+            <th>Total Added Balance <span class="sort-indicator"></span></th>
+            <th>Total Used Balance <span class="sort-indicator"></span></th>
+            <th>Total Validation <span class="sort-indicator"></span></th>
+            <th class="actions-col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of validators; index as i">
+            <td>{{ row.name || '-' }}</td>
+            <td>{{ row.siteName || '-' }}</td>
+            <td>{{ row.description || '-' }}</td>
+            <td>{{ formatNumber(row.currentBalance) }}</td>
+            <td>{{ formatNumber(row.totalAddedBalance) }}</td>
+            <td>{{ formatNumber(row.totalUsedBalance) }}</td>
+            <td>{{ row.totalValidation || 0 }}</td>
+            <td class="row-actions">
+              <button class="menu-trigger" type="button" (click)="toggleMenu(i, $event)" aria-label="More actions">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="5" r="1"></circle>
+                  <circle cx="12" cy="12" r="1"></circle>
+                  <circle cx="12" cy="19" r="1"></circle>
+                </svg>
+              </button>
+              <div class="menu-panel" *ngIf="openMenuIndex === i">
+                <button type="button" (click)="editValidator(row, $event)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 3a2.828 2.828 0 0 1 4 4L7 21H3v-4L17 3z"></path>
+                  </svg>
+                  Update
+                </button>
+                <button type="button" class="danger" (click)="deleteValidator(row, $event)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                    <path d="M10 11v6"></path>
+                    <path d="M14 11v6"></path>
+                    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+                  </svg>
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <ng-template #tableState>
+    <section class="validators-table-card status-card">
+      <div *ngIf="isLoading" class="status-content">
+        <div class="spinner"></div>
+        <p>Loading validators...</p>
+      </div>
+      <div *ngIf="!isLoading && loadError" class="status-content">
+        <p>{{ loadError }}</p>
+        <button type="button" class="ghost-btn" (click)="loadValidators()">Retry</button>
+      </div>
+      <div *ngIf="!isLoading && !loadError && validators.length === 0" class="status-content">
+        <p>No validators available yet.</p>
+        <button type="button" class="primary-btn" (click)="addNewValidator()">Add New Validator</button>
+      </div>
+    </section>
+  </ng-template>
+
+  <div class="validators-pagination" *ngIf="!isLoading && !loadError && totalPages > 0">
+    <button type="button" class="page-btn" (click)="previousPage()" [disabled]="currentPage === 1">
+      ← Previous
+    </button>
+    <div class="page-numbers">
+      <button
+        *ngFor="let page of pageNumbers"
+        class="page-number"
+        [class.active]="page === currentPage"
+        [class.ellipsis]="page === '...'"
+        (click)="goToPage(page)"
+        [disabled]="page === '...'">
+        {{ page }}
+      </button>
+    </div>
+    <button type="button" class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
+      Next →
+    </button>
+  </div>
+
+  <div class="drawer-overlay" *ngIf="showAddValidatorDrawer" (click)="closeAddValidatorDrawer()"></div>
+  <div class="drawer modern" [class.open]="showAddValidatorDrawer" (click)="closeAddValidatorDrawer()">
+    <form class="drawer-content" [formGroup]="addValidatorForm" (ngSubmit)="submitAddValidator()" (click)="$event.stopPropagation()">
+      <div class="drawer-header modern">
+        <h2>{{ isEditMode ? 'Update Validator' : 'Add New Validator' }}</h2>
+        <button type="button" class="close-btn-icon" (click)="closeAddValidatorDrawer()" aria-label="Close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="drawer-body modern" (scroll)="onDrawerBodyScroll($event)" (wheel)="onDrawerWheel($event)">
+        <div class="form-field modern" [class.invalid]="addValidatorForm.get('name')?.invalid && addValidatorForm.get('name')?.touched">
+          <label>Name*</label>
+          <input type="text" formControlName="name" placeholder="Name" />
+        </div>
+
+        <div class="form-field modern" [class.invalid]="addValidatorForm.get('siteId')?.invalid && addValidatorForm.get('siteId')?.touched">
+          <label>Site Name*</label>
+          <select formControlName="siteId">
+            <option [ngValue]="null" disabled>Select Site</option>
+            <option *ngFor="let site of siteOptions" [ngValue]="site.id">{{ site.name }}</option>
+          </select>
+          <svg class="dropdown-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+
+        <div class="form-field modern" [class.invalid]="addValidatorForm.get('credits')?.invalid && addValidatorForm.get('credits')?.touched">
+          <label>Credits*</label>
+          <input type="text" formControlName="credits" placeholder="10,000" />
+        </div>
+
+        <div class="form-field modern" [class.invalid]="addValidatorForm.get('description')?.invalid && addValidatorForm.get('description')?.touched">
+          <label>Description*</label>
+          <textarea formControlName="description" rows="4" placeholder="Enter.."></textarea>
+        </div>
+
+        <div class="validation-checkboxes">
+          <div class="checkbox-row">
+            <label class="checkbox-label modern">
+              <input type="checkbox" formControlName="canValidateParking" />
+              <span>Can Validate Parking</span>
+            </label>
+            <label class="checkbox-label modern">
+              <input type="checkbox" formControlName="canValidateService1" />
+              <span>Can Validate Service 1</span>
+            </label>
+          </div>
+          <div class="checkbox-row">
+            <label class="checkbox-label modern">
+              <input type="checkbox" formControlName="canValidateValet" />
+              <span>Can Validate Valet</span>
+            </label>
+            <label class="checkbox-label modern">
+              <input type="checkbox" formControlName="canValidateService2" />
+              <span>Can Validate Service 2</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="discount-toggles">
+          <div class="toggle-row modern">
+            <label>Discount fixed</label>
+            <label class="switch modern">
+              <input type="checkbox" formControlName="discountFixed" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="form-field modern with-suffix" *ngIf="isDiscountFixedEnabled">
+            <div class="input-wrapper">
+              <input type="text" formControlName="discountFixedValue" placeholder="100" />
+              <span class="suffix">SAR</span>
+            </div>
+          </div>
+          <div class="toggle-row modern">
+            <label>Percentage</label>
+            <label class="switch modern">
+              <input type="checkbox" formControlName="percentage" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="form-field modern with-suffix" *ngIf="isPercentageEnabled">
+            <div class="input-wrapper">
+              <input type="text" formControlName="percentageValue" placeholder="10" />
+              <span class="suffix">%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-footer modern">
+        <button type="submit" class="save-btn" [disabled]="isSaving || addValidatorForm.invalid">
+          <span *ngIf="!isSaving">{{ isEditMode ? 'Update' : 'Save' }}</span>
+          <span *ngIf="isSaving">{{ isEditMode ? 'Updating...' : 'Saving...' }}</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="confirm-overlay" *ngIf="showDeleteConfirm" (click)="cancelDelete()"></div>
+  <div class="confirm-dialog" *ngIf="showDeleteConfirm" (click)="$event.stopPropagation()">
+    <h3>Delete Validator</h3>
+    <p>Are you sure you want to delete this validator? This action cannot be undone.</p>
+    <div class="confirm-actions">
+      <button type="button" class="secondary-btn" (click)="cancelDelete()">Cancel</button>
+      <button type="button" class="danger-btn" (click)="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>

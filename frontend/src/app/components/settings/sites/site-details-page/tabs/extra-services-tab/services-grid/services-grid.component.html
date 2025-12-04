@@ -1,0 +1,35 @@
+<div class="services-grid">
+  <table class="services-table">
+    <thead>
+      <tr>
+        <th>Service Name <span class="sort-indicator"></span></th>
+        <th>Cost <span class="sort-indicator"></span></th>
+        <th class="actions-col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let service of services">
+        <td>{{ service.name }}</td>
+        <td>{{ formatCost(service.cost) }}</td>
+        <td class="actions-cell">
+          <button class="menu-btn" (click)="onMenuClick(service, $event)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="5" r="1"></circle>
+              <circle cx="12" cy="12" r="1"></circle>
+              <circle cx="12" cy="19" r="1"></circle>
+            </svg>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+
+
+
+
+
+

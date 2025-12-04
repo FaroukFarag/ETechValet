@@ -1,0 +1,149 @@
+<div class="request-details-container">
+  <!-- Header Section -->
+  <div class="details-header">
+    <div class="header-text">
+      <h1 class="page-title">Request Details</h1>
+      <p class="page-subtitle">Complete informations and actions for this valet request</p>
+    </div>
+  </div>
+
+  <!-- Top Row Cards -->
+  <div class="top-cards-row">
+    <!-- Client Information -->
+    <div class="info-card">
+      <div class="card-header">
+        <svg class="card-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <h3 class="card-title">Client information</h3>
+      </div>
+      <div class="info-list">
+        <div class="info-item">
+          <span class="info-label">Customer Name</span>
+          <span class="info-value">{{clientInfo.customerName}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Customer Type</span>
+          <span class="info-value">{{clientInfo.customerType}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Mobile Number</span>
+          <span class="info-value">{{clientInfo.mobileNumber}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Payment Type</span>
+          <span class="info-value">{{clientInfo.paymentType}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Amount</span>
+          <span class="info-value">{{clientInfo.amount}}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vehicle Information -->
+    <div class="info-card">
+      <div class="card-header">
+        <svg class="card-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 11L6.5 6.5H17.5L19 11M5 11V16H19V11M5 11H19M7 13.5H9M15 13.5H17M6.5 16V18.5M17.5 16V18.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3 class="card-title">Vehicle Information</h3>
+      </div>
+      <div class="info-list">
+        <div class="info-item">
+          <span class="info-label">Plate Number</span>
+          <span class="info-value">{{vehicleInfo.plateNumber}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Brand</span>
+          <span class="info-value">{{vehicleInfo.brand}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Color</span>
+          <span class="info-value">{{vehicleInfo.color}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Service</span>
+          <span class="info-value">{{vehicleInfo.service}}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Site & Timing -->
+    <div class="info-card">
+      <div class="card-header">
+        <svg class="card-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+        <h3 class="card-title">Site & Timing</h3>
+      </div>
+      <div class="info-list">
+        <div class="info-item">
+          <span class="info-label">Site ID</span>
+          <span class="info-value">{{siteTiming.siteId}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Site name</span>
+          <span class="info-value">{{siteTiming.siteName}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Gate ID</span>
+          <span class="info-value">{{siteTiming.gateId}}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Request Created</span>
+          <span class="info-value">{{siteTiming.createdTime}}<br>{{siteTiming.createdDate}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Row Cards -->
+  <div class="bottom-cards-row">
+    <!-- Inspection Photo -->
+    <div class="info-card">
+      <div class="card-header">
+        <svg class="card-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <circle cx="8.5" cy="8.5" r="1.5"></circle>
+          <polyline points="21 15 16 10 5 21"></polyline>
+        </svg>
+        <h3 class="card-title">Inspection Photo</h3>
+      </div>
+      <div class="photos-grid">
+        <div class="photo-placeholder" *ngFor="let photo of inspectionPhotos">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notes & Comments -->
+    <div class="info-card">
+      <div class="card-header">
+        <svg class="card-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        <h3 class="card-title">Notes & Comments</h3>
+      </div>
+      <div class="comments-list">
+        <div class="comment-item" *ngFor="let comment of comments">
+          <div class="comment-content">
+            <span class="comment-author">{{comment.author}}</span>
+            <p class="comment-message">{{comment.message}}</p>
+          </div>
+          <span class="comment-time">{{comment.time}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

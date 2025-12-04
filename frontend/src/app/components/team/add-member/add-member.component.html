@@ -1,0 +1,130 @@
+<div class="drawer-overlay" (click)="closePanel()"></div>
+<div class="add-member-drawer" [class.open]="isOpen">
+  <div class="drawer-content">
+    <div class="drawer-header">
+      <h2>Add New Member</h2>
+      <button class="close-btn" (click)="closePanel()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="drawer-body" (click)="$event.stopPropagation()">
+      <!-- Username Field -->
+      <div class="form-field">
+        <label class="field-label">
+          Username<span class="required">*</span>
+        </label>
+        <div class="user-dropdown-wrapper">
+          <div class="input-with-icon">
+            <input
+              type="text"
+              class="form-input"
+              placeholder="Search by username"
+              [(ngModel)]="userSearchTerm"
+              (input)="onUserSearch()"
+              (focus)="onUserInputFocus()"
+              (click)="onUserInputFocus()"
+            />
+            <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m6 9 6 6 6-6"></path>
+            </svg>
+          </div>
+          <div class="user-dropdown" *ngIf="showUserDropdown">
+            <div class="user-dropdown-list" *ngIf="!isLoadingUsers">
+              <div 
+                *ngIf="filteredUsers.length === 0" 
+                class="user-dropdown-empty">
+                No users found
+              </div>
+              <div 
+                *ngFor="let user of filteredUsers"
+                class="user-dropdown-item"
+                (click)="selectUser(user)">
+                <div class="user-item-name">{{ user.username || user.userName || user.name || 'Unknown' }}</div>
+                <div class="user-item-email" *ngIf="user.email">{{ user.email }}</div>
+              </div>
+            </div>
+            <div class="user-dropdown-loading" *ngIf="isLoadingUsers">
+              Loading users...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Site Name Field -->
+      <div class="form-field">
+        <label class="field-label">
+          Site Name<span class="required">*</span>
+        </label>
+        <div class="select-wrapper">
+          <select
+            class="form-select"
+            [(ngModel)]="formData.siteId"
+            (change)="onSiteChange()"
+          >
+            <option [ngValue]="null">Please Select Type</option>
+            <option *ngFor="let site of sites" [ngValue]="site.id">
+              {{ site.siteName || site.name }}
+            </option>
+          </select>
+          <svg class="select-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6 9 6 6 6-6"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Working Hours Field -->
+      <div class="form-field">
+        <label class="field-label">
+          Working Hours<span class="required">*</span>
+        </label>
+        <input
+          type="text"
+          class="form-input"
+          [(ngModel)]="formData.workingHours"
+        />
+      </div>
+
+      <!-- Works On All Gates Toggle -->
+      <div class="toggle-field">
+        <label class="toggle-label">Works On All Gates</label>
+        <div class="toggle-switch" [class.active]="formData.worksOnAllGates" (click)="toggleWorksOnAllGates()">
+          <div class="toggle-slider"></div>
+        </div>
+      </div>
+
+      <!-- Gate Selection Grid -->
+      <div class="gates-selection" *ngIf="formData.siteId">
+        <label class="field-label" style="margin-bottom: 12px;">Select Gates</label>
+        <div *ngIf="isLoadingGates" class="loading-gates">Loading gates...</div>
+        <div *ngIf="!isLoadingGates && gates.length === 0" class="no-gates">No gates available for this site</div>
+        <div class="gates-grid" *ngIf="!isLoadingGates && gates.length > 0">
+          <label
+            *ngFor="let gate of gates"
+            class="gate-checkbox-label"
+            [class.checked]="isGateSelected(gate.id || 0)"
+          >
+            <input
+              type="checkbox"
+              class="gate-checkbox"
+              [checked]="isGateSelected(gate.id || 0)"
+              (change)="toggleGateSelection(gate.id || 0)"
+            />
+            <span class="gate-name">{{ gate.gateName || gate.name || gate.code || 'Gate ' + (gate.id || '') }}</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="drawer-footer">
+      <button class="save-btn" (click)="saveMember()" [disabled]="isSaving">
+        <span *ngIf="!isSaving">Save</span>
+        <span *ngIf="isSaving">Saving...</span>
+      </button>
+    </div>
+  </div>
+</div>
+

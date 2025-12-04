@@ -1,0 +1,126 @@
+<div class="team-container">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Team management</h1>
+      <p class="page-subtitle">Manage all valet parking requests across different stages</p>
+    </div>
+    <button class="primary-btn" (click)="addMember()">
+      <span class="add-icon">+</span>
+      Add New Member
+    </button>
+  </div>
+
+  <div class="team-table-card">
+    <table class="team-table">
+      <thead>
+        <tr>
+          <th>
+            <div class="th-content">
+              <span>Name</span>
+              <svg viewBox="0 0 24 24">
+                <path d="M7 10l5-5 5 5M7 14l5 5 5-5" />
+              </svg>
+            </div>
+          </th>
+          <th>
+            <div class="th-content">
+              <span>Site Name</span>
+              <svg viewBox="0 0 24 24">
+                <path d="M7 10l5-5 5 5M7 14l5 5 5-5" />
+              </svg>
+            </div>
+          </th>
+          <th>
+            <div class="th-content">
+              <span>Phone Number</span>
+              <svg viewBox="0 0 24 24">
+                <path d="M7 10l5-5 5 5M7 14l5 5 5-5" />
+              </svg>
+            </div>
+          </th>
+          <th>
+            <div class="th-content">
+              <span>Status</span>
+              <svg viewBox="0 0 24 24">
+                <path d="M7 10l5-5 5 5M7 14l5 5 5-5" />
+              </svg>
+            </div>
+          </th>
+          <th class="actions-col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="isLoading" class="loading-row">
+          <td colspan="5" class="loading-cell">
+            <div class="loading-spinner">Loading...</div>
+          </td>
+        </tr>
+        <tr *ngIf="!isLoading && teamMembers.length === 0" class="empty-row">
+          <td colspan="5" class="empty-cell">
+            <div>No team members found</div>
+          </td>
+        </tr>
+        <tr *ngFor="let member of teamMembers" (click)="openActionsMember = null">
+          <td>
+            <div class="member-cell">
+              <div class="avatar">{{member.initials}}</div>
+              <div>
+                <div class="member-name">{{member.name}}</div>
+                <div class="member-role">Valet Associate</div>
+              </div>
+            </div>
+          </td>
+          <td class="site-cell">
+            <div class="site-name">{{member.siteName}}</div>
+          </td>
+          <td>{{member.phone}}</td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(member.status)">
+              {{member.status}}
+            </span>
+          </td>
+          <td class="actions-col">
+            <div class="row-actions">
+              <div class="actions-trigger">
+                <button class="icon-btn" (click)="toggleActions(member.id, $event)">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="5" cy="12" r="1.5"></circle>
+                    <circle cx="12" cy="12" r="1.5"></circle>
+                    <circle cx="19" cy="12" r="1.5"></circle>
+                  </svg>
+                </button>
+                <div class="actions-menu" *ngIf="openActionsMember === member.id">
+                  <button (click)="editMember(member, $event)">Edit</button>
+                  <button class="danger" (click)="deleteMember(member, $event)">Delete</button>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="table-footer">
+      <button class="page-btn" [disabled]="currentPage === 1" (click)="previousPage()">
+        ← Previous
+      </button>
+      <div class="page-numbers">
+        <button
+          *ngFor="let page of getPageNumbers()"
+          class="page-number-btn"
+          [class.active]="page === currentPage"
+          [class.ellipsis]="page === '...'"
+          [disabled]="page === '...'"
+          (click)="handlePageClick(page)">
+          {{page}}
+        </button>
+      </div>
+      <button class="page-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">
+        Next →
+      </button>
+    </div>
+  </div>
+
+  <!-- Add Member Slide Panel -->
+  <app-add-member *ngIf="showAddMemberPanel" (close)="closeAddMemberPanel()"></app-add-member>
+</div>

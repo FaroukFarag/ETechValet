@@ -1,0 +1,237 @@
+<div class="sites-page">
+  <div class="page-header">
+    <div class="header-text">
+      <h1>Sites</h1>
+    </div>
+    <div class="header-actions">
+      <button class="secondary-btn" type="button" (click)="exportCurrentTab()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Export</span>
+      </button>
+      <button class="primary-btn" type="button" (click)="openAddSite()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>Add Sites</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="toast" *ngIf="notificationMessage" [class.error]="notificationType === 'error'">
+    {{ notificationMessage }}
+  </div>
+
+  <div class="table-card" *ngIf="!isLoading && !loadError && sites.length > 0; else tableState">
+    <table class="sites-table">
+        <thead>
+          <tr>
+            <th>Site Name <span class="sort-icon"></span></th>
+            <th>Company Name <span class="sort-icon"></span></th>
+            <th>Fixed Value <span class="sort-icon"></span></th>
+            <th>Percentage <span class="sort-icon"></span></th>
+            <th>Address <span class="sort-icon"></span></th>
+            <th>Status <span class="sort-icon"></span></th>
+            <th class="actions-col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of sites; index as i">
+            <td>{{ row.siteName }}</td>
+            <td>{{ row.companyName }}</td>
+            <td>{{ row.fixedValueDisplay }}</td>
+            <td>{{ row.percentageDisplay }}</td>
+            <td class="address">{{ row.address }}</td>
+            <td>
+              <span class="status-badge" [ngClass]="getStatusClass(row.status)">{{ row.status }}</span>
+            </td>
+            <td class="actions-cell">
+              <div class="actions-wrapper">
+                <button class="view-btn" type="button" (click)="viewSiteDetails(row, $event)">
+                  VIEW
+                </button>
+                <button class="icon-btn" type="button" aria-label="More actions" (click)="toggleSiteMenu(i, $event)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="5" r="1"></circle>
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <circle cx="12" cy="19" r="1"></circle>
+                  </svg>
+                </button>
+                <div class="actions-menu" *ngIf="openSiteMenuIndex === i">
+                  <button type="button" class="menu-item" (click)="editSite(row, $event)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M17 3a2.828 2.828 0 0 1 4 4L7 21H3v-4L17 3z"></path>
+                    </svg>
+                    <span>Update</span>
+                  </button>
+                  <button type="button" class="menu-item danger" (click)="deleteSite(row, $event)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                      <path d="M10 11v6"></path>
+                      <path d="M14 11v6"></path>
+                      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+                    </svg>
+                    <span>Delete</span>
+                  </button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  </div>
+
+  <ng-template #tableState>
+    <div class="table-card status-card">
+      <div *ngIf="isLoading" class="status-content">
+        <div class="spinner"></div>
+        <p>Loading data...</p>
+      </div>
+      <div *ngIf="!isLoading && loadError" class="status-content">
+        <p>{{ loadError }}</p>
+        <button type="button" class="secondary-btn" (click)="loadSites()">Retry</button>
+      </div>
+      <div *ngIf="!isLoading && !loadError && sites.length === 0" class="status-content">
+        <p>No records available yet.</p>
+        <button type="button" class="primary-btn" (click)="openAddSite()">Add Sites</button>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="confirm-overlay" *ngIf="showDeleteConfirm" (click)="cancelDelete()"></div>
+  <div class="confirm-dialog" *ngIf="showDeleteConfirm" (click)="$event.stopPropagation()">
+    <h3>Delete Site</h3>
+    <p>Are you sure you want to delete this site? This action cannot be undone.</p>
+    <div class="confirm-actions">
+      <button type="button" class="secondary-btn" (click)="cancelDelete()">Cancel</button>
+      <button type="button" class="danger-btn" (click)="confirmDelete()">Delete</button>
+    </div>
+  </div>
+
+  <div class="pagination" *ngIf="!isLoading && !loadError && totalPages > 0">
+    <button type="button" class="page-btn" (click)="previousPage()" [disabled]="currentPage === 1">&larr; Previous</button>
+    <div class="page-numbers">
+      <button 
+        *ngFor="let page of getPageNumbers()"
+        type="button" 
+        class="page-number"
+        [class.active]="page === currentPage"
+        [class.ellipsis-btn]="page === '...'"
+        [disabled]="page === '...'"
+        (click)="goToPage(page)">
+        {{ page }}
+      </button>
+    </div>
+    <button type="button" class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">Next &rarr;</button>
+  </div>
+
+  <div class="drawer-overlay" *ngIf="showAddSiteDrawer" (click)="closeAddSite()"></div>
+  <div class="drawer modern" [class.open]="showAddSiteDrawer" (click)="closeAddSite()">
+    <form class="drawer-content" [formGroup]="addSiteForm" (ngSubmit)="submitAddSite()" (click)="$event.stopPropagation()">
+      <div class="drawer-header modern">
+        <h2>{{ isEditMode ? 'Update Site' : 'Add New Site' }}</h2>
+        <button type="button" class="close-btn-icon" (click)="closeAddSite()" aria-label="Close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="drawer-body modern">
+        <div class="form-field modern" [class.invalid]="addSiteForm.get('siteName')?.invalid && addSiteForm.get('siteName')?.touched">
+          <label>Site Name</label>
+          <input type="text" formControlName="siteName" placeholder="Riyadh" />
+        </div>
+
+        <div class="form-field modern" [class.invalid]="addSiteForm.get('companyId')?.invalid && addSiteForm.get('companyId')?.touched">
+          <label>Company name*</label>
+          <select formControlName="companyId">
+            <option [ngValue]="null" disabled>Please Select Company</option>
+            <option *ngFor="let option of companyOptions" [ngValue]="option.id">{{ option.label }}</option>
+          </select>
+          <svg class="dropdown-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+
+        <div class="form-field modern" [class.invalid]="addSiteForm.get('valueType')?.invalid && addSiteForm.get('valueType')?.touched">
+          <label>Value Type*</label>
+          <select formControlName="valueType">
+            <option *ngFor="let option of valueTypes" [ngValue]="option.value">{{ option.label }}</option>
+          </select>
+          <svg class="dropdown-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+
+        <div class="form-field modern with-suffix" *ngIf="showFixedValueField" [class.invalid]="addSiteForm.get('fixedValue')?.invalid && addSiteForm.get('fixedValue')?.touched">
+          <label>Fixed Value*</label>
+          <div class="input-wrapper">
+            <input type="number" formControlName="fixedValue" placeholder="10,000" />
+            <span class="suffix">SAR</span>
+          </div>
+        </div>
+
+        <div class="form-field modern with-suffix" *ngIf="showPercentageField" [class.invalid]="addSiteForm.get('percentage')?.invalid && addSiteForm.get('percentage')?.touched">
+          <label>Percentage*</label>
+          <div class="input-wrapper">
+            <input type="number" formControlName="percentage" placeholder="5" />
+            <span class="suffix">%</span>
+          </div>
+        </div>
+
+        <div class="form-field modern" [class.invalid]="addSiteForm.get('address')?.invalid && addSiteForm.get('address')?.touched">
+          <label>Address</label>
+          <input type="text" formControlName="address" placeholder="Enter address" />
+        </div>
+
+        <div class="form-field modern" [class.invalid]="addSiteForm.get('status')?.invalid && addSiteForm.get('status')?.touched">
+          <label>Status</label>
+          <select formControlName="status">
+            <option *ngFor="let option of statusOptions" [ngValue]="option.value">{{ option.label }}</option>
+          </select>
+          <svg class="dropdown-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+
+        <div class="collapsible-section" *ngIf="isEditMode || enableExtraServices">
+          <div class="toggle-row modern">
+            <label>Extra Services</label>
+            <label class="switch modern">
+              <input type="checkbox" #extraServicesToggle [checked]="enableExtraServices" (change)="toggleExtraServices(extraServicesToggle.checked)" />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="extra-services modern" formArrayName="extraServices" *ngIf="enableExtraServices">
+            <div class="extra-service modern" *ngFor="let control of extraServicesArray.controls; index as i" [formGroupName]="i">
+              <label class="checkbox-label modern">
+                <input type="checkbox" formControlName="enabled" />
+                <span class="service-name">{{ control.get('label')?.value || defaultExtraServices[i] }}</span>
+              </label>
+              <div class="input-wrapper small">
+                <input type="number" formControlName="amount" placeholder="0" [disabled]="!control.get('enabled')?.value" />
+                <span class="suffix">SAR</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-footer modern">
+        <button type="submit" class="save-btn" [disabled]="isSaving || addSiteForm.invalid">
+          <span *ngIf="!isSaving">{{ isEditMode ? 'Update' : 'Save' }}</span>
+          <span *ngIf="isSaving">Saving...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+</div>

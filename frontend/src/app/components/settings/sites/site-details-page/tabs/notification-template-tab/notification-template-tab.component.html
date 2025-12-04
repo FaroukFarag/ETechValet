@@ -1,0 +1,92 @@
+<div class="notification-templates-page">
+  <section class="templates-table-card" *ngIf="!isLoading && !loadError && templates.length > 0; else tableState">
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Chanel <span class="sort-indicator"></span></th>
+            <th>Message Type <span class="sort-indicator"></span></th>
+            <th>Message Template <span class="sort-indicator"></span></th>
+            <th>Status <span class="sort-indicator"></span></th>
+            <th class="actions-col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let template of templates; index as i">
+            <td>{{ getChannelLabel(template.channel) }}</td>
+            <td>{{ template.messageType || '-' }}</td>
+            <td class="message-template-cell">{{ template.messageTemplate || '-' }}</td>
+            <td>
+              <span class="status-badge" [class.active]="getStatusValue(template.status) === 1" [class.inactive]="getStatusValue(template.status) !== 1">
+                {{ getStatusLabel(template.status) }}
+              </span>
+            </td>
+            <td class="row-actions">
+              <button class="menu-trigger" type="button" (click)="toggleMenu(i, $event)" aria-label="More actions">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="5" r="1"></circle>
+                  <circle cx="12" cy="12" r="1"></circle>
+                  <circle cx="12" cy="19" r="1"></circle>
+                </svg>
+              </button>
+              <div class="menu-panel" *ngIf="openMenuIndex === i">
+                <button type="button" (click)="editTemplate(template, $event)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 3a2.828 2.828 0 0 1 4 4L7 21H3v-4L17 3z"></path>
+                  </svg>
+                  Update
+                </button>
+                <button type="button" class="danger" (click)="deleteTemplate(template, $event)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                    <path d="M10 11v6"></path>
+                    <path d="M14 11v6"></path>
+                    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+                  </svg>
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <ng-template #tableState>
+    <section class="templates-table-card status-card">
+      <div *ngIf="isLoading" class="status-content">
+        <div class="spinner"></div>
+        <p>Loading templates...</p>
+      </div>
+      <div *ngIf="!isLoading && loadError" class="status-content">
+        <p>{{ loadError }}</p>
+        <button type="button" class="ghost-btn" (click)="loadTemplates()">Retry</button>
+      </div>
+      <div *ngIf="!isLoading && !loadError && templates.length === 0" class="status-content">
+        <p>No notification templates configured.</p>
+      </div>
+    </section>
+  </ng-template>
+
+  <div class="templates-pagination" *ngIf="!isLoading && !loadError && totalPages > 0">
+    <button type="button" class="page-btn" (click)="previousPage()" [disabled]="currentPage === 1">
+      ← Previous
+    </button>
+    <div class="page-numbers">
+      <button
+        *ngFor="let page of pageNumbers"
+        class="page-number"
+        [class.active]="page === currentPage"
+        [class.ellipsis]="page === '...'"
+        (click)="goToPage(page)"
+        [disabled]="page === '...'">
+        {{ page }}
+      </button>
+    </div>
+    <button type="button" class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
+      Next →
+    </button>
+  </div>
+</div>

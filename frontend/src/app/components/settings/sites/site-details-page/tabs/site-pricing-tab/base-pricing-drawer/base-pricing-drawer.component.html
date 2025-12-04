@@ -1,0 +1,180 @@
+<div class="drawer-overlay" *ngIf="isOpen" (click)="onClose()"></div>
+<div class="base-pricing-drawer" [class.open]="isOpen" (click)="$event.stopPropagation()">
+  <form class="drawer-content" [formGroup]="basePricingForm" (ngSubmit)="onSubmit()">
+    <!-- Header -->
+    <div class="drawer-header">
+      <h2>{{ isEditMode ? 'Update Pricing' : 'Base Pricing' }}</h2>
+      <button type="button" class="close-btn" (click)="onClose()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="drawer-body">
+      <!-- Customer Type -->
+      <div class="form-field">
+        <label>Customer Type<span class="required">*</span></label>
+        <div class="select-wrapper">
+          <select formControlName="customerType">
+            <option *ngFor="let option of displayCustomerTypeOptions" [ngValue]="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+          <svg class="dropdown-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Hourly Rate (shown when pricing type is hourly) -->
+      <div class="form-field" *ngIf="showHourlyRate">
+        <label>Hourly Rate<span class="required">*</span></label>
+        <div class="input-with-currency">
+          <input type="number" formControlName="hourlyRate" placeholder="0.00" />
+          <span class="currency">SAR</span>
+        </div>
+      </div>
+
+      <!-- Daily Max Rate (shown when pricing type is daily) -->
+      <div class="form-field" *ngIf="showDailyMaxRate">
+        <label>Daily Max Rate<span class="required">*</span></label>
+        <div class="input-with-currency">
+          <input type="number" formControlName="dailyMaxRate" placeholder="0.00" />
+          <span class="currency">SAR</span>
+        </div>
+      </div>
+
+      <!-- Valet Guest Pricing -->
+      <div class="toggle-section">
+        <div class="toggle-header">
+          <label>Valet Guest Pricing</label>
+          <label class="toggle-switch">
+            <input type="checkbox" formControlName="valetGuestPricingEnabled" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div *ngIf="basePricingForm.get('valetGuestPricingEnabled')?.value">
+          <div class="form-field" [class.invalid]="basePricingForm.get('valetGuestPricingType')?.invalid && basePricingForm.get('valetGuestPricingType')?.touched">
+            <label>Pricing Type<span class="required">*</span></label>
+            <div class="select-wrapper">
+              <select formControlName="valetGuestPricingType" (change)="onValetGuestPricingTypeChange()">
+                <option *ngFor="let option of valetGuestPricingTypeOptions" [value]="option.value">
+                  {{ option.label }}
+                </option>
+              </select>
+              <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m6 9 6 6 6-6"></path>
+              </svg>
+            </div>
+          </div>
+          <!-- Fixed Amount Input (shown when Fixed Amount is selected) -->
+          <div class="form-field" *ngIf="showValetFixedPrice" [class.invalid]="basePricingForm.get('valetFixedPrice')?.invalid && basePricingForm.get('valetFixedPrice')?.touched">
+            <label>Fixed Amount<span class="required">*</span></label>
+            <div class="input-with-currency">
+              <input type="number" formControlName="valetFixedPrice" placeholder="0.00" step="0.01" />
+              <span class="currency">SAR</span>
+            </div>
+          </div>
+
+          <!-- Hourly Rate Input (shown when Hourly Rate is selected) -->
+          <div class="form-field" *ngIf="showValetHourlyRate" [class.invalid]="basePricingForm.get('valetGuestHourlyRate')?.invalid && basePricingForm.get('valetGuestHourlyRate')?.touched">
+            <label>Hourly Rate<span class="required">*</span></label>
+            <div class="input-with-currency">
+              <input type="number" formControlName="valetGuestHourlyRate" placeholder="0.00" step="0.01" />
+              <span class="currency">SAR</span>
+            </div>
+          </div>
+
+          <!-- Max Daily Rate Input (shown when Hourly Rate is selected) -->
+          <div class="form-field" *ngIf="showValetHourlyRate" [class.invalid]="basePricingForm.get('valetGuestDailyMaxRate')?.invalid && basePricingForm.get('valetGuestDailyMaxRate')?.touched">
+            <label>Max Daily Rate<span class="required">*</span></label>
+            <div class="input-with-currency">
+              <input type="number" formControlName="valetGuestDailyMaxRate" placeholder="0.00" step="0.01" />
+              <span class="currency">SAR</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Enable Parking Guest Pricing -->
+      <div class="toggle-section">
+        <div class="toggle-header">
+          <label>Enable Parking Guest Pricing</label>
+          <label class="toggle-switch">
+            <input type="checkbox" formControlName="parkingGuestPricingEnabled" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div *ngIf="basePricingForm.get('parkingGuestPricingEnabled')?.value">
+          <div class="form-field" [class.invalid]="basePricingForm.get('parkingGuestPricingType')?.invalid && basePricingForm.get('parkingGuestPricingType')?.touched">
+            <label>Pricing Type<span class="required">*</span></label>
+            <div class="select-wrapper">
+              <select formControlName="parkingGuestPricingType" (change)="onParkingGuestPricingTypeChange()">
+                <option *ngFor="let option of parkingGuestPricingTypeOptions" [value]="option.value">
+                  {{ option.label }}
+                </option>
+              </select>
+              <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m6 9 6 6 6-6"></path>
+              </svg>
+            </div>
+          </div>
+          <!-- Fixed Amount Input (shown when Fixed Amount is selected) -->
+          <div class="form-field" *ngIf="showParkingGuestFixedPrice" [class.invalid]="basePricingForm.get('parkingGuestFixedPrice')?.invalid && basePricingForm.get('parkingGuestFixedPrice')?.touched">
+            <label>Fixed Amount<span class="required">*</span></label>
+            <div class="input-with-currency">
+              <input type="number" formControlName="parkingGuestFixedPrice" placeholder="0.00" step="0.01" />
+              <span class="currency">SAR</span>
+            </div>
+          </div>
+
+          <!-- Hourly Rate Input (shown when Hourly Rate is selected) -->
+          <div class="form-field" *ngIf="showParkingGuestHourlyRate" [class.invalid]="basePricingForm.get('parkingGuestHourlyRate')?.invalid && basePricingForm.get('parkingGuestHourlyRate')?.touched">
+            <label>Hourly Rate<span class="required">*</span></label>
+            <div class="input-with-currency">
+              <input type="number" formControlName="parkingGuestHourlyRate" placeholder="0.00" step="0.01" />
+              <span class="currency">SAR</span>
+            </div>
+          </div>
+
+          <!-- Max Daily Rate Input (shown when Hourly Rate is selected) -->
+          <div class="form-field" *ngIf="showParkingGuestHourlyRate" [class.invalid]="basePricingForm.get('parkingGuestDailyMaxRate')?.invalid && basePricingForm.get('parkingGuestDailyMaxRate')?.touched">
+            <label>Max Daily Rate<span class="required">*</span></label>
+            <div class="input-with-currency">
+              <input type="number" formControlName="parkingGuestDailyMaxRate" placeholder="0.00" step="0.01" />
+              <span class="currency">SAR</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Days of the Week -->
+      <div class="days-section">
+        <div class="days-header">
+          <label>Active Days of the Week</label>
+          <button type="button" class="select-all-btn" (click)="selectAllDays()">
+            {{ allDaysSelected ? 'Deselect All' : 'Select All' }}
+          </button>
+        </div>
+        <div class="days-checkboxes">
+          <label class="day-checkbox" *ngFor="let day of daysOfWeek">
+            <input type="checkbox" [(ngModel)]="day.checked" [ngModelOptions]="{standalone: true}" />
+            <span>{{ day.label }}</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="drawer-footer">
+      <button type="submit" class="save-btn" [disabled]="isSaving || basePricingForm.invalid">
+        <span *ngIf="!isSaving">{{ isEditMode ? 'Update' : 'Save' }}</span>
+        <span *ngIf="isSaving">{{ isEditMode ? 'Updating...' : 'Saving...' }}</span>
+      </button>
+    </div>
+  </form>
+</div>
+

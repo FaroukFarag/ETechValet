@@ -1,0 +1,267 @@
+<div class="reports-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">Reports</h1>
+      <p class="page-subtitle">Generate and review valet reports.</p>
+    </div>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <div class="tabs-navigation">
+    <button 
+      class="tab-btn" 
+      [class.active]="activeTab === 'shift-sales'"
+      (click)="setActiveTab('shift-sales')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+      <span>Shift Sales Reports</span>
+    </button>
+    <button 
+      class="tab-btn" 
+      [class.active]="activeTab === 'date-sales'"
+      (click)="setActiveTab('date-sales')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+        <line x1="16" y1="2" x2="16" y2="6"></line>
+        <line x1="8" y1="2" x2="8" y2="6"></line>
+        <line x1="3" y1="10" x2="21" y2="10"></line>
+      </svg>
+      <span>Date Sales Reports</span>
+    </button>
+    <button 
+      class="tab-btn" 
+      [class.active]="activeTab === 'driver-productivity'"
+      (click)="setActiveTab('driver-productivity')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+        <circle cx="9" cy="7" r="4"></circle>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+      </svg>
+      <span>Driver Productivity Report</span>
+    </button>
+  </div>
+
+  <div class="report-controls">
+
+    <div class="filters-section">
+      <div class="filter-group" *ngIf="activeTab === 'shift-sales'">
+        <label class="filter-label">Shift Date</label>
+        <div class="date-input-wrapper">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <input 
+            type="date" 
+            [(ngModel)]="shiftDate" 
+            (change)="onShiftDateChange()"
+            class="date-input">
+        </div>
+      </div>
+
+      <div class="filter-group" *ngIf="activeTab === 'shift-sales'">
+        <label class="filter-label">Shift Type</label>
+        <select 
+          [(ngModel)]="shiftType" 
+          (change)="onShiftTypeChange()"
+          class="select-input">
+          <option value="">All Shifts</option>
+          <option *ngFor="let shift of shiftOptions" [value]="shift.id">
+            {{ shift.name || shift.id }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group" *ngIf="activeTab === 'date-sales' || activeTab === 'driver-productivity'">
+        <label class="filter-label">Date From</label>
+        <div class="date-input-wrapper">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <input 
+            type="date" 
+            [(ngModel)]="dateFrom" 
+            (change)="onDateFromChange()"
+            class="date-input">
+        </div>
+      </div>
+
+      <div class="filter-group" *ngIf="activeTab === 'date-sales' || activeTab === 'driver-productivity'">
+        <label class="filter-label">Date To</label>
+        <div class="date-input-wrapper">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <input 
+            type="date" 
+            [(ngModel)]="dateTo" 
+            (change)="onDateToChange()"
+            class="date-input">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reports-card">
+    <div class="table-container" *ngIf="!isLoading && !loadError && reports.length > 0; else stateTemplate">
+      <table class="reports-table">
+        <thead>
+          <tr>
+            <th>
+              Site Name
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"></path>
+              </svg>
+            </th>
+            <th>
+              Request No.
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"></path>
+              </svg>
+            </th>
+            <th>
+              Created Time
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"></path>
+              </svg>
+            </th>
+            <th>
+              Plate Number
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"></path>
+              </svg>
+            </th>
+            <th>
+              Gate
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"></path>
+              </svg>
+            </th>
+            <th>
+              Customer Mobile
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"></path>
+              </svg>
+            </th>
+            <th>
+              Receiver
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"></path>
+              </svg>
+            </th>
+            <th>
+              Parked by
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"></path>
+              </svg>
+            </th>
+            <th>
+              Delivered by
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"></path>
+              </svg>
+            </th>
+            <th>
+              Amount
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"></path>
+              </svg>
+            </th>
+            <th>
+              Payment Type
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"></path>
+              </svg>
+            </th>
+            <th>
+              Notes
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"></path>
+              </svg>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let report of paginatedReports">
+            <td class="site-name">{{ report.siteName }}</td>
+            <td>{{ report.requestNo }}</td>
+            <td>{{ report.createdTime }}</td>
+            <td>{{ report.plateNumber }}</td>
+            <td>{{ report.gate }}</td>
+            <td>{{ report.customerMobile }}</td>
+            <td>{{ report.receiver }}</td>
+            <td>{{ report.parkedBy }}</td>
+            <td>{{ report.deliveredBy }}</td>
+            <td>{{ report.amount }}</td>
+            <td>
+              <span class="payment-badge" [ngClass]="'payment-' + getPaymentTypeClass(report.paymentType)">
+                {{ report.paymentType }}
+              </span>
+            </td>
+            <td>{{ report.notes }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #stateTemplate>
+      <div class="state-message" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p>Loading reports...</p>
+      </div>
+      <div class="state-message error" *ngIf="loadError && !isLoading">
+        <p>{{ loadError }}</p>
+      </div>
+      <div class="state-message no-data" *ngIf="!isLoading && !loadError && reports.length === 0">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="12" y1="18" x2="12" y2="12"></line>
+          <line x1="9" y1="15" x2="15" y2="15"></line>
+        </svg>
+        <p>No data</p>
+        <span class="no-data-hint">No reports found for the selected criteria.</span>
+      </div>
+    </ng-template>
+
+    <div class="pagination-section" *ngIf="!isLoading && !loadError && reports.length > 0">
+      <button 
+        class="page-btn" 
+        [disabled]="currentPage === 1" 
+        (click)="previousPage()">
+        ← Previous
+      </button>
+      <div class="page-numbers">
+        <button 
+          *ngFor="let page of getPageNumbers()"
+          class="page-number-btn"
+          [class.active]="page === currentPage"
+          [class.ellipsis]="page === '...'"
+          [disabled]="page === '...'"
+          (click)="goToPage(page)">
+          {{ page }}
+        </button>
+      </div>
+      <button 
+        class="page-btn" 
+        [disabled]="currentPage === totalPages" 
+        (click)="nextPage()">
+        Next →
+      </button>
+    </div>
+  </div>
+</div>
+
+
+

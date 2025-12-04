@@ -1,0 +1,52 @@
+<div class="extra-services-page">
+  <!-- Loading State -->
+  <section class="services-table-card status-card" *ngIf="isLoading">
+    <div class="status-content">
+      <div class="spinner-small"></div>
+      <p>Loading services...</p>
+    </div>
+  </section>
+
+  <!-- Data State -->
+  <section class="services-table-card" *ngIf="!isLoading && services.length > 0">
+    <div class="table-scroll">
+      <app-services-grid 
+        [services]="services"
+        (serviceMenuClick)="onServiceMenu($event)">
+      </app-services-grid>
+    </div>
+  </section>
+
+  <!-- Empty State -->
+  <section class="services-table-card status-card" *ngIf="!isLoading && services.length === 0">
+    <div class="status-content">
+      <p>No data</p>
+    </div>
+  </section>
+
+  <div *ngIf="!isLoading">
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="totalPages > 0 && services.length > 0">
+    <div class="pagination-content">
+      <button class="page-btn" (click)="previousPage()" [disabled]="currentPage === 1">
+        ← Previous
+      </button>
+      <div class="page-numbers">
+        <button 
+          *ngFor="let page of getPageNumbers()" 
+          class="page-number" 
+          [class.active]="currentPage === page"
+          [class.ellipsis]="page === '...'"
+          [disabled]="page === '...'"
+          (click)="handlePageClick(page)">
+          {{ page }}
+        </button>
+      </div>
+      <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages || totalPages === 0">
+        Next →
+      </button>
+    </div>
+  </div>
+</div>
+

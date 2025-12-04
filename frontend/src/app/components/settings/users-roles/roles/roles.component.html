@@ -1,0 +1,166 @@
+<div class="roles-component">
+  <div class="toast" *ngIf="notificationMessage" [class.error]="notificationType === 'error'">
+    <svg *ngIf="notificationType === 'success'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <svg *ngIf="notificationType === 'error'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
+    <span>{{ notificationMessage }}</span>
+  </div>
+
+  <div class="table-card">
+    <table class="roles-table" *ngIf="!isLoadingRoles && !loadRolesError && roles.length > 0; else rolesTableState">
+      <thead>
+        <tr>
+          <th>Role <span class="sort-icon"></span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of roles; index as i">
+          <td>{{ row.role }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #rolesTableState>
+      <div class="status-card">
+        <div *ngIf="isLoadingRoles" class="status-content">
+          <div class="spinner"></div>
+          <p>Loading roles...</p>
+        </div>
+        <div *ngIf="!isLoadingRoles && loadRolesError" class="status-content">
+          <p>{{ loadRolesError }}</p>
+          <button type="button" class="secondary-btn" (click)="loadRoles()">Retry</button>
+        </div>
+        <div *ngIf="!isLoadingRoles && !loadRolesError && roles.length === 0" class="status-content">
+          <p>No roles available yet.</p>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="pagination" *ngIf="!isLoadingRoles && !loadRolesError && totalPages > 0">
+    <button type="button" class="page-btn" (click)="previousPage()" [disabled]="currentPage === 1">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      <span>Previous</span>
+    </button>
+    <div class="page-numbers">
+      <button
+        *ngFor="let page of pageNumbers"
+        type="button"
+        class="page-number"
+        [class.active]="page === currentPage"
+        [class.ellipsis-btn]="page === '...'"
+        (click)="goToPage(page)"
+        [disabled]="page === '...'">
+        {{ page }}
+      </button>
+    </div>
+    <button type="button" class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
+      <span>Next</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+  </div>
+
+  <div class="modal-overlay" *ngIf="showRoleModal" (click)="closeRoleModal()"></div>
+  <div class="modal" *ngIf="showRoleModal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ isEditRoleMode ? 'Update Role' : 'Add New Role' }}</h3>
+      <button type="button" class="close-btn" (click)="closeRoleModal()" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <form [formGroup]="roleForm" (ngSubmit)="submitRole()" class="modal-body">
+      <div class="form-field" [class.invalid]="roleForm.get('name')?.invalid && roleForm.get('name')?.touched">
+        <label>Role Name*</label>
+        <input type="text" formControlName="name" placeholder="Enter role name" />
+      </div>
+
+      <div class="permissions-section">
+        <div class="permissions-header">
+          <h4>Permissions*</h4>
+          <p>Select the features this role can access.</p>
+        </div>
+        <div class="permissions-grid" formGroupName="permissions">
+          <label class="checkbox-item">
+            <input type="checkbox" formControlName="receiveCar" />
+            <span>Receive Car</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" formControlName="deliverCar" />
+            <span>Deliver Car</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" formControlName="editPricing" />
+            <span>Edit Pricing</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" formControlName="viewPricing" />
+            <span>View Pricing</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" formControlName="dashboard" />
+            <span>Dashboard</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" formControlName="requests" />
+            <span>Requests</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" formControlName="receipts" />
+            <span>Receipts</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" formControlName="services" />
+            <span>Services</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" formControlName="settings" />
+            <span>Settings</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" formControlName="sites" />
+            <span>Sites</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" formControlName="companies" />
+            <span>Companies</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" formControlName="assignRole" />
+            <span>Assign Role</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="secondary-btn" (click)="closeRoleModal()" [disabled]="isSavingRole">Cancel</button>
+        <button type="submit" class="primary-btn" [disabled]="isSavingRole || roleForm.invalid">
+          <span *ngIf="!isSavingRole">{{ isEditRoleMode ? 'Update' : 'Save' }}</span>
+          <span *ngIf="isSavingRole">Saving...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="confirm-overlay" *ngIf="showRoleDeleteConfirm" (click)="cancelDeleteRole()"></div>
+  <div class="confirm-dialog" *ngIf="showRoleDeleteConfirm" (click)="$event.stopPropagation()">
+    <h3>Delete Role</h3>
+    <p>Are you sure you want to delete this role? This action cannot be undone.</p>
+    <div class="confirm-actions">
+      <button type="button" class="secondary-btn" (click)="cancelDeleteRole()">Cancel</button>
+      <button type="button" class="danger-btn" (click)="confirmDeleteRole()">Delete</button>
+    </div>
+  </div>
+</div>
+

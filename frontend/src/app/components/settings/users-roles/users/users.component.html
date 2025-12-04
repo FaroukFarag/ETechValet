@@ -1,0 +1,260 @@
+<div class="users-component">
+  <div class="toast" *ngIf="notificationMessage" [class.error]="notificationType === 'error'">
+    <svg *ngIf="notificationType === 'success'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <svg *ngIf="notificationType === 'error'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
+    <span>{{ notificationMessage }}</span>
+  </div>
+
+  <div class="table-card">
+    <table class="users-table" *ngIf="!isLoadingUsers && !loadUsersError && users.length > 0; else usersTableState">
+      <thead>
+        <tr>
+          <th>Username <span class="sort-icon"></span></th>
+          <th>Phone Numbers <span class="sort-icon"></span></th>
+          <th>Roles <span class="sort-icon"></span></th>
+          <th>Email <span class="sort-icon"></span></th>
+          <th>Status <span class="sort-icon"></span></th>
+          <th class="actions-col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of users; index as i">
+          <td [title]="row.username && row.username !== '—' ? row.username : 'Username not available'">
+            <span [class.empty-value]="!row.username || row.username === '—'">{{ row.username || '—' }}</span>
+          </td>
+          <td [title]="row.phoneNumber && row.phoneNumber !== '—' ? row.phoneNumber : 'Phone number not available'">
+            <span [class.empty-value]="!row.phoneNumber || row.phoneNumber === '—'">{{ row.phoneNumber || '—' }}</span>
+          </td>
+          <td [title]="row.role && row.role !== '—' ? row.role : 'Role not assigned'">
+            <span [class.empty-value]="!row.role || row.role === '—'">{{ row.role || '—' }}</span>
+          </td>
+          <td [title]="row.email && row.email !== '—' ? row.email : 'Email not available'">
+            <span [class.empty-value]="!row.email || row.email === '—'">{{ row.email || '—' }}</span>
+          </td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(row.status)" [title]="'Status: ' + row.status">{{ row.status }}</span>
+          </td>
+          <td class="actions-cell">
+            <div class="user-actions">
+              <button type="button" class="action-link" (click)="resetPassword(row)" title="Reset password for {{ row.username || 'user' }}">Reset Password</button>
+              <span class="action-separator">|</span>
+              <button type="button" class="action-link" (click)="deactivateAccount(row)" [title]="(row.status === 'Active' ? 'Deactivate' : 'Activate') + ' account for ' + (row.username || 'user')">
+                {{ row.status === 'Active' ? 'Deactivate Account' : 'Activate Account' }}
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ng-template #usersTableState>
+      <div class="status-card">
+        <div *ngIf="isLoadingUsers" class="status-content">
+          <div class="spinner"></div>
+          <p>Loading users...</p>
+        </div>
+        <div *ngIf="!isLoadingUsers && loadUsersError" class="status-content">
+          <p>{{ loadUsersError }}</p>
+          <button type="button" class="secondary-btn" (click)="loadUsers()">Retry</button>
+        </div>
+        <div *ngIf="!isLoadingUsers && !loadUsersError && users.length === 0" class="status-content">
+          <p>No users available yet.</p>
+          <button type="button" class="primary-btn" (click)="addNewUser()">Add New User</button>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="pagination" *ngIf="!isLoadingUsers && !loadUsersError && totalUsersPages > 0">
+    <button type="button" class="page-btn" (click)="previousUsersPage()" [disabled]="currentUsersPage === 1">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      <span>Previous</span>
+    </button>
+    <div class="page-numbers">
+      <button
+        *ngFor="let page of usersPageNumbers"
+        type="button"
+        class="page-number"
+        [class.active]="page === currentUsersPage"
+        [class.ellipsis-btn]="page === '...'"
+        (click)="goToUsersPage(page)"
+        [disabled]="page === '...'">
+        {{ page }}
+      </button>
+    </div>
+    <button type="button" class="page-btn" (click)="nextUsersPage()" [disabled]="currentUsersPage === totalUsersPages">
+      <span>Next</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Add User Drawer -->
+  <div class="drawer-overlay" *ngIf="showAddUserDrawer" (click)="closeAddUserDrawer()"></div>
+  <div class="drawer" [class.open]="showAddUserDrawer" (click)="$event.stopPropagation()">
+    <div class="drawer-content">
+      <div class="drawer-header">
+        <h2>Add New User</h2>
+        <button type="button" class="close-btn" (click)="closeAddUserDrawer()" aria-label="Close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <form [formGroup]="userForm" (ngSubmit)="submitUser()" class="drawer-body">
+        <!-- Username -->
+        <div class="form-field" [class.invalid]="userForm.get('userName')?.invalid && userForm.get('userName')?.touched">
+          <label>
+            Username<span class="required-asterisk">*</span>
+          </label>
+          <input 
+            type="text" 
+            formControlName="userName" 
+            placeholder="Enter username"
+            [class.invalid]="userForm.get('userName')?.invalid && userForm.get('userName')?.touched" />
+          <span class="error-message" *ngIf="userForm.get('userName')?.invalid && userForm.get('userName')?.touched">
+            Username is required
+          </span>
+        </div>
+
+        <!-- Roles -->
+        <div class="form-field" [class.invalid]="userForm.get('role')?.invalid && userForm.get('role')?.touched">
+          <label>
+            Roles<span class="required-asterisk">*</span>
+          </label>
+          <select 
+            formControlName="role"
+            [class.invalid]="userForm.get('role')?.invalid && userForm.get('role')?.touched"
+            [disabled]="isLoadingRoles">
+            <option value="" disabled>Select role</option>
+            <option *ngFor="let role of roles" [value]="role.id">{{ role.name }}</option>
+          </select>
+          <span class="error-message" *ngIf="userForm.get('role')?.invalid && userForm.get('role')?.touched">
+            Role is required
+          </span>
+        </div>
+
+        <!-- Email -->
+        <div class="form-field" [class.invalid]="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+          <label>
+            Email<span class="required-asterisk">*</span>
+          </label>
+          <input 
+            type="email" 
+            formControlName="email" 
+            placeholder="Enter.."
+            [class.invalid]="userForm.get('email')?.invalid && userForm.get('email')?.touched" />
+          <span class="error-message" *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+            <span *ngIf="userForm.get('email')?.errors?.['required']">Email is required</span>
+            <span *ngIf="userForm.get('email')?.errors?.['email'] || userForm.get('email')?.errors?.['pattern']">Please enter a valid email format</span>
+          </span>
+        </div>
+
+        <!-- Password -->
+        <div class="form-field" [class.invalid]="userForm.get('password')?.invalid && userForm.get('password')?.touched">
+          <label>
+            Password<span class="required-asterisk">*</span>
+          </label>
+          <div class="password-input-wrapper">
+            <input 
+              [type]="showPassword ? 'text' : 'password'" 
+              formControlName="password" 
+              placeholder="Enter.."
+              [class.invalid]="userForm.get('password')?.invalid && userForm.get('password')?.touched" />
+            <button 
+              type="button" 
+              class="password-toggle-btn" 
+              (click)="togglePasswordVisibility()"
+              tabindex="-1">
+              <svg *ngIf="!showPassword" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <svg *ngIf="showPassword" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              </svg>
+            </button>
+          </div>
+          <span class="error-message" *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched">
+            <span *ngIf="userForm.get('password')?.errors?.['required']">Password is required</span>
+            <span *ngIf="userForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters</span>
+          </span>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-field" [class.invalid]="(userForm.get('confirmPassword')?.invalid || userForm.errors?.['passwordMismatch']) && userForm.get('confirmPassword')?.touched">
+          <label>
+            Confirm Password<span class="required-asterisk">*</span>
+          </label>
+          <div class="password-input-wrapper">
+            <input 
+              [type]="showConfirmPassword ? 'text' : 'password'" 
+              formControlName="confirmPassword" 
+              placeholder="Enter.."
+              [class.invalid]="(userForm.get('confirmPassword')?.invalid || userForm.errors?.['passwordMismatch']) && userForm.get('confirmPassword')?.touched" />
+            <button 
+              type="button" 
+              class="password-toggle-btn" 
+              (click)="toggleConfirmPasswordVisibility()"
+              tabindex="-1">
+              <svg *ngIf="!showConfirmPassword" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <svg *ngIf="showConfirmPassword" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              </svg>
+            </button>
+          </div>
+          <span class="error-message" *ngIf="userForm.get('confirmPassword')?.invalid && userForm.get('confirmPassword')?.touched">
+            <span *ngIf="userForm.get('confirmPassword')?.errors?.['required']">Confirm password is required</span>
+          </span>
+          <span class="error-message" *ngIf="userForm.errors?.['passwordMismatch'] && userForm.get('confirmPassword')?.touched && userForm.get('password')?.touched">
+            Passwords do not match
+          </span>
+        </div>
+
+        <!-- Status -->
+        <div class="form-field" [class.invalid]="userForm.get('status')?.invalid && userForm.get('status')?.touched">
+          <label>
+            Status<span class="required-asterisk">*</span>
+          </label>
+          <select 
+            formControlName="status"
+            [class.invalid]="userForm.get('status')?.invalid && userForm.get('status')?.touched">
+            <option value="" disabled>Please Select Type</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+          <span class="error-message" *ngIf="userForm.get('status')?.invalid && userForm.get('status')?.touched">
+            Status is required
+          </span>
+        </div>
+
+        <div class="drawer-footer">
+          <button type="button" class="secondary-btn" (click)="closeAddUserDrawer()" [disabled]="isSaving">
+            Cancel
+          </button>
+          <button type="submit" class="primary-btn" [disabled]="isSaving || userForm.invalid">
+            <span *ngIf="!isSaving">Save</span>
+            <span *ngIf="isSaving">Saving...</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

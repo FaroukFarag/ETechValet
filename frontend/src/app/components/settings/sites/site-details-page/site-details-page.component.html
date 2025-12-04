@@ -1,0 +1,650 @@
+<div class="page-container">
+  <!-- Notification Toast -->
+  <div class="toast" *ngIf="notificationMessage" [class.error]="notificationType === 'error'">
+    <svg *ngIf="notificationType === 'success'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <svg *ngIf="notificationType === 'error'" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
+    <span>{{ notificationMessage }}</span>
+  </div>
+
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading site details...</p>
+  </div>
+
+  <div class="error-state" *ngIf="!isLoading && loadError">
+    <p>{{ loadError }}</p>
+    <button class="retry-btn" (click)="goBack()">Go Back</button>
+  </div>
+
+  <div class="site-details-wrapper" *ngIf="!isLoading && !loadError && site">
+    
+    <!-- ============ CONTAINER 1: Site Header ============ -->
+    <div class="site-header-container">
+      <button type="button" class="back-btn" (click)="goBack()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+      </button>
+      <h1>Site Information</h1>
+    </div>
+
+    <!-- ============ CONTAINER 2: Site Information Cards ============ -->
+    <div class="site-info-container">
+      <div class="info-cards-grid">
+        <div class="info-item">
+          <div class="info-label">Site Name</div>
+          <div class="info-value">{{ site.siteName || site.name || '—' }}</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Company Name</div>
+          <div class="info-value">{{ site.companyName || '—' }}</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">City</div>
+          <div class="info-value">{{ site.city || '—' }}</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Address</div>
+          <div class="info-value">{{ site.address || '—' }}</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Fixed Value</div>
+          <div class="info-value">{{ formatValue(site.fixedValue, ' SAR') }}</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Percentage</div>
+          <div class="info-value">{{ formatValue(site.percentage, '%') }}</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Status</div>
+          <div class="info-value">
+            <span class="status-badge-compact" [ngClass]="getStatusClass(site.status)">
+              {{ getStatusLabel(site.status) }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ CONTAINER 3: Tabs Section ============ -->
+    <div class="tabs-container">
+      <div class="tabs-header">
+        <div class="tabs-left">
+          <button 
+            *ngFor="let tab of tabs" 
+            class="tab-btn" 
+            [class.active]="activeTab === tab"
+            (click)="setActiveTab(tab)">
+            {{ tab }}
+          </button>
+        </div>
+        
+        <!-- Action buttons for Gates Tab -->
+        <div class="tabs-right" *ngIf="activeTab === 'Gates'">
+          <button class="action-btn secondary" (click)="onExport()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export
+          </button>
+          <button class="action-btn primary" (click)="onAddGates()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Gates
+          </button>
+        </div>
+
+        <!-- Action buttons for Extra Services Tab -->
+        <div class="tabs-right" *ngIf="activeTab === 'Extra Services'">
+          <button class="action-btn secondary" (click)="onExport()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export
+          </button>
+          <button class="action-btn primary" (click)="onAddService()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Extra Service
+          </button>
+        </div>
+
+        <!-- Action buttons for Site Pricing Tab -->
+        <div class="tabs-right" *ngIf="activeTab === 'Site Pricing'">
+          <button class="action-btn secondary" (click)="onExportPricing()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export
+          </button>
+          <button class="action-btn primary" (click)="onAddBasePricing()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Base Pricing
+          </button>
+        </div>
+
+        <!-- Action buttons for Pricing Per Gate Tab -->
+        <div class="tabs-right" *ngIf="activeTab === 'Pricing Per Gate'">
+          <button class="action-btn secondary" (click)="onExportPricing()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export
+          </button>
+          <button class="action-btn primary" (click)="onAddGatePricing()">
+            <span class="add-icon">+</span>
+            New Gate Pricing
+          </button>
+        </div>
+
+        <!-- Action buttons for Users Tab -->
+        <div class="tabs-right" *ngIf="activeTab === 'Users'">
+          <button class="action-btn secondary" (click)="onExportUsers()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export
+          </button>
+        </div>
+
+        <!-- Action buttons for Customer Types Tab -->
+        <div class="tabs-right" *ngIf="activeTab === 'Customer Types'">
+          <button class="action-btn primary" (click)="onAddCustomerType()">
+            <span class="add-icon">+</span>
+            Add Customer Type
+          </button>
+        </div>
+
+        <!-- Action buttons for Notification Template Tab -->
+        <div class="tabs-right" *ngIf="activeTab === 'Notification Template'">
+          <button class="action-btn secondary" (click)="onExportNotificationTemplates()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export
+          </button>
+          <button class="action-btn primary" (click)="onAddNotificationTemplate()">
+            <span class="add-icon">+</span>
+            New Template
+          </button>
+        </div>
+      </div>
+
+      <!-- ============ CONTAINER 4: Tab Content & Grid ============ -->
+      <div class="tab-content-container">
+        <!-- Gates Tab -->
+        <div *ngIf="activeTab === 'Gates'" class="tab-panel">
+          <app-gates-tab [siteId]="site.id"></app-gates-tab>
+        </div>
+
+        <!-- Extra Services Tab -->
+        <div *ngIf="activeTab === 'Extra Services'" class="tab-panel">
+          <app-extra-services-tab [site]="site"></app-extra-services-tab>
+        </div>
+
+        <!-- Site Pricing Tab -->
+        <div *ngIf="activeTab === 'Site Pricing'" class="tab-panel">
+          <app-site-pricing-tab [site]="site" (editPricing)="onEditBasePricing($event)"></app-site-pricing-tab>
+        </div>
+
+        <!-- Pricing Per Gate Tab -->
+        <div *ngIf="activeTab === 'Pricing Per Gate'" class="tab-panel">
+          <app-pricing-per-gate-tab [siteId]="site.id"></app-pricing-per-gate-tab>
+        </div>
+
+        <!-- Users Tab -->
+        <div *ngIf="activeTab === 'Users'" class="tab-panel">
+          <app-users-tab [siteId]="site.id"></app-users-tab>
+        </div>
+
+        <!-- Customer Types Tab -->
+        <div *ngIf="activeTab === 'Customer Types'" class="tab-panel">
+          <app-customer-types-tab [siteId]="site.id"></app-customer-types-tab>
+        </div>
+
+        <!-- Notification Template Tab -->
+        <div *ngIf="activeTab === 'Notification Template'" class="tab-panel">
+          <app-notification-template-tab [siteId]="site.id"></app-notification-template-tab>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ Add Gate Drawer ============ -->
+  <div class="drawer-overlay" *ngIf="showAddGateDrawer" (click)="closeAddGateDrawer()"></div>
+  <div class="gate-drawer" [class.open]="showAddGateDrawer" (click)="$event.stopPropagation()">
+    <form class="drawer-content" [formGroup]="addGateForm" (ngSubmit)="submitAddGate()">
+      <div class="drawer-header">
+        <h2>Add New Gate</h2>
+        <button type="button" class="close-btn" (click)="closeAddGateDrawer()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="drawer-body">
+        <div class="form-field" [class.invalid]="addGateForm.get('gateName')?.invalid && addGateForm.get('gateName')?.touched">
+          <label>Gate name*</label>
+          <input type="text" formControlName="gateName" placeholder="Enter Gate Name" />
+        </div>
+
+        <div class="form-field" [class.invalid]="addGateForm.get('status')?.invalid && addGateForm.get('status')?.touched">
+          <label>Status*</label>
+          <select formControlName="status">
+            <option [ngValue]="null" disabled>Please Select Type</option>
+            <option *ngFor="let option of statusOptions" [ngValue]="option.value">{{ option.label }}</option>
+          </select>
+          <svg class="dropdown-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+      </div>
+
+      <div class="drawer-footer">
+        <button type="submit" class="save-btn" [disabled]="isSavingGate || addGateForm.invalid">
+          <span *ngIf="!isSavingGate">Save</span>
+          <span *ngIf="isSavingGate">Saving...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ============ Base Pricing Drawer ============ -->
+  <app-base-pricing-drawer
+    [siteId]="site?.id || null"
+    [isOpen]="showBasePricingDrawer"
+    [editPricingData]="editPricingData"
+    [customerTypeOptions]="customerTypeOptions"
+    (close)="onCloseBasePricingDrawer()"
+    (save)="onSaveBasePricing($event)">
+  </app-base-pricing-drawer>
+
+  <!-- ============ Add Extra Services Drawer ============ -->
+  <div class="drawer-overlay" *ngIf="showAddServicesDrawer" (click)="closeAddServicesDrawer()"></div>
+  <div class="services-drawer" [class.open]="showAddServicesDrawer" (click)="$event.stopPropagation()">
+    <form class="drawer-content" [formGroup]="addServicesForm" (ngSubmit)="submitAddServices()">
+      <div class="drawer-header">
+        <h2>Add Extra Services</h2>
+        <button type="button" class="close-btn" (click)="closeAddServicesDrawer()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="drawer-body">
+        <div *ngIf="isLoadingServices" class="loading-services">
+          <div class="spinner-small"></div>
+          <span>Loading services...</span>
+        </div>
+        <div *ngIf="!isLoadingServices && servicesArray.controls.length === 0" class="empty-services">
+          <p>No services available. Please add services first.</p>
+        </div>
+        <div *ngIf="!isLoadingServices && servicesArray.controls.length > 0" class="services-list" formArrayName="services">
+          <div class="service-row" *ngFor="let control of servicesArray.controls; index as i" [formGroupName]="i">
+            <label class="service-checkbox">
+              <input type="checkbox" formControlName="enabled" (change)="onCheckboxChange(i, $event)" />
+              <span class="checkbox-label">{{ control.get('name')?.value || 'Service' }}</span>
+            </label>
+            <div class="service-cost">
+              <input 
+                *ngIf="control.get('enabled')?.value"
+                #costInput
+                type="text" 
+                formControlName="cost"
+                (input)="onCostInput($event, i)"
+                (focus)="onCostFocus($event, i)"
+                (blur)="onCostBlur($event, i)"
+                placeholder="0" />
+              <span *ngIf="!control.get('enabled')?.value" class="sar-label">SAR</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-footer">
+        <button type="submit" class="save-btn" [disabled]="isSavingServices">
+          <span *ngIf="!isSavingServices">Save</span>
+          <span *ngIf="isSavingServices">Saving...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ============ Gate Pricing Drawer ============ -->
+  <div class="drawer-overlay" *ngIf="showGatePricingDrawer" (click)="closeGatePricingDrawer()"></div>
+  <div class="gate-pricing-drawer" [class.open]="showGatePricingDrawer" (click)="$event.stopPropagation()">
+    <form class="drawer-content" [formGroup]="gatePricingForm" (ngSubmit)="submitGatePricing()">
+      <div class="drawer-header">
+        <div class="header-copy">
+          <p class="drawer-label">Pricing Per Gate</p>
+          <h2>Add Gate Pricing</h2>
+        </div>
+        <button type="button" class="close-btn" (click)="closeGatePricingDrawer()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="drawer-body">
+        <!-- Gate Name -->
+        <div class="form-field" [class.invalid]="gatePricingForm.get('gateId')?.invalid && gatePricingForm.get('gateId')?.touched">
+          <label>Gate Name<span class="required">*</span></label>
+          <div class="select-wrapper">
+            <select formControlName="gateId">
+              <option [ngValue]="null" disabled>Please Select Gate</option>
+              <option *ngFor="let gate of availableGates" [ngValue]="gate.id">
+                {{ gate.name }}
+              </option>
+            </select>
+            <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m6 9 6 6 6-6"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Customer Type -->
+        <div class="form-field" [class.invalid]="gatePricingForm.get('customerType')?.invalid && gatePricingForm.get('customerType')?.touched">
+          <label>Customer Type<span class="required">*</span></label>
+          <div class="select-wrapper">
+            <select formControlName="customerType">
+              <option *ngIf="customerTypeOptions.length === 0" [ngValue]="null" disabled>No customer types</option>
+              <option *ngFor="let option of customerTypeOptions" [ngValue]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+            <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m6 9 6 6 6-6"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Valet Pricing -->
+        <div class="toggle-section">
+          <div class="toggle-header">
+            <label>Valet Pricing</label>
+            <label class="toggle-switch">
+              <input type="checkbox" formControlName="valetPricingEnabled" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <ng-container *ngIf="gatePricingForm.get('valetPricingEnabled')?.value">
+            <div class="form-field" [class.invalid]="gatePricingForm.get('pricingType')?.invalid && gatePricingForm.get('pricingType')?.touched">
+              <label>Pricing Type<span class="required">*</span></label>
+              <div class="select-wrapper">
+                <select formControlName="pricingType" (change)="onPricingTypeChange()">
+                  <option [value]="1">Fixed Amount</option>
+                  <option [value]="2">Hourly Rate</option>
+                </select>
+                <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m6 9 6 6 6-6"></path>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Fixed Amount Input (shown when Fixed Amount is selected) -->
+            <div class="form-field" *ngIf="isFixedAmount" [class.invalid]="gatePricingForm.get('fixedAmount')?.invalid && gatePricingForm.get('fixedAmount')?.touched">
+              <label>Fixed Amount<span class="required">*</span></label>
+              <div class="input-with-currency">
+                <input type="number" formControlName="fixedAmount" placeholder="0.00" step="0.01" />
+                <span class="currency">SAR</span>
+              </div>
+            </div>
+
+            <!-- Hourly Rate Input (shown when Hourly Rate is selected) -->
+            <div class="form-field" *ngIf="isHourlyRate" [class.invalid]="gatePricingForm.get('hourlyRate')?.invalid && gatePricingForm.get('hourlyRate')?.touched">
+              <label>Hourly Rate<span class="required">*</span></label>
+              <div class="input-with-currency">
+                <input type="number" formControlName="hourlyRate" placeholder="0.00" step="0.01" />
+                <span class="currency">SAR</span>
+              </div>
+            </div>
+
+            <!-- Max Daily Rate Input (shown when Hourly Rate is selected) -->
+            <div class="form-field" *ngIf="isHourlyRate" [class.invalid]="gatePricingForm.get('maxDailyRate')?.invalid && gatePricingForm.get('maxDailyRate')?.touched">
+              <label>Max Daily Rate<span class="required">*</span></label>
+              <div class="input-with-currency">
+                <input type="number" formControlName="maxDailyRate" placeholder="0.00" step="0.01" />
+                <span class="currency">SAR</span>
+              </div>
+            </div>
+
+          </ng-container>
+        </div>
+
+        <!-- Enable Parking Pricing -->
+        <div class="toggle-section">
+          <div class="toggle-header">
+            <label>Enable Parking Pricing</label>
+            <label class="toggle-switch">
+              <input type="checkbox" formControlName="parkingPricingEnabled" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <ng-container *ngIf="gatePricingForm.get('parkingPricingEnabled')?.value">
+            <div class="form-field" [class.invalid]="gatePricingForm.get('parkingPricingType')?.invalid && gatePricingForm.get('parkingPricingType')?.touched">
+              <label>Pricing Type<span class="required">*</span></label>
+              <div class="select-wrapper">
+                <select formControlName="parkingPricingType">
+                  <option [value]="1">Fixed Amount</option>
+                  <option [value]="2">Hourly Rate</option>
+                </select>
+                <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m6 9 6 6 6-6"></path>
+                </svg>
+              </div>
+            </div>
+
+            <div class="form-field" *ngIf="isParkingFixedAmount" [class.invalid]="gatePricingForm.get('parkingDailyRate')?.invalid && gatePricingForm.get('parkingDailyRate')?.touched">
+              <label>Fixed Amount<span class="required">*</span></label>
+              <div class="input-with-currency">
+                <input type="number" formControlName="parkingDailyRate" placeholder="0.00" step="0.01" />
+                <span class="currency">SAR</span>
+              </div>
+            </div>
+
+            <div class="form-field" *ngIf="isParkingHourlyRate" [class.invalid]="gatePricingForm.get('parkingHourlyRate')?.invalid && gatePricingForm.get('parkingHourlyRate')?.touched">
+              <label>Hourly Rate<span class="required">*</span></label>
+              <div class="input-with-currency">
+                <input type="number" formControlName="parkingHourlyRate" placeholder="0.00" step="0.01" />
+                <span class="currency">SAR</span>
+              </div>
+            </div>
+
+            <div class="form-field" *ngIf="isParkingHourlyRate" [class.invalid]="gatePricingForm.get('parkingMaxDailyRate')?.invalid && gatePricingForm.get('parkingMaxDailyRate')?.touched">
+              <label>Max Daily Rate<span class="required">*</span></label>
+              <div class="input-with-currency">
+                <input type="number" formControlName="parkingMaxDailyRate" placeholder="0.00" step="0.01" />
+                <span class="currency">SAR</span>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+
+        <!-- Free Hours -->
+        <div class="form-field" [class.invalid]="gatePricingForm.get('freeHours')?.invalid && gatePricingForm.get('freeHours')?.touched">
+          <label>Free Hours<span class="required">*</span></label>
+          <input type="text" formControlName="freeHours" placeholder="e.g., 30 Minutes" />
+        </div>
+
+        <!-- Active Days of the Week -->
+        <div class="days-section">
+          <div class="days-header">
+            <label>Active Days of the Week</label>
+            <button type="button" class="select-all-btn" (click)="selectAllDays()">
+              Select All
+            </button>
+          </div>
+          <div class="days-row">
+            <label class="day-item" *ngFor="let day of daysArray; let i = index; trackBy: trackByDayIndex">
+              <input 
+                type="checkbox" 
+                [checked]="day?.checked || false" 
+                (change)="toggleDay(i)" 
+                [attr.id]="'day-checkbox-' + i"
+              />
+              <span class="day-checkbox" [class.checked]="day?.checked">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <rect x="1" y="1" width="18" height="18" rx="6" class="outline"></rect>
+                  <rect x="3" y="3" width="14" height="14" rx="4" class="fill"></rect>
+                  <path d="M6 10l2 2 4-4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tick"></path>
+                </svg>
+              </span>
+              <span class="day-label">{{ day?.label || '' }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-footer">
+        <button type="submit" class="save-btn" [disabled]="isSavingGatePricing || gatePricingForm.invalid">
+          <span *ngIf="!isSavingGatePricing">Save</span>
+          <span *ngIf="isSavingGatePricing">Saving...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ============ Notification Template Drawer ============ -->
+  <div class="drawer-overlay" *ngIf="showNotificationTemplateDrawer" (click)="closeNotificationTemplateDrawer()"></div>
+  <div class="notification-template-drawer" [class.open]="showNotificationTemplateDrawer" (click)="$event.stopPropagation()">
+    <form class="drawer-content" [formGroup]="notificationTemplateForm" (ngSubmit)="submitNotificationTemplate()">
+      <div class="drawer-header">
+        <h2>Add New Notification Template</h2>
+        <button type="button" class="close-btn" (click)="closeNotificationTemplateDrawer()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="drawer-body">
+        <!-- Channel -->
+        <div class="form-field" [class.invalid]="notificationTemplateForm.get('channel')?.invalid && notificationTemplateForm.get('channel')?.touched">
+          <label>Channel<span class="required">*</span></label>
+          <div class="select-wrapper">
+            <select formControlName="channel">
+              <option [value]="1">SMS</option>
+              <option [value]="2">WhatsApp</option>
+            </select>
+            <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m6 9 6 6 6-6"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Message Type -->
+        <div class="form-field" [class.invalid]="notificationTemplateForm.get('messageType')?.invalid && notificationTemplateForm.get('messageType')?.touched">
+          <label>Message Type<span class="required">*</span></label>
+          <div class="select-wrapper">
+            <select formControlName="messageType">
+              <option [ngValue]="null" disabled>Please Select Type</option>
+              <option value="Car Received">Car Received</option>
+              <option value="Car Delivered">Car Delivered</option>
+            </select>
+            <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m6 9 6 6 6-6"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Message Template -->
+        <div class="form-field" [class.invalid]="notificationTemplateForm.get('messageTemplate')?.invalid && notificationTemplateForm.get('messageTemplate')?.touched">
+          <label>Message Template<span class="required">*</span></label>
+          <textarea formControlName="messageTemplate" placeholder="Enter..." rows="6"></textarea>
+        </div>
+
+        <!-- Status -->
+        <div class="form-field" [class.invalid]="notificationTemplateForm.get('status')?.invalid && notificationTemplateForm.get('status')?.touched">
+          <label>Status<span class="required">*</span></label>
+          <div class="select-wrapper">
+            <select formControlName="status">
+              <option [ngValue]="null" disabled>Please Select Type</option>
+              <option [value]="1">Active</option>
+              <option [value]="2">Inactive</option>
+            </select>
+            <svg class="dropdown-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m6 9 6 6 6-6"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-footer">
+        <button type="submit" class="save-btn" [disabled]="isSavingNotificationTemplate || notificationTemplateForm.invalid">
+          <span *ngIf="!isSavingNotificationTemplate">Save</span>
+          <span *ngIf="isSavingNotificationTemplate">Saving...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ============ Customer Type Drawer ============ -->
+  <div class="drawer-overlay" *ngIf="showCustomerTypeDrawer" (click)="closeCustomerTypeDrawer()"></div>
+  <div class="customer-type-drawer" [class.open]="showCustomerTypeDrawer" (click)="$event.stopPropagation()">
+    <form class="drawer-content" [formGroup]="customerTypeForm" (ngSubmit)="submitCustomerType()">
+      <div class="drawer-header">
+        <h2>Add Customer Type</h2>
+        <button type="button" class="close-btn" (click)="closeCustomerTypeDrawer()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="drawer-body">
+        <div class="form-field" [class.invalid]="customerTypeForm.get('name')?.invalid && customerTypeForm.get('name')?.touched">
+          <label>Customer Type<span class="required">*</span></label>
+          <input type="text" formControlName="name" placeholder="Enter customer type" />
+        </div>
+      </div>
+
+      <div class="drawer-footer">
+        <button type="submit" class="save-btn" [disabled]="isSavingCustomerType || customerTypeForm.invalid">
+          <span *ngIf="!isSavingCustomerType">Save</span>
+          <span *ngIf="isSavingCustomerType">Saving...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+</div>

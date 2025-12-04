@@ -1,0 +1,193 @@
+<div class="requests-container">
+  <div class="page-header">
+    <h1 class="page-title">Requests Management</h1>
+  </div>
+
+
+  <div class="card-toolbar">
+    <div class="tab-group">
+      <button class="tab-btn"
+              [class.active]="activeTab === 'delivered'"
+              (click)="setActiveTab('delivered')">
+        Delivered
+      </button>
+      <button class="tab-btn"
+              [class.active]="activeTab === 'parked'"
+              (click)="setActiveTab('parked')">
+        Parked
+      </button>
+      <button class="tab-btn"
+              [class.active]="activeTab === 'picked-up'"
+              (click)="setActiveTab('picked-up')">
+        Picked Up
+      </button>
+    </div>
+
+    <div class="action-group">
+      <button class="filter-pill" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <div class="filter-text">
+          <span class="filter-label">DATE FROM</span>
+          <span class="filter-value">{{ dateFrom | date:'MM/dd/yyyy' }}</span>
+        </div>
+        <input type="date" [value]="dateFrom" (change)="onDateFromChange($event)" class="hidden-date">
+      </button>
+      <button class="filter-pill" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <div class="filter-text">
+          <span class="filter-label">DATE TO</span>
+          <span class="filter-value">{{ dateTo | date:'MM/dd/yyyy' }}</span>
+        </div>
+        <input type="date" [value]="dateTo" (change)="onDateToChange($event)" class="hidden-date">
+      </button>
+      <button class="filter-pill" (click)="exportData()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span class="filter-value">Export</span>
+      </button>
+      <button class="primary-btn" (click)="addRequest()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>Add Request</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="requests-card">
+    <!-- Error State -->
+    <div class="state-message error" *ngIf="loadError">
+      <p>{{ loadError }}</p>
+    </div>
+
+    <!-- No Data State -->
+    <div class="state-message no-data" *ngIf="!loadError && requests.length === 0">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <line x1="12" y1="18" x2="12" y2="12"></line>
+        <line x1="9" y1="15" x2="15" y2="15"></line>
+      </svg>
+      <p>No data</p>
+      <span class="no-data-hint">No requests found for the selected criteria.</span>
+    </div>
+
+    <div class="table-container" *ngIf="!loadError && requests.length > 0">
+      <table class="requests-table">
+        <thead>
+          <tr>
+            <th>
+              Request No.
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"></path>
+              </svg>
+            </th>
+            <th>Gate Name</th>
+            <th>
+              Site Name
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"></path>
+              </svg>
+            </th>
+            <th>
+              Created Time
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"></path>
+              </svg>
+            </th>
+            <th>
+              Customer Mobile
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"></path>
+              </svg>
+            </th>
+            <th>Card Number</th>
+            <th>
+              Customer Type
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"></path>
+              </svg>
+            </th>
+            <th>
+              Plate Number
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"></path>
+              </svg>
+            </th>
+            <th>
+              Payment Type
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"></path>
+              </svg>
+            </th>
+            <th>
+              Amount
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"></path>
+              </svg>
+            </th>
+            <th class="actions-col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let request of requests" (click)="openRequestDetails(request)" class="clickable-row">
+            <td>{{request.requestNo}}</td>
+            <td>{{request.gateName}}</td>
+            <td class="site-name">{{request.siteName}}</td>
+            <td class="created-time">{{request.createdTime}}</td>
+            <td>{{request.customerMobile}}</td>
+            <td>{{request.cardNumber}}</td>
+            <td>{{request.customerType}}</td>
+            <td>{{request.plateNumber}}</td>
+            <td>
+              <span class="payment-badge" [ngClass]="'payment-' + getPaymentTypeClass(request.paymentType)">
+                {{request.paymentType}}
+              </span>
+            </td>
+            <td>{{request.amount}}</td>
+            <td class="actions-cell">
+              <button class="link-btn" (click)="openReceipts(request, $event)">Receipts</button>
+              <button class="link-btn" (click)="openImages(request, $event)">Images</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination-section" *ngIf="!loadError && requests.length > 0">
+      <button class="page-btn" [disabled]="currentPage === 1" (click)="previousPage()">
+        ← Previous
+      </button>
+      <div class="page-numbers">
+        <button *ngFor="let page of getPageNumbers()"
+                class="page-number-btn"
+                [class.active]="page === currentPage"
+                [class.ellipsis]="page === '...'"
+                [disabled]="page === '...'"
+                (click)="handlePageClick(page)">
+          {{page}}
+        </button>
+      </div>
+      <button class="page-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">
+        Next →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Request Modal -->
+<app-add-request *ngIf="showAddRequestModal" (close)="closeAddRequestModal()"></app-add-request>

@@ -1,0 +1,32 @@
+<div class="gates-grid">
+  <table class="gates-table">
+    <thead>
+      <tr>
+        <th>Gate Name <span class="sort-indicator"></span></th>
+        <th>Status <span class="sort-indicator"></span></th>
+        <th class="actions-col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let gate of gates">
+        <td>{{ gate.name }}</td>
+        <td>
+          <span class="status-badge-small" [class.active]="gate.status === 'Active'" [class.inactive]="gate.status === 'Inactive'">
+            {{ gate.status }}
+          </span>
+        </td>
+        <td class="actions-cell">
+          <button class="menu-btn" (click)="onMenuClick(gate, $event)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="5" r="1"></circle>
+              <circle cx="12" cy="12" r="1"></circle>
+              <circle cx="12" cy="19" r="1"></circle>
+            </svg>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+

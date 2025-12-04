@@ -1,0 +1,249 @@
+<div class="drawer-root">
+  <div class="drawer-overlay" (click)="closeModal()"></div>
+
+  <div class="drawer-panel" (click)="$event.stopPropagation()">
+    <div class="drawer-header">
+      <div>
+        <p class="drawer-subtitle">Step {{ currentStep }} of {{ totalSteps }}</p>
+        <h2 class="drawer-title">Add New Request</h2>
+      </div>
+      <button class="close-btn" (click)="closeModal()" aria-label="Close Add Request">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="drawer-body">
+      <div class="stepper">
+        <div
+          class="step"
+          *ngFor="let label of stepLabels; index as i"
+          [class.active]="currentStep === i + 1"
+          [class.completed]="currentStep > i + 1">
+          <span class="step-number">{{ i + 1 }}</span>
+          <span class="step-label">{{ label }}</span>
+        </div>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="step-content" *ngIf="currentStep === 1">
+        <h3 class="section-title">Basic information</h3>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label class="form-label">Site Name<span class="required">*</span></label>
+            <select
+              class="form-select"
+              [(ngModel)]="basicInfo.siteId"
+              (ngModelChange)="onSiteChange($event)"
+              required>
+              <option value="" disabled>Please Select Type</option>
+              <option *ngFor="let site of siteOptions" [ngValue]="site.id">{{ site.name }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Gate Name<span class="required">*</span></label>
+            <select
+              class="form-select"
+              [(ngModel)]="basicInfo.gateId"
+              (focus)="onGateFocus()"
+              [disabled]="gateOptions.length === 0"
+              required>
+              <option value="" disabled>Please Select Type</option>
+              <option *ngFor="let gate of gateOptions" [ngValue]="gate.id">{{ gate.name }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Customer Type<span class="required">*</span></label>
+            <select
+              class="form-select"
+              [(ngModel)]="basicInfo.customerType"
+              (focus)="onCustomerTypeFocus()"
+              [disabled]="customerTypeOptions.length === 0"
+              required>
+              <option value="" disabled>Please Select Type</option>
+              <option *ngFor="let type of customerTypeOptions" [ngValue]="type.value">{{ type.label }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Customer Mobile Number<span class="required">*</span></label>
+            <input
+              type="tel"
+              class="form-input"
+              [(ngModel)]="basicInfo.customerMobileNumber"
+              placeholder="Please Select Type"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Card Number<span class="required">*</span></label>
+            <select
+              class="form-select"
+              [(ngModel)]="basicInfo.cardNumber"
+              [disabled]="cardOptions.length === 0"
+              required>
+              <option value="" disabled>Please Select Type</option>
+              <option *ngFor="let card of cardOptions" [ngValue]="card.number">{{ card.number }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Extra Service<span class="required">*</span></label>
+            <select class="form-select" [(ngModel)]="basicInfo.extraService" [disabled]="extraServices.length === 0" required>
+              <option value="" disabled>Please Select Type</option>
+              <option *ngFor="let service of extraServices" [ngValue]="service.id">{{ service.name }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Payment type<span class="required">*</span></label>
+            <select class="form-select" [(ngModel)]="basicInfo.paymentType" required>
+              <option value="" disabled>Please Select Type</option>
+              <option *ngFor="let type of paymentTypes" [value]="type.value">{{ type.label }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step-content" *ngIf="currentStep === 2">
+        <h3 class="section-title">Vehicle details</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Plate Type<span class="required">*</span></label>
+            <select class="form-select" [(ngModel)]="vehicleDetails.plateType" required>
+              <option value="" disabled>Please Select Type</option>
+              <option *ngFor="let type of plateTypes" [value]="type.value">{{ type.label }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Plate Number<span class="required">*</span></label>
+            <input
+              type="text"
+              class="form-input"
+              [(ngModel)]="vehicleDetails.plateNumber"
+              placeholder="Please Select Type"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Brand</label>
+            <select class="form-select" [(ngModel)]="vehicleDetails.brand">
+              <option value="" disabled>Please Select Type</option>
+              <option *ngFor="let brand of brands" [value]="brand">{{ brand }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Color</label>
+            <select class="form-select" [(ngModel)]="vehicleDetails.color">
+              <option value="" disabled>Please Select Type</option>
+              <option *ngFor="let color of colors" [value]="color">{{ color }}</option>
+            </select>
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label">Notes</label>
+            <textarea
+              class="form-textarea"
+              [(ngModel)]="vehicleDetails.notes"
+              placeholder="Add optional notes"></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <label class="form-label">Inspection Photo</label>
+            <div class="upload-area" (click)="fileInput.click()">
+              <input
+                type="file"
+                #fileInput
+                (change)="onFileSelected($event)"
+                multiple
+                accept="image/*"
+                style="display: none;">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+                <polyline points="15 12 12 9 9 12"></polyline>
+                <line x1="12" y1="21" x2="12" y2="9"></line>
+              </svg>
+              <p class="upload-text">Upload Photos or files</p>
+            </div>
+
+            <div class="uploaded-files" *ngIf="uploadedFiles.length > 0">
+              <div class="file-item" *ngFor="let file of uploadedFiles; let i = index">
+                <span>{{ file.name }}</span>
+                <button class="remove-file-btn" (click)="removeFile(i)" aria-label="Remove file">×</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step-content" *ngIf="currentStep === 3">
+        <h3 class="section-title">Staff details</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Received By<span class="required">*</span></label>
+            <select class="form-select" [(ngModel)]="staffDetails.receivedBy" [disabled]="teamMembersOptions.length === 0" required>
+              <option value="" disabled>Please Select Type</option>
+              <option *ngFor="let staff of teamMembersOptions" [ngValue]="staff.id">{{ staff.label }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Parked By<span class="required">*</span></label>
+            <select class="form-select" [(ngModel)]="staffDetails.parkedBy" [disabled]="teamMembersOptions.length === 0" required>
+              <option value="" disabled>Please Select Type</option>
+              <option *ngFor="let staff of teamMembersOptions" [ngValue]="staff.id">{{ staff.label }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Delivered By<span class="required">*</span></label>
+            <select class="form-select" [(ngModel)]="staffDetails.deliveredBy" [disabled]="teamMembersOptions.length === 0" required>
+              <option value="" disabled>Please Select Type</option>
+              <option *ngFor="let staff of teamMembersOptions" [ngValue]="staff.id">{{ staff.label }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Shift<span class="required">*</span></label>
+            <select class="form-select" [(ngModel)]="staffDetails.shiftId" required>
+              <option value="" disabled>Please Select Type</option>
+              <option *ngFor="let shift of shiftOptions" [ngValue]="shift.id">{{ shift.name }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="drawer-footer">
+      <div class="guard-message" *ngIf="guardMessage">{{ guardMessage }}</div>
+      <div class="submission-error" *ngIf="submissionError">{{ submissionError }}</div>
+      <button *ngIf="currentStep > 1" class="btn-link" (click)="previousStep()">Back</button>
+      <div class="footer-spacer"></div>
+      <button
+        *ngIf="currentStep < totalSteps"
+        class="btn-primary"
+        type="button"
+        (click)="nextStep()">
+        Next
+      </button>
+      <button
+        *ngIf="currentStep === totalSteps"
+        class="btn-primary"
+        type="button"
+        [disabled]="isSubmitting"
+        (click)="onSubmit()">
+        <span *ngIf="!isSubmitting">Save</span>
+        <span *ngIf="isSubmitting">Saving...</span>
+      </button>
+    </div>
+  </div>
+</div>
+

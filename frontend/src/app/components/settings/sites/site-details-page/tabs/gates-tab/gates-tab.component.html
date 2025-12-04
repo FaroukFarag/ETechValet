@@ -1,0 +1,94 @@
+<div class="gates-page">
+  <!-- Loading State -->
+  <section class="gates-table-card status-card" *ngIf="isLoading">
+    <div class="status-content">
+      <div class="spinner-small"></div>
+      <p>Loading gates...</p>
+    </div>
+  </section>
+
+  <!-- Data State -->
+  <section class="gates-table-card" *ngIf="!isLoading && gates.length > 0">
+    <div class="table-scroll">
+      <app-gates-grid 
+        [gates]="gates"
+        (gateMenuClick)="onGateMenu($event)">
+      </app-gates-grid>
+    </div>
+  </section>
+
+  <!-- Empty State -->
+  <section class="gates-table-card status-card" *ngIf="!isLoading && gates.length === 0">
+    <div class="status-content">
+      <p>No data</p>
+    </div>
+  </section>
+
+  <div *ngIf="!isLoading && gates.length > 0">
+
+  <!-- Pagination - Outside white container, fixed at bottom -->
+  <div class="pagination" *ngIf="totalPages > 0">
+    <div class="pagination-content">
+      <button class="page-btn" (click)="previousPage()" [disabled]="currentPage === 1">
+        ← Previous
+      </button>
+      <div class="page-numbers">
+        <ng-container *ngIf="totalPages <= 10">
+          <!-- Show all pages if 10 or fewer -->
+          <button 
+            *ngFor="let page of getPageNumbers()" 
+            class="page-number" 
+            [class.active]="currentPage === page"
+            (click)="onPageChange(page)">
+            {{ page }}
+          </button>
+        </ng-container>
+        <ng-container *ngIf="totalPages > 10">
+          <!-- Always show first 3 pages -->
+          <button 
+            class="page-number" 
+            [class.active]="currentPage === 1"
+            (click)="onPageChange(1)">
+            1
+          </button>
+          <button 
+            class="page-number" 
+            [class.active]="currentPage === 2"
+            (click)="onPageChange(2)">
+            2
+          </button>
+          <button 
+            class="page-number" 
+            [class.active]="currentPage === 3"
+            (click)="onPageChange(3)">
+            3
+          </button>
+          <span class="ellipsis">...</span>
+          <!-- Show last 3 pages -->
+          <button 
+            class="page-number" 
+            [class.active]="currentPage === totalPages - 2"
+            (click)="onPageChange(totalPages - 2)">
+            {{ totalPages - 2 }}
+          </button>
+          <button 
+            class="page-number" 
+            [class.active]="currentPage === totalPages - 1"
+            (click)="onPageChange(totalPages - 1)">
+            {{ totalPages - 1 }}
+          </button>
+          <button 
+            class="page-number" 
+            [class.active]="currentPage === totalPages"
+            (click)="onPageChange(totalPages)">
+            {{ totalPages }}
+          </button>
+        </ng-container>
+      </div>
+      <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages || totalPages === 0">
+        Next →
+      </button>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,747 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\E-tech\\valet_frontend\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\requests\\requests.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\requests\\requests.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\pricing\\pricing.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\pricing\\pricing.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\sites.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\sites\\sites.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\users-roles\\users-roles.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\users-roles\\users-roles.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\validator-list\\validator-list.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\validator-list\\validator-list.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\requests\\requests.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\requests\\requests.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\base-pricing-drawer\\base-pricing-drawer.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\base-pricing-drawer\\base-pricing-drawer.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\pricing-table\\pricing-table.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\pricing-table\\pricing-table.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\site-pricing-tab.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\site-pricing-tab.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\site-details-page.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\sites\\site-details-page\\site-details-page.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\gates-tab\\gates-grid\\gates-grid.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\sites\\site-details-page\\tabs\\gates-tab\\gates-grid\\gates-grid.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\gates-tab\\gates-tab.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\sites\\site-details-page\\tabs\\gates-tab\\gates-tab.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\pricing-table\\pricing-table.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\pricing-table\\pricing-table.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\site-pricing-tab.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\site-pricing-tab.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\pricing-per-gate-tab\\pricing-per-gate-tab.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\sites\\site-details-page\\tabs\\pricing-per-gate-tab\\pricing-per-gate-tab.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\gates-tab\\gates-tab.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\sites\\site-details-page\\tabs\\gates-tab\\gates-tab.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\site-details-page.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\sites\\site-details-page\\site-details-page.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\sites.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\sites\\sites.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\validator-list\\validator-list.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\validator-list\\validator-list.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\sites.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\sites\\sites.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\services\\notification-templates.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\services\\notification-templates.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\companies\\companies.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\companies\\companies.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\cards\\cards.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\cards\\cards.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\cards\\cards.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\cards\\cards.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\gates\\gates.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\gates\\gates.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\gates\\gates.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\settings\\gates\\gates.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\sidebar\\sidebar.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\sidebar\\sidebar.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\sidebar\\sidebar.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\sidebar\\sidebar.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\services\\api-config.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\services\\api-config.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\services\\auth.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\services\\auth.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\login\\login.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\login\\login.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\src\\app\\components\\login\\login.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\components\\login\\login.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\E-tech\\valet_frontend\\.env||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:.env||{8B382828-6202-11D1-8870-0000F87579D2}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 48,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:139:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:2:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:8:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:9:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:6:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:132:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:132:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:133:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:134:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:135:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:136:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:137:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:138:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:139:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:140:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:141:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:142:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{131369f2-062d-44a2-8671-91ff31efb4f4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:135:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:136:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:137:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:138:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{4a8466fe-5a05-4f81-ad45-7d7c1316817e}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:2:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:133:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:134:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{6324226f-61b6-4f28-92ee-18d4b5fe1e48}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{004be353-6879-467c-9d1e-9ac23cdf6d49}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:5:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:7:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:6:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "pricing.component.html",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\pricing\\pricing.component.html",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\pricing\\pricing.component.html",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\pricing\\pricing.component.html",
+              "RelativeToolTip": "src\\app\\components\\settings\\pricing\\pricing.component.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-29T09:47:17.64Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "users-roles.component.html",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\users-roles\\users-roles.component.html",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\users-roles\\users-roles.component.html",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\users-roles\\users-roles.component.html",
+              "RelativeToolTip": "src\\app\\components\\settings\\users-roles\\users-roles.component.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-29T09:47:05.642Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "validator-list.component.html",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\validator-list\\validator-list.component.html",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\validator-list\\validator-list.component.html",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\validator-list\\validator-list.component.html",
+              "RelativeToolTip": "src\\app\\components\\settings\\validator-list\\validator-list.component.html",
+              "ViewState": "AgIAAMUAAAAAAAAAAAAUwOYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-29T09:46:57.662Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "requests.component.html",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\requests\\requests.component.html",
+              "RelativeDocumentMoniker": "src\\app\\components\\requests\\requests.component.html",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\requests\\requests.component.html",
+              "RelativeToolTip": "src\\app\\components\\requests\\requests.component.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-18T20:35:07.845Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "requests.component.scss",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\requests\\requests.component.scss",
+              "RelativeDocumentMoniker": "src\\app\\components\\requests\\requests.component.scss",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\requests\\requests.component.scss",
+              "RelativeToolTip": "src\\app\\components\\requests\\requests.component.scss",
+              "ViewState": "AgIAAJEAAAAAAAAAAAAmwKsAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2025-11-18T20:36:18.927Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "sites.component.html",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\sites.component.html",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\sites\\sites.component.html",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\sites.component.html",
+              "RelativeToolTip": "src\\app\\components\\settings\\sites\\sites.component.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-08T09:51:51.733Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "base-pricing-drawer.component.scss",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\base-pricing-drawer\\base-pricing-drawer.component.scss",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\base-pricing-drawer\\base-pricing-drawer.component.scss",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\base-pricing-drawer\\base-pricing-drawer.component.scss",
+              "RelativeToolTip": "src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\base-pricing-drawer\\base-pricing-drawer.component.scss",
+              "ViewState": "AgIAAOgAAAAAAAAAAAAmwP4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2025-11-15T09:47:41.387Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "pricing-table.component.scss",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\pricing-table\\pricing-table.component.scss",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\pricing-table\\pricing-table.component.scss",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\pricing-table\\pricing-table.component.scss",
+              "RelativeToolTip": "src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\pricing-table\\pricing-table.component.scss",
+              "ViewState": "AgIAANQAAAAAAAAAAAAmwOgAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2025-11-15T09:45:54.382Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "site-pricing-tab.component.scss",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\site-pricing-tab.component.scss",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\site-pricing-tab.component.scss",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\site-pricing-tab.component.scss",
+              "RelativeToolTip": "src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\site-pricing-tab.component.scss",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2025-11-15T09:45:50.257Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "gates-grid.component.html",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\gates-tab\\gates-grid\\gates-grid.component.html",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\sites\\site-details-page\\tabs\\gates-tab\\gates-grid\\gates-grid.component.html",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\gates-tab\\gates-grid\\gates-grid.component.html",
+              "RelativeToolTip": "src\\app\\components\\settings\\sites\\site-details-page\\tabs\\gates-tab\\gates-grid\\gates-grid.component.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-15T09:03:06.64Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "gates-tab.component.html",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\gates-tab\\gates-tab.component.html",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\sites\\site-details-page\\tabs\\gates-tab\\gates-tab.component.html",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\gates-tab\\gates-tab.component.html",
+              "RelativeToolTip": "src\\app\\components\\settings\\sites\\site-details-page\\tabs\\gates-tab\\gates-tab.component.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-15T09:03:04.127Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "pricing-table.component.html",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\pricing-table\\pricing-table.component.html",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\pricing-table\\pricing-table.component.html",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\pricing-table\\pricing-table.component.html",
+              "RelativeToolTip": "src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\pricing-table\\pricing-table.component.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-15T09:02:26.869Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "site-pricing-tab.component.html",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\site-pricing-tab.component.html",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\site-pricing-tab.component.html",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\site-pricing-tab.component.html",
+              "RelativeToolTip": "src\\app\\components\\settings\\sites\\site-details-page\\tabs\\site-pricing-tab\\site-pricing-tab.component.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-15T08:58:50.249Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "site-details-page.component.scss",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\site-details-page.component.scss",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\sites\\site-details-page\\site-details-page.component.scss",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\site-details-page.component.scss",
+              "RelativeToolTip": "src\\app\\components\\settings\\sites\\site-details-page\\site-details-page.component.scss",
+              "ViewState": "AgIAAPwAAAAAAAAAAAAmwBQBAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2025-11-15T08:28:20.591Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "pricing-per-gate-tab.component.html",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\pricing-per-gate-tab\\pricing-per-gate-tab.component.html",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\sites\\site-details-page\\tabs\\pricing-per-gate-tab\\pricing-per-gate-tab.component.html",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\pricing-per-gate-tab\\pricing-per-gate-tab.component.html",
+              "RelativeToolTip": "src\\app\\components\\settings\\sites\\site-details-page\\tabs\\pricing-per-gate-tab\\pricing-per-gate-tab.component.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-15T09:02:08.714Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "gates-tab.component.scss",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\gates-tab\\gates-tab.component.scss",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\sites\\site-details-page\\tabs\\gates-tab\\gates-tab.component.scss",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\tabs\\gates-tab\\gates-tab.component.scss",
+              "RelativeToolTip": "src\\app\\components\\settings\\sites\\site-details-page\\tabs\\gates-tab\\gates-tab.component.scss",
+              "ViewState": "AgIAAIcAAAAAAAAAAAAUwKgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2025-11-15T08:55:05.309Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "site-details-page.component.html",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\site-details-page.component.html",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\sites\\site-details-page\\site-details-page.component.html",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\site-details-page\\site-details-page.component.html",
+              "RelativeToolTip": "src\\app\\components\\settings\\sites\\site-details-page\\site-details-page.component.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-15T08:51:24.624Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "sites.component.scss",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\sites.component.scss",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\sites\\sites.component.scss",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\sites.component.scss",
+              "RelativeToolTip": "src\\app\\components\\settings\\sites\\sites.component.scss",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2025-11-15T08:28:12.351Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "validator-list.component.scss",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\validator-list\\validator-list.component.scss",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\validator-list\\validator-list.component.scss",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\validator-list\\validator-list.component.scss",
+              "RelativeToolTip": "src\\app\\components\\settings\\validator-list\\validator-list.component.scss",
+              "ViewState": "AgIAAEIBAAAAAAAAAAAmwFMBAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2025-11-14T16:29:39.973Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "notification-templates.service.ts",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\services\\notification-templates.service.ts",
+              "RelativeDocumentMoniker": "src\\app\\services\\notification-templates.service.ts",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\services\\notification-templates.service.ts",
+              "RelativeToolTip": "src\\app\\services\\notification-templates.service.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-11-08T10:26:54.717Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "sites.component.ts",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\sites.component.ts",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\sites\\sites.component.ts",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\sites\\sites.component.ts",
+              "RelativeToolTip": "src\\app\\components\\settings\\sites\\sites.component.ts",
+              "ViewState": "AgIAAAUCAAAAAAAAAAAAAEMBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-11-06T20:16:40.551Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "companies.component.html",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\companies\\companies.component.html",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\companies\\companies.component.html",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\companies\\companies.component.html",
+              "RelativeToolTip": "src\\app\\components\\settings\\companies\\companies.component.html",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAawDsAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-08T09:20:02.121Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "cards.component.ts",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\cards\\cards.component.ts",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\cards\\cards.component.ts",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\cards\\cards.component.ts",
+              "RelativeToolTip": "src\\app\\components\\settings\\cards\\cards.component.ts",
+              "ViewState": "AgIAAA4AAAAAAAAAAAArwBsAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-11-07T20:01:52.491Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "cards.component.html",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\cards\\cards.component.html",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\cards\\cards.component.html",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\cards\\cards.component.html",
+              "RelativeToolTip": "src\\app\\components\\settings\\cards\\cards.component.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-07T20:01:31.04Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "gates.component.html",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\gates\\gates.component.html",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\gates\\gates.component.html",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\gates\\gates.component.html",
+              "RelativeToolTip": "src\\app\\components\\settings\\gates\\gates.component.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-07T20:01:08.343Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "gates.component.scss",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\gates\\gates.component.scss",
+              "RelativeDocumentMoniker": "src\\app\\components\\settings\\gates\\gates.component.scss",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\settings\\gates\\gates.component.scss",
+              "RelativeToolTip": "src\\app\\components\\settings\\gates\\gates.component.scss",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2025-11-07T20:01:07.347Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "sidebar.component.ts",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\sidebar\\sidebar.component.ts",
+              "RelativeDocumentMoniker": "src\\app\\components\\sidebar\\sidebar.component.ts",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\sidebar\\sidebar.component.ts",
+              "RelativeToolTip": "src\\app\\components\\sidebar\\sidebar.component.ts",
+              "ViewState": "AgIAABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-11-06T18:26:32.881Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "sidebar.component.html",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\sidebar\\sidebar.component.html",
+              "RelativeDocumentMoniker": "src\\app\\components\\sidebar\\sidebar.component.html",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\sidebar\\sidebar.component.html",
+              "RelativeToolTip": "src\\app\\components\\sidebar\\sidebar.component.html",
+              "ViewState": "AgIAADMAAAAAAAAAAAAAABIAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-06T18:26:24.866Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "login.component.html",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\login\\login.component.html",
+              "RelativeDocumentMoniker": "src\\app\\components\\login\\login.component.html",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\login\\login.component.html",
+              "RelativeToolTip": "src\\app\\components\\login\\login.component.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-11-02T11:52:22.731Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "api-config.service.ts",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\services\\api-config.service.ts",
+              "RelativeDocumentMoniker": "src\\app\\services\\api-config.service.ts",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\services\\api-config.service.ts",
+              "RelativeToolTip": "src\\app\\services\\api-config.service.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-11-02T11:51:51.502Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "auth.service.ts",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\services\\auth.service.ts",
+              "RelativeDocumentMoniker": "src\\app\\services\\auth.service.ts",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\services\\auth.service.ts",
+              "RelativeToolTip": "src\\app\\services\\auth.service.ts",
+              "ViewState": "AgIAABEAAAAAAAAAAAAAAB0AAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-11-02T11:51:33.103Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "login.component.ts",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\src\\app\\components\\login\\login.component.ts",
+              "RelativeDocumentMoniker": "src\\app\\components\\login\\login.component.ts",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\src\\app\\components\\login\\login.component.ts",
+              "RelativeToolTip": "src\\app\\components\\login\\login.component.ts",
+              "ViewState": "AgIAACcAAAAAAAAAAAAQwDcAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-11-02T11:52:24.578Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": ".env",
+              "DocumentMoniker": "D:\\E-tech\\valet_frontend\\.env",
+              "RelativeDocumentMoniker": ".env",
+              "ToolTip": "D:\\E-tech\\valet_frontend\\.env",
+              "RelativeToolTip": ".env",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-11-02T10:36:01.773Z"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 1558,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{90243340-bd7a-11d0-93ef-00a0c90f2734}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:9:0:{e8034f19-ab72-4f06-83fd-f6832b41aa63}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+<div class="site-users-page">
+  <section class="users-table-card" *ngIf="!isLoading && users.length > 0; else tableState">
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Username <span class="sort-indicator"></span></th>
+            <th>Phone Numbers <span class="sort-indicator"></span></th>
+            <th>Roles <span class="sort-indicator"></span></th>
+            <th>Email <span class="sort-indicator"></span></th>
+            <th>Status <span class="sort-indicator"></span></th>
+            <th class="actions-col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users; index as i">
+            <td>{{ user.username || '—' }}</td>
+            <td>{{ user.phoneNumber || '—' }}</td>
+            <td>{{ user.role || '—' }}</td>
+            <td>{{ user.email || '—' }}</td>
+            <td>
+              <span class="status-badge" [class.active]="getStatusClass(user.status) === 'active'" [class.inactive]="getStatusClass(user.status) === 'inactive'">
+                {{ user.status }}
+              </span>
+            </td>
+            <td class="actions-cell">
+              <div class="user-actions">
+                <button type="button" class="action-link" (click)="resetPassword(user)" title="Reset password for {{ user.username || 'user' }}">Reset Password</button>
+                <span class="action-separator">|</span>
+                <button type="button" class="action-link" (click)="deactivateAccount(user)" [title]="(user.status === 'Active' ? 'Deactivate' : 'Activate') + ' account for ' + (user.username || 'user')">
+                  {{ user.status === 'Active' ? 'Deactivate Account' : 'Activate Account' }}
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <ng-template #tableState>
+    <section class="users-table-card status-card">
+      <div *ngIf="isLoading" class="status-content">
+        <div class="spinner"></div>
+        <p>Loading users...</p>
+      </div>
+      <div *ngIf="!isLoading && users.length === 0" class="status-content">
+        <p>No data</p>
+      </div>
+    </section>
+  </ng-template>
+</div>

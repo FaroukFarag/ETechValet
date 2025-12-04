@@ -1,0 +1,121 @@
+<div class="notifications-container">
+  <div class="notifications-header">
+    <div class="header-content">
+      <h1 class="page-title">Notifications Center</h1>
+      <p class="page-subtitle">Real-time updates and alerts for valet operations</p>
+    </div>
+    <div class="header-actions">
+      <button class="action-btn mark-all-read" (click)="markAllAsRead()">
+        Mark all read
+      </button>
+      <button class="action-btn settings">
+        Settings
+      </button>
+    </div>
+  </div>
+
+  <!-- Notification Statistics -->
+  <div class="notification-stats">
+    <div class="stat-card">
+      <div class="stat-icon green">🔔</div>
+      <div class="stat-content">
+        <div class="stat-value">{{stats.unread}}</div>
+        <div class="stat-label">Unread</div>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon green">🔔</div>
+      <div class="stat-content">
+        <div class="stat-value">{{stats.unread}}</div>
+        <div class="stat-label">Unread</div>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon blue">🚗</div>
+      <div class="stat-content">
+        <div class="stat-value">{{stats.unread}}</div>
+        <div class="stat-label">Unread</div>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon gray">👤</div>
+      <div class="stat-content">
+        <div class="stat-value">{{stats.unread}}</div>
+        <div class="stat-label">Unread</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notifications List -->
+  <div class="notifications-list">
+    <div 
+      class="notification-item" 
+      *ngFor="let notification of notifications"
+      [class.unread]="!notification.isRead"
+      [ngClass]="getNotificationTypeClass(notification.type)">
+      
+      <div class="notification-content">
+        <div class="notification-main">
+          <div class="notification-header">
+            <h3 class="notification-title">{{notification.title}}</h3>
+            <span class="notification-priority" [ngClass]="getPriorityClass(notification.priority)">
+              {{notification.priority}}
+            </span>
+          </div>
+          
+          <p class="notification-message">{{notification.message}}</p>
+          
+          <div class="notification-details">
+            <div class="detail-item" *ngIf="notification.vehicleId">
+              <svg class="detail-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 17h10m-5-5v5m-5-5l2-2h6l2 2"></path>
+                <path d="M5 17h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2z"></path>
+                <circle cx="9" cy="17" r="1"></circle>
+                <circle cx="15" cy="17" r="1"></circle>
+              </svg>
+              <span class="detail-text">Vehicle: {{notification.vehicleId}}</span>
+            </div>
+            <div class="detail-item" *ngIf="notification.location">
+              <svg class="detail-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              <span class="detail-text">Location: {{notification.location}}</span>
+            </div>
+            <div class="detail-item" *ngIf="notification.phone">
+              <svg class="detail-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+              </svg>
+              <span class="detail-text">{{notification.phone}}</span>
+            </div>
+            <div class="detail-item">
+              <svg class="detail-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12,6 12,12 16,14"></polyline>
+              </svg>
+              <span class="detail-text">{{notification.timestamp}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="notification-actions">
+          <button class="action-btn view" (click)="handleNotificationAction(notification)">
+            View
+          </button>
+          <button class="action-btn mark-read" (click)="markAsRead(notification.id)" *ngIf="!notification.isRead">
+            Mark Read
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="notifications.length === 0">
+      <div class="empty-icon">📭</div>
+      <h3 class="empty-title">No notifications</h3>
+      <p class="empty-message">You're all caught up! No new notifications at the moment.</p>
+    </div>
+  </div>
+</div>
