@@ -113,8 +113,14 @@ export class RequestsComponent implements OnInit {
     const status = statusMap[tab];
     this.isLoading = true;
     this.pickupRequestsService.getRequestsByStatus(status).subscribe({
-      next: (requests) => {
-        const mapped = (requests || []).map(this.mapRequestDtoToRow);
+      next: (result) => {
+        if (!result.isSuccess) {
+          this.loadError = `Failed to load ${tab} requests`;
+          this.isLoading = false;
+          return;
+        }
+
+        const mapped = (result.data || []).map(this.mapRequestDtoToRow);
         if (tab === 'picked-up') this.pickedRequests = mapped;
         if (tab === 'parked') this.parkedRequests = mapped;
         if (tab === 'delivered') this.deliveredRequests = mapped;

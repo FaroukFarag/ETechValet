@@ -105,7 +105,7 @@
         </button>
 
         <ul class="sub-menu" *ngIf="item.children && expandedMenu === item.label">
-          <li class="sub-item" *ngFor="let child of item.children" [class.active]= "currentUrl?.startsWith(child.route)">
+          <li class="sub-item" *ngFor="let child of item.children" [class.active]= "currentUrl!.startsWith(child.route)">
             <a [routerLink]="child.route" routerLinkActive="active" class="sub-link">
               <span class="bullet"></span>
               <span class="sub-label">{{child.label}}</span>

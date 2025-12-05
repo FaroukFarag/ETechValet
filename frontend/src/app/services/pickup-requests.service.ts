@@ -25,9 +25,9 @@ export interface PickupRequestDto {
 export class PickupRequestsService {
   constructor(private http: HttpClient, private apiConfig: ApiConfigService) {}
 
-  getRequestsByStatus(status: number): Observable<PickupRequestDto[]> {
+  getRequestsByStatus(status: number): Observable<any> {
     const url = this.apiConfig.getFullUrl(`pickup-requests/get-all-by-status/${status}`);
-    return this.http.get<PickupRequestDto[]>(url);
+    return this.http.get<any>(url);
   }
 
   createRequestWithPhotos(payload: FormData): Observable<any> {
